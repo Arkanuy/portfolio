@@ -1,0 +1,24 @@
+# dependencies
+node_modules/
+
+# next.js
+.next/
+out/
+next-env.d.ts
+
+# build info
+*.tsbuildinfo
+
+# env — JANGAN pernah commit kredensial
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# berkas kerja lokal: tangkapan layar verifikasi (23 MB) & skrip sekali pakai
+evidence/
+scripts/_*.cjs
+scripts/_*.py
