@@ -12,7 +12,7 @@ const sans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://arkanmustofa.com"),
+  metadataBase: new URL("https://portfolio-arkan.site"),
   title: {
     default: `${site.name} — ${site.role}`,
     template: `%s · ${site.name}`,
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     title: `${site.name} — ${site.role}`,
     description: site.bio,
     type: "website",
-    locale: "id_ID",
+    locale: "en_US",
   },
   robots: { index: true, follow: true },
 };
