@@ -7,7 +7,7 @@ export default function CaseCard({ item, priority = false }: { item: Case; prior
       <span className="cc__media">
         <Image
           src={item.image}
-          alt={`Tampilan ${item.title}`}
+          alt={`${item.title} — interface preview`}
           width={1200}
           height={751}
           priority={priority}
@@ -22,7 +22,7 @@ export default function CaseCard({ item, priority = false }: { item: Case; prior
         <span className="cc__title">{item.title}</span>
         <span className="cc__sum">{item.summary}</span>
         <span className="cc__go">
-          Lihat studi kasus
+          View case study
           <i aria-hidden="true">→</i>
         </span>
       </span>

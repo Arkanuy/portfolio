@@ -161,6 +161,37 @@ const check = (n, pass, extra = {}) => {
   check("tidak ada teks terpotong tanpa penanda", potong.length === 0,
     { kasus: potong.slice(0, 5).map((r) => `${r.tag}${r.url}: ${JSON.stringify(r.terpotong)}`) });
 
+  /* ---------- bahasa: seluruh teks yang TERLIHAT harus Inggris ----------
+     Kata sambung Indonesia dipakai sebagai penanda karena tidak ada padanannya
+     di bahasa Inggris. Ini menangkap sisa terjemahan seperti tombol
+     "Lihat studi kasus" dan alt "Tampilan ..." yang lolos dari daftar kata
+     yang dipakai di uji lain. */
+  const ID = /(yang|dengan|untuk|dari|tidak|atau|adalah|akan|sudah|belum|bisa|harus|pada|saya|kami|kita|klik|unduh|halaman|proyek|layanan|karya|riwayat|tentang|beranda|lihat|tampilan|studi|kasus|sebagai|karena|tetapi|juga|masih|lebih|dapat|setiap|melalui|secara|oleh|ini|itu)/i;
+
+  const ctx = await b.newContext({ viewport: { width: 1440, height: 900 } });
+  const lp = await ctx.newPage();
+  const kotor = [];
+  for (const url of PAGES) {
+    try {
+      await lp.goto(BASE + url, { waitUntil: "load", timeout: 40000 });
+    } catch {
+      continue;
+    }
+    await lp.waitForTimeout(900);
+    const t = await lp.evaluate(() => {
+      const teks = document.body.innerText;
+      const alts = [...document.querySelectorAll("img[alt]")].map((i) => i.alt);
+      const aria = [...document.querySelectorAll("[aria-label]")].map((e) => e.getAttribute("aria-label"));
+      const titles = [...document.querySelectorAll("[title]")].map((e) => e.getAttribute("title"));
+      return { teks, alts, aria, titles };
+    });
+    const gabung = [t.teks, ...t.alts, ...t.aria, ...t.titles].join(" | ");
+    const ketemu = gabung.match(new RegExp(ID.source, "gi")) || [];
+    if (ketemu.length) kotor.push({ url, kata: [...new Set(ketemu.map((x) => x.toLowerCase()))] });
+  }
+  await ctx.close();
+  check(`seluruh teks terlihat berbahasa Inggris (${PAGES.length} halaman, termasuk alt/aria/title)`, kotor.length === 0, { kotor });
+
   check("tidak ada scroll horizontal", R((r) => r.scrollX).length === 0, { gagal: R((r) => r.scrollX).map((r) => r.tag + r.url) });
 
   await b.close();
