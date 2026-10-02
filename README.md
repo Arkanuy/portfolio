@@ -1,7 +1,7 @@
 # portfolio-arkan
 
 Personal portfolio site for **Arkan Mustofa** — Information Systems student in Bandung, Indonesia.
-Built as a static Next.js site, deployed on Cloudflare Pages at **https://portfolio-arkan.site**
+Built as a static Next.js site, deployed on Cloudflare Pages at **https://portfolio-arkan.pages.dev**
 
 ## What this is
 
