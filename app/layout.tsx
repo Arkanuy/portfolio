@@ -12,15 +12,14 @@ import { site } from "@/lib/site";
  *   body     IBM Plex Sans    → badan teks
  *   mono     IBM Plex Mono    → kicker, tanggal, angka
  */
-const display = Newsreader({
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-display",
-  display: "swap",
-});
-const body = IBM_Plex_Sans({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-body", display: "swap" });
-const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-mono", display: "swap" });
+/* HANYA bobot yang benar-benar dipakai, dan TANPA varian italic.
+ * Sebelumnya: 3 bobot × 2 gaya untuk Newsreader + 3 + 2 = 11 berkas font,
+ * dan 5 di antaranya di-preload sehingga memblokir render pertama — terukur
+ * FCP 1916ms di origin live. Sekarang 5 berkas. Tidak ada yang hilang:
+ * semua teks memakai 400 atau 600. */
+const display = Newsreader({ subsets: ["latin"], weight: ["400", "600"], variable: "--font-display", display: "swap" });
+const body = IBM_Plex_Sans({ subsets: ["latin"], weight: ["400", "600"], variable: "--font-body", display: "swap" });
+const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400"], variable: "--font-mono", display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://portfolio-arkan.site"),
