@@ -1,55 +1,64 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Inter } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import Bar from "@/components/browse/bar";
-import Footer from "@/components/browse/footer";
+import Header from "@/components/ui/header";
+import Footer from "@/components/ui/footer";
+import Motion from "@/components/ui/motion";
+import ScrollProgress from "@/components/ui/scroll-progress";
 import { site } from "@/lib/site";
+import { ClickSpark } from "@/components/ui/anim";
 
-/**
- * TIPE: JetBrains Mono sebagai tipe UTAMA (itu tanda tangan referensinya —
- * body font di threeui.com memang monospace), Inter hanya untuk blok teks
- * panjang supaya tetap nyaman dibaca.
- */
-const mono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-mono", display: "swap" });
-const sans = Inter({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-sans", display: "swap" });
+const sans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://portfolio-arkan.site"),
-  title: { default: `${site.name} — katalog catatan kerja`, template: `%s · ${site.name}` },
+  title: {
+    default: `${site.name} — ${site.role}`,
+    template: `%s · ${site.name}`,
+  },
   description: site.bio,
   authors: [{ name: site.name }],
   keywords: ["Arkan Mustofa", "Sistem Informasi", "web developer Bandung", "Laravel", "Next.js", "bot Discord", "BRD"],
-  openGraph: { title: `${site.name} — katalog catatan kerja`, description: site.bio, type: "website", locale: "id_ID" },
+  openGraph: {
+    title: `${site.name} — ${site.role}`,
+    description: site.bio,
+    type: "website",
+    locale: "en_US",
+  },
   robots: { index: true, follow: true },
 };
 
 export const viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#050608" },
-    { media: "(prefers-color-scheme: light)", color: "#f4f2ee" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b0c0e" },
   ],
 };
 
-/* Bawaan: gelap. Katalog komponen memang hidup di layar gelap. */
+/* Tema ditulis sebelum cat pertama supaya tidak ada kedipan. */
 const themeInit = `(function(){try{
 var t=localStorage.getItem("theme");
-if(t!=="light"&&t!=="dark"){t="dark";}
+if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}
 document.documentElement.setAttribute("data-theme",t);
-}catch(e){document.documentElement.setAttribute("data-theme","dark");}})();`;
+}catch(e){document.documentElement.setAttribute("data-theme","light");}})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id" suppressHydrationWarning className={`${mono.variable} ${sans.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${sans.variable} ${mono.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
       </head>
       <body>
         <a className="skip" href="#isi">
-          Lompat ke isi
+          Skip to content
         </a>
-        <Bar />
+        <ScrollProgress />
+        <Header />
         <main id="isi">{children}</main>
         <Footer />
+        <Motion />
+        <ClickSpark />
       </body>
     </html>
   );

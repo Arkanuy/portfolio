@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Section, CTABand } from "@/components/ui/section";
 import { services } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -9,81 +10,79 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const s = services.find((x) => x.slug === slug);
-  if (!s) return { title: "Layanan tidak ditemukan" };
+  if (!s) return { title: "Service not found" };
   return { title: s.name, description: s.tagline };
 }
 
-export default async function ServicePage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ServiceDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const s = services.find((x) => x.slug === slug);
   if (!s) notFound();
+
   const others = services.filter((x) => x.slug !== slug);
 
   return (
-    <article className="page">
-      <p className="k">Layanan {s.no}</p>
-      <h1 className="h1" style={{ marginTop: 10 }}>
-        {s.name}
-      </h1>
-      <p className="lede">{s.tagline}</p>
-
-      <section className="spec">
-        <div className="spec__ti">
-          <span className="k" style={{ color: "var(--ink-2)" }}>
-            Spesifikasi
-          </span>
+    <>
+      <section className="pageHero">
+        <div className="wrap">
+          <p className="eyebrow">
+            Service {s.no} · {s.name}
+          </p>
+          <h1 className="pageHero__t">
+            {s.name}
+          </h1>
+          <p className="pageHero__s">{s.tagline}</p>
         </div>
-        <table className="tbl">
-          <tbody>
-            <tr>
-              <td className="tbl__f">untuk</td>
-              <td className="tbl__ty">string</td>
-              <td className="tbl__v">{s.for}</td>
-            </tr>
-            <tr>
-              <td className="tbl__f">termasuk</td>
-              <td className="tbl__ty">array[{s.includes.length}]</td>
-              <td className="tbl__v">
-                <ol className="steps" style={{ marginTop: 0, borderTop: 0 }}>
-                  {s.includes.map((it, i) => (
-                    <li className="step" key={it} style={{ padding: "8px 0" }}>
-                      <span className="step__n">{i + 1}</span>
-                      <p className="step__t" style={{ fontWeight: 400 }}>
-                        {it}
-                      </p>
-                    </li>
-                  ))}
-                </ol>
-              </td>
-            </tr>
-            <tr>
-              <td className="tbl__f">bukti</td>
-              <td className="tbl__ty">record</td>
-              <td className="tbl__v">{s.proof}</td>
-            </tr>
-            <tr>
-              <td className="tbl__f">titik mulai</td>
-              <td className="tbl__ty">string</td>
-              <td className="tbl__v">{s.from}</td>
-            </tr>
-          </tbody>
-        </table>
       </section>
 
-      <h2 className="h2">Layanan lain</h2>
-      <div className="chips">
-        {others.map((o) => (
-          <a className="chip" key={o.slug} href={`/layanan/${o.slug}`}>
-            {o.no} · {o.name}
-          </a>
-        ))}
-      </div>
+      <Section>
+        <div className="svcDetail">
+          <div>
+            <p className="svcRow__for">
+              <strong>Who it is for:</strong> {s.for}
+            </p>
+            <h2 className="h2" style={{ marginTop: 28 }}>
+              What is included
+            </h2>
+            <ul className="svcRow__list">
+              {s.includes.map((it) => (
+                <li key={it}>{it}</li>
+              ))}
+            </ul>
+          </div>
+          <aside className="svcAside">
+            <p className="svcAside__k">Evidence</p>
+            <p className="svcAside__v">{s.proof}</p>
+            <p className="svcAside__k">Starting point</p>
+            <p className="svcAside__v">{s.from}</p>
+            <a className="btn btn--dark" href="/kontak">
+              Tell me about the project
+              <span aria-hidden="true">→</span>
+            </a>
+          </aside>
+        </div>
+      </Section>
 
-      <p style={{ marginTop: 22 }}>
-        <a className="btn btn--sig" href="/kontak">
-          Ceritakan proyeknya <span aria-hidden="true">→</span>
-        </a>
-      </p>
-    </article>
+      <Section eyebrow="Other services" titleText="Also ~available." tint>
+        <div className="svcGrid">
+          {others.map((o) => (
+            <div key={o.slug} className="svc">
+              <a className="svc__link" href={`/layanan/${o.slug}`}>
+                <span className="svc__no">{o.no}</span>
+                <span className="svc__name">{o.name}</span>
+                <span className="svc__tag">{o.tagline}</span>
+                <span className="svc__for">{o.for}</span>
+                <span className="svc__go">
+                  Read more
+                  <i aria-hidden="true">→</i>
+                </span>
+              </a>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <CTABand />
+    </>
   );
 }

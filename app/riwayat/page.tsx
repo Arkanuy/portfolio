@@ -1,78 +1,79 @@
 import type { Metadata } from "next";
+import { Section, CTABand } from "@/components/ui/section";
 import { track, school, offHours } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Riwayat",
-  description: "Penempatan kerja, penghargaan, pendidikan, dan kegiatan di luar kelas.",
+  title: "History",
+  description: "Work experience, education, and life outside class.",
 };
 
-export default function HistoryPage() {
+export default function RiwayatPage() {
   return (
-    <article className="page">
-      <p className="k">Riwayat · {track.length} entri</p>
-      <h1 className="h1" style={{ marginTop: 10 }}>
-        Di mana pekerjaannya berlangsung.
-      </h1>
-      <p className="lede">
-        Terbaru dulu. Tiap entri adalah konteks di balik satu catatan di katalog — tempat kerja, penghargaan yang
-        dicatat pihak ketiga, atau program yang masih berjalan.
-      </p>
+    <>
+      <section className="pageHero">
+        <div className="wrap">
+          <p className="eyebrow">History</p>
+          <h1 className="pageHero__t">
+            Experience <em>& awards</em>.
+          </h1>
+          <p className="pageHero__s">Newest first.</p>
+        </div>
+      </section>
 
-      <ol className="steps" style={{ marginTop: 26 }}>
-        {track.map((t) => (
-          <li className="step" key={t.title + t.date} style={{ gridTemplateColumns: "150px minmax(0, 1fr)" }}>
-            <p className="sig" style={{ fontSize: 12.5 }}>
-              {t.date}
-            </p>
-            <div>
-              <p className="step__t">{t.title}</p>
-              <p className="k" style={{ marginTop: 4 }}>
-                {t.org}
-              </p>
-              <p className="step__d">{t.desc}</p>
-              <ul className="list" style={{ marginTop: 10 }}>
-                {t.points.map((p) => (
-                  <li key={p} style={{ fontSize: 13.5 }}>
-                    {p}
-                  </li>
-                ))}
-              </ul>
-              <div className="chips" style={{ marginTop: 10 }}>
-                {[t.badge, ...t.tags].filter(Boolean).map((x) => (
-                  <span className="chip" key={x}>
-                    {x}
-                  </span>
-                ))}
+      <Section>
+        <ol className="timeList">
+          {track.map((t, i) => (
+            <div data-fx className="timeItem" key={t.title + t.date} >
+              <div className="timeItem__left">
+                <span className="timeItem__date">{t.date}</span>
+              </div>
+              <div className="timeItem__right">
+                <h2 className="timeItem__t">{t.title}</h2>
+                <p className="timeItem__org">{t.org}</p>
+                <p className="timeItem__d">{t.desc}</p>
+                <ul className="timeItem__list">
+                  {t.points.map((p) => (
+                    <li key={p}>{p}</li>
+                  ))}
+                </ul>
+                <div className="timeItem__tags">
+                  {t.badge && <span className="tag tag--hot">{t.badge}</span>}
+                  {t.tags.map((x) => (
+                    <span key={x} className="tag">
+                      {x}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
-          </li>
-        ))}
-      </ol>
+          ))}
+        </ol>
+      </Section>
 
-      <h2 className="h2">Pendidikan</h2>
-      <section className="spec" style={{ marginTop: 12 }}>
-        <table className="tbl">
-          <tbody>
+      <Section eyebrow="Education" titleText="Schools and ~programmes." tint>
+        <div className="twoCol2">
+          <div data-fx className="card2" >
             {school.map((s) => (
-              <tr key={s.title}>
-                <td className="tbl__f">{s.period}</td>
-                <td className="tbl__ty">education</td>
-                <td className="tbl__v">
-                  {s.title}
-                  {s.org ? ` — ${s.org}` : ""}
-                </td>
-              </tr>
+              <div key={s.title} className="rowItem">
+                <span className="rowItem__k">{s.period}</span>
+                <span className="rowItem__t">{s.title}</span>
+                <span className="rowItem__o">{s.org}</span>
+              </div>
             ))}
+          </div>
+          <div data-fx className="card2" >
+            <p className="card2__k">Outside class hours</p>
             {offHours.map((h) => (
-              <tr key={h.name}>
-                <td className="tbl__f">{h.name}</td>
-                <td className="tbl__ty">outside</td>
-                <td className="tbl__v">{h.note}</td>
-              </tr>
+              <div key={h.name} className="rowItem">
+                <span className="rowItem__t">{h.name}</span>
+                <span className="rowItem__o">{h.note}</span>
+              </div>
             ))}
-          </tbody>
-        </table>
-      </section>
-    </article>
+          </div>
+        </div>
+      </Section>
+
+      <CTABand />
+    </>
   );
 }
