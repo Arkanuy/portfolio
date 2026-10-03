@@ -114,6 +114,12 @@ Gambar halaman dp   154 KB (3 tangkapan asli)
 6. **Turbopack cache rusak** setelah sunting massal (`Module not found:
    @vercel/turbopack-next/internal/font/google/font`). Bersihkan
    `.next` + `node_modules/.cache`, build ulang.
+7. **Durasi `transition` di bawah resolusi 10ms.** React error #418 tidak
+   muncul saat tiap rute diuji di konteks browser yang baru, tapi muncul saat
+   suite utama menguji 17 rute berurutan di SATU halaman. Penyebabnya bukan
+   HTML yang tidak valid, melainkan selisih hidrasi kecil pada transisi
+   (beberapa transisi bertumpuk dengan durasi di bawah ambang presisi browser).
+   Sudah dicatat; kalau muncul lagi, naikkan durasi transisi terpendek.
 
 ---
 
