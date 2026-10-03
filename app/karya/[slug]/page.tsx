@@ -48,25 +48,19 @@ export default async function CasePage({ params }: { params: Promise<{ slug: str
             <p className="figcap mono">{r.imageNote}</p>
 
             <div className="art" style={{ marginTop: "clamp(26px,3.6vw,44px)" }}>
-              <h2 className="sec__h">
-                <SetType as="h2" text="The problem" />
-              </h2>
+              <SetType as="h2" className="sec__h" text="The problem" />
               <p className="art__drop" style={{ marginTop: 14 }}>
                 {r.problem}
               </p>
 
-              <h2 className="sec__h" style={{ marginTop: 34 }}>
-                <SetType as="h2" text="What I built" />
-              </h2>
+              <SetType as="h2" className="sec__h" text="What I built" />
               <ul>
                 {r.built.map((b) => (
                   <li key={b}>{b}</li>
                 ))}
               </ul>
 
-              <h2 className="sec__h" style={{ marginTop: 34 }}>
-                <SetType as="h2" text="Outcome" />
-              </h2>
+              <SetType as="h2" className="sec__h" text="Outcome" />
               <p>{r.evidence}</p>
               <p>{st.note}</p>
             </div>

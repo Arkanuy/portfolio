@@ -29,9 +29,7 @@ export default function AboutPage() {
               decides whether software gets used at all.
             </p>
 
-            <h2 className="sec__h" style={{ marginTop: 34 }}>
-              <SetType as="h2" text="How I work" />
-            </h2>
+            <SetType as="h2" className="sec__h" text="How I work" />
             <ol className="steps" style={{ marginTop: 14 }}>
               {process.map((p) => (
                 <li key={p.no} data-rise data-on-enter>
@@ -45,9 +43,7 @@ export default function AboutPage() {
               ))}
             </ol>
 
-            <h2 className="sec__h" style={{ marginTop: 34 }}>
-              <SetType as="h2" text="Facts" />
-            </h2>
+            <SetType as="h2" className="sec__h" text="Facts" />
             <ul>
               <li>
                 <b>Born</b> — {site.born}
@@ -72,9 +68,7 @@ export default function AboutPage() {
               ))}
             </ul>
 
-            <h2 className="sec__h" style={{ marginTop: 34 }}>
-              <SetType as="h2" text="Tooling" />
-            </h2>
+            <SetType as="h2" className="sec__h" text="Tooling" />
             <p className="meta" style={{ marginBottom: 12 }}>
               Each tool with the work it was used on.
             </p>
@@ -86,9 +80,7 @@ export default function AboutPage() {
               ))}
             </ul>
 
-            <h2 className="sec__h" style={{ marginTop: 34 }}>
-              <SetType as="h2" text="Outside class" />
-            </h2>
+            <SetType as="h2" className="sec__h" text="Outside class" />
             <ul>
               {hobbies.map((h: { name: string; note: string }) => (
                 <li key={h.name}>

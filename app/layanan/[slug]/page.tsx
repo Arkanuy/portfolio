@@ -33,23 +33,17 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
       <section className="sec">
         <div className="wrap split">
           <div className="art">
-            <h2 className="sec__h">
-              <SetType as="h2" text="Who it is for" />
-            </h2>
+            <SetType as="h2" className="sec__h" text="Who it is for" />
             <p>{s.for}</p>
 
-            <h2 className="sec__h" style={{ marginTop: 32 }}>
-              <SetType as="h2" text="What is included" />
-            </h2>
+            <SetType as="h2" className="sec__h" text="What is included" />
             <ul>
               {s.includes.map((it) => (
                 <li key={it}>{it}</li>
               ))}
             </ul>
 
-            <h2 className="sec__h" style={{ marginTop: 32 }}>
-              <SetType as="h2" text="Evidence" />
-            </h2>
+            <SetType as="h2" className="sec__h" text="Evidence" />
             <p>{s.proof}</p>
             <p style={{ marginTop: 20 }}>
               <a className="btn" href="/kontak">

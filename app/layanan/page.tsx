@@ -70,9 +70,7 @@ export default function ServicesPage() {
                 If they are not, I would rather say so up front.
               </li>
             </ul>
-            <h2 className="sec__h" style={{ marginTop: 34 }}>
-              <SetType as="h2" text="Both sides of the same problem." />
-            </h2>
+            <SetType as="h2" className="sec__h" text="Both sides of the same problem." />
             <p>
               I finished vocational school in Software Engineering and I am now studying Information Systems. That puts
               me on both sides: writing the code, and tidying the business process behind it. The second one usually
