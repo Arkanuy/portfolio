@@ -95,9 +95,10 @@ Saturasi rata-rata   0.028 – 0.069   (praktis monokrom; aksen hanya di tempatn
 Elemen beranimasi    48
 Keyframe             4  (typesetting / draw / wipe / ticker / live dot)
 Ticker               42s ↔ 74s, arah berlawanan
-FCP / LCP            228 ms      long task 0 ms
+FCP / LCP            144 ms lokal · 304 ms live      long task 0 ms
 JS                   446 KB raw / 131 KB gzip
-CSS                   40 KB raw /   8 KB gzip
+CSS                   33 KB raw /   7 KB gzip
+Font                  5 berkas (dari 11)
 ```
 
 ### Tiga hal yang cuma ketahuan karena diukur
@@ -116,6 +117,19 @@ CSS                   40 KB raw /   8 KB gzip
 
 Semua gate negatif sudah **dibuktikan bisa gagal**: satu contoh setiap tell
 disuntikkan ke halaman yang berjalan dan ketujuhnya terdeteksi.
+
+### Dua cacat yang hanya muncul saat diuji ke origin LIVE
+
+Static export tetap mengembalikan 200, jadi keduanya tidak terlihat secara lokal:
+
+4. **React hydration error #418** — `<h2><h2>…</h2></h2>`. Judul seksi memakai
+   `SetType as="h2"` di dalam `<h2>` pembungkus. Ditemukan karena suite dijalankan
+   ke origin live dengan console sungguhan.
+5. **Font memblokir render pertama** — Newsreader dimuat 3 bobot × 2 gaya
+   (termasuk italic yang tidak pernah dipakai), total **11 berkas**, 5 di antaranya
+   `preload`. Terukur **FCP 1916 ms** di live padahal 228 ms di lokal. Setelah
+   dipangkas jadi 5 berkas tanpa italic: **FCP 144 ms lokal / 304 ms live.**
+   Tidak ada teks yang memakai italic atau bobot 500/700, jadi tidak ada yang hilang.
 
 ---
 
