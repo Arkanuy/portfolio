@@ -1,112 +1,99 @@
 import type { Metadata } from "next";
-import { Split, Reveal } from "@/components/field/motion";
-import { site, stack, numbers, education, hobbies } from "@/lib/site";
-import { records } from "@/lib/records";
+import Image from "next/image";
+import { BlurText } from "@/components/ui/anim";
+import { Section, CTABand } from "@/components/ui/section";
+import { site, process, stack, numbers } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Background, working method, and tooling of Arkan Mustofa.",
+  description: "Background, working process, and tooling of Arkan Mustofa.",
 };
 
-export default function AboutPage() {
+export default function TentangPage() {
   return (
     <>
-      <section className="page">
-        <div className="wrap">
-          <p className="kicker" data-reveal>
-            About
-          </p>
-          <Split as="h1" className="serif page__h" text="Process first, code second." accentLast />
-        </div>
-      </section>
-
-      <section className="sec sec--tight">
-        <div className="wrap split">
-          <div className="art">
-            <Reveal>
-              <p style={{ fontSize: 18 }}>{site.bio}</p>
-              <p>{site.bioLong}</p>
-            </Reveal>
-            <Reveal delay={90}>
-              <Split as="h2" className="serif" text="Facts" style={{ fontSize: "clamp(22px,3vw,38px)" }} />
-              <ul>
-                <li>
-                  <b>Born</b> — {site.born}
-                </li>
-                <li>
-                  <b>Based in</b> — {site.place}
-                </li>
-                <li>
-                  <b>Status</b> — {site.status}
-                </li>
-                {education.map((e: { period: string; title: string; org?: string }) => (
-                  <li key={e.title}>
-                    <b>{e.period}</b> — {e.title}
-                    {e.org ? `, ${e.org}` : ""}
-                  </li>
-                ))}
-                {numbers.map((n) => (
-                  <li key={n.label}>
-                    <b>{n.value}</b> — {n.label}
-                    {n.note ? ` (${n.note})` : ""}
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-            <Reveal delay={140}>
-              <Split as="h2" className="serif" text="Tooling" style={{ fontSize: "clamp(22px,3vw,38px)" }} />
-              <ul>
-                {stack.map((g) => (
-                  <li key={g.group}>
-                    <b>{g.group}</b> — {g.items.map((it) => `${it.name} (${it.evidence})`).join("; ")}
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-            <Reveal delay={180}>
-              <Split as="h2" className="serif" text="Outside class" style={{ fontSize: "clamp(22px,3vw,38px)" }} />
-              <ul>
-                {hobbies.map((h: { name: string; note: string }) => (
-                  <li key={h.name}>
-                    <b>{h.name}</b> — {h.note}
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
+      <section className="aboutHero">
+        <div className="wrap aboutHero__in">
+          <div className="aboutHero__text">
+            <p className="eyebrow">About</p>
+            <BlurText as="h1" className="aboutHero__t" text="I am Arkan. Process first, code second." />
+            <p className="aboutHero__p">{site.bio}</p>
+            <p className="aboutHero__p">{site.bioLong}</p>
+            <dl className="aboutFacts">
+              <div>
+                <dt>Born</dt>
+                <dd>{site.born}</dd>
+              </div>
+              <div>
+                <dt>Based in</dt>
+                <dd>{site.place}</dd>
+              </div>
+              <div>
+                <dt>Status</dt>
+                <dd>{site.status}</dd>
+              </div>
+            </dl>
           </div>
 
-          <aside className="sticky">
-            <Reveal>
-              <figure className="fig">
-                <img src="/github/arkan-avatar-680.webp" alt={`Portrait of ${site.name}`} width={340} height={340} fetchPriority="high" decoding="async" />
-              </figure>
-              <p className="figcap mono">
-                {site.name} · {site.handle}
-              </p>
-            </Reveal>
-            <div className="rail" style={{ marginTop: 24 }}>
-              <div className="rail__g">
-                <p className="rail__k">Records</p>
-                <p className="rail__v">{records.length} with evidence</p>
-              </div>
-              <div className="rail__g">
-                <p className="rail__k">Tool groups</p>
-                <p className="rail__v">
-                  {stack.length} · {stack.reduce((n, g) => n + g.items.length, 0)} tools
-                </p>
-              </div>
-              <div className="rail__g">
-                <p className="rail__k">CV</p>
-                <p className="rail__v">
-                  <a href={site.cv} download>
-                    Download PDF
-                  </a>
-                </p>
-              </div>
-            </div>
-          </aside>
+          <div className="aboutHero__media">
+            <figure className="aboutPhoto">
+              <Image src="/github/arkan-avatar-2x.png" alt={`Portrait of ${site.name}`} width={680} height={680} priority sizes="(max-width: 940px) 92vw, 470px" />
+              <figcaption>
+                <strong>{site.name}</strong>
+                <span>{site.handle}</span>
+              </figcaption>
+            </figure>
+          </div>
         </div>
       </section>
+
+      <Section
+        eyebrow="How I work"
+        titleText="Four steps, ~in order."
+        sub="This sequence is what makes the result get used, not merely finished."
+      >
+        <ol className="stepsRow">
+          {process.map((p, i) => (
+            <div data-fx className="stepCard" key={p.no} >
+              <span className="stepCard__n">{p.no}</span>
+              <h3 className="stepCard__t">{p.title}</h3>
+              <p className="stepCard__d">{p.body}</p>
+            </div>
+          ))}
+        </ol>
+      </Section>
+
+      <Section eyebrow="Tooling" titleText="What I use, with the ~evidence." tint>
+        <div className="kitGrid">
+          {stack.map((g, i) => (
+            <div data-fx className="kit" key={g.group} >
+              <h3 className="kit__t">{g.group}</h3>
+              <ul>
+                {g.items.map((it) => (
+                  <li key={it.name}>
+                    <span className="kit__n">{it.name}</span>
+                    <span className="kit__e">{it.evidence}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section eyebrow="Numbers" titleText="What ~you can verify.">
+        <div className="numGrid">
+          {numbers.map((n, i) => (
+            <div data-fx className="num" key={n.label} >
+              <span className="num__v">{n.value}</span>
+              <span className="num__l">{n.label}</span>
+              <span className="num__n">{n.note}</span>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <CTABand />
     </>
   );
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Split, Reveal } from "@/components/field/motion";
+import { Section, CTABand } from "@/components/ui/section";
 import { services } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -14,79 +14,75 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return { title: s.name, description: s.tagline };
 }
 
-export default async function ServicePage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ServiceDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const s = services.find((x) => x.slug === slug);
   if (!s) notFound();
+
   const others = services.filter((x) => x.slug !== slug);
 
   return (
     <>
-      <section className="page">
+      <section className="pageHero">
         <div className="wrap">
-          <p className="kicker" data-reveal>
-            Service {s.no}
+          <p className="eyebrow">
+            Service {s.no} · {s.name}
           </p>
-          <Split as="h1" className="serif page__h" text={s.name} />
-          <p className="page__s lead" data-reveal style={{ ["--d" as string]: "160ms" }}>
-            {s.tagline}
-          </p>
+          <h1 className="pageHero__t">
+            {s.name}
+          </h1>
+          <p className="pageHero__s">{s.tagline}</p>
         </div>
       </section>
 
-      <section className="sec sec--tight">
-        <div className="wrap split">
-          <div className="art">
-            <Reveal>
-              <Split as="h2" className="serif" text="Who it is for" style={{ fontSize: "clamp(22px,3vw,38px)" }} />
-              <p style={{ marginTop: 12 }}>{s.for}</p>
-            </Reveal>
-            <Reveal delay={80}>
-              <Split as="h2" className="serif" text="What is included" style={{ fontSize: "clamp(22px,3vw,38px)" }} />
-              <ul>
-                {s.includes.map((it) => (
-                  <li key={it}>{it}</li>
-                ))}
-              </ul>
-            </Reveal>
-            <Reveal delay={140}>
-              <Split as="h2" className="serif" text="Evidence" style={{ fontSize: "clamp(22px,3vw,38px)" }} />
-              <p style={{ marginTop: 12 }}>{s.proof}</p>
-              <p style={{ marginTop: 22 }}>
-                <a className="btn" href="/kontak">
-                  <span className="btn__fill" aria-hidden="true" />
-                  Tell me about the project <i aria-hidden="true">→</i>
-                </a>
-              </p>
-            </Reveal>
+      <Section>
+        <div className="svcDetail">
+          <div>
+            <p className="svcRow__for">
+              <strong>Who it is for:</strong> {s.for}
+            </p>
+            <h2 className="h2" style={{ marginTop: 28 }}>
+              What is included
+            </h2>
+            <ul className="svcRow__list">
+              {s.includes.map((it) => (
+                <li key={it}>{it}</li>
+              ))}
+            </ul>
           </div>
-
-          <aside className="sticky">
-            <div className="rail">
-              <div className="rail__g">
-                <p className="rail__k">Number</p>
-                <p className="rail__v mono">{s.no}</p>
-              </div>
-              <div className="rail__g">
-                <p className="rail__k">Starting point</p>
-                <p className="rail__v">{s.from}</p>
-              </div>
-              <div className="rail__g">
-                <p className="rail__k">Other services</p>
-                <ul style={{ display: "grid", gap: 7, marginTop: 6 }}>
-                  {others.map((o) => (
-                    <li key={o.slug}>
-                      <a className="rail__v" style={{ color: "var(--accent)", borderBottom: "1px solid var(--accent)" }} href={`/layanan/${o.slug}`}>
-                        {o.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+          <aside className="svcAside">
+            <p className="svcAside__k">Evidence</p>
+            <p className="svcAside__v">{s.proof}</p>
+            <p className="svcAside__k">Starting point</p>
+            <p className="svcAside__v">{s.from}</p>
+            <a className="btn btn--dark" href="/kontak">
+              Tell me about the project
+              <span aria-hidden="true">→</span>
+            </a>
           </aside>
         </div>
-      </section>
+      </Section>
+
+      <Section eyebrow="Other services" titleText="Also ~available." tint>
+        <div className="svcGrid">
+          {others.map((o) => (
+            <div key={o.slug} className="svc">
+              <a className="svc__link" href={`/layanan/${o.slug}`}>
+                <span className="svc__no">{o.no}</span>
+                <span className="svc__name">{o.name}</span>
+                <span className="svc__tag">{o.tagline}</span>
+                <span className="svc__for">{o.for}</span>
+                <span className="svc__go">
+                  Read more
+                  <i aria-hidden="true">→</i>
+                </span>
+              </a>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <CTABand />
     </>
   );
 }

@@ -1,83 +1,79 @@
 import type { Metadata } from "next";
-import { Split, Reveal } from "@/components/field/motion";
+import { Section, CTABand } from "@/components/ui/section";
 import { track, school, offHours } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "History",
-  description: "Placements, awards, education, and life outside class.",
+  description: "Work experience, education, and life outside class.",
 };
 
-export default function HistoryPage() {
+export default function RiwayatPage() {
   return (
     <>
-      <section className="page">
+      <section className="pageHero">
         <div className="wrap">
-          <p className="kicker" data-reveal>
-            History · {track.length} entries
-          </p>
-          <Split as="h1" className="serif page__h" text="Where the work happened." accentLast />
-          <p className="page__s lead" data-reveal style={{ ["--d" as string]: "160ms" }}>
-            Newest first. Each entry is the context behind a record — a placement where the work ran, an award a third
-            party recorded, or a programme still in progress.
-          </p>
+          <p className="eyebrow">History</p>
+          <h1 className="pageHero__t">
+            Experience <em>& awards</em>.
+          </h1>
+          <p className="pageHero__s">Newest first.</p>
         </div>
       </section>
 
-      <section className="sec sec--tight">
-        <div className="wrap">
-          <ol className="steps">
-            {track.map((t, i) => (
-              <li key={t.title + t.date} data-reveal style={{ ["--d" as string]: `${i * 70}ms`, gridTemplateColumns: "minmax(0,190px) minmax(0,1fr)" }}>
-                <p className="mono" style={{ fontSize: 13, color: "var(--accent)" }}>
-                  {t.date}
-                </p>
-                <div>
-                  <h2 className="steps__t" style={{ fontSize: 19 }}>
-                    {t.title}
-                  </h2>
-                  <p className="small" style={{ marginTop: 3 }}>
-                    {t.org}
-                  </p>
-                  <p className="steps__d" style={{ marginTop: 10 }}>
-                    {t.desc}
-                  </p>
-                  <ul className="art" style={{ marginTop: 10 }}>
-                    {t.points.map((p) => (
-                      <li key={p} style={{ fontSize: 15 }}>
-                        {p}
-                      </li>
-                    ))}
-                  </ul>
-                  <p className="mono" style={{ marginTop: 10, fontSize: 12, color: "var(--ink-3)" }}>
-                    {[t.badge, ...t.tags].filter(Boolean).join(" / ")}
-                  </p>
+      <Section>
+        <ol className="timeList">
+          {track.map((t, i) => (
+            <div data-fx className="timeItem" key={t.title + t.date} >
+              <div className="timeItem__left">
+                <span className="timeItem__date">{t.date}</span>
+              </div>
+              <div className="timeItem__right">
+                <h2 className="timeItem__t">{t.title}</h2>
+                <p className="timeItem__org">{t.org}</p>
+                <p className="timeItem__d">{t.desc}</p>
+                <ul className="timeItem__list">
+                  {t.points.map((p) => (
+                    <li key={p}>{p}</li>
+                  ))}
+                </ul>
+                <div className="timeItem__tags">
+                  {t.badge && <span className="tag tag--hot">{t.badge}</span>}
+                  {t.tags.map((x) => (
+                    <span key={x} className="tag">
+                      {x}
+                    </span>
+                  ))}
                 </div>
-              </li>
-            ))}
-          </ol>
+              </div>
+            </div>
+          ))}
+        </ol>
+      </Section>
 
-          <Reveal delay={100}>
-            <table className="tbl" style={{ marginTop: 44 }}>
-              <tbody>
-                {school.map((s) => (
-                  <tr key={s.title}>
-                    <td className="tbl__n mono">{s.period}</td>
-                    <td className="tbl__t">{s.title}</td>
-                    <td>{s.org}</td>
-                  </tr>
-                ))}
-                {offHours.map((h) => (
-                  <tr key={h.name}>
-                    <td className="tbl__n mono">outside class</td>
-                    <td className="tbl__t">{h.name}</td>
-                    <td>{h.note}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </Reveal>
+      <Section eyebrow="Education" titleText="Schools and ~programmes." tint>
+        <div className="twoCol2">
+          <div data-fx className="card2" >
+            {school.map((s) => (
+              <div key={s.title} className="rowItem">
+                <span className="rowItem__k">{s.period}</span>
+                <span className="rowItem__t">{s.title}</span>
+                <span className="rowItem__o">{s.org}</span>
+              </div>
+            ))}
+          </div>
+          <div data-fx className="card2" >
+            <p className="card2__k">Outside class hours</p>
+            {offHours.map((h) => (
+              <div key={h.name} className="rowItem">
+                <span className="rowItem__t">{h.name}</span>
+                <span className="rowItem__o">{h.note}</span>
+              </div>
+            ))}
+          </div>
         </div>
-      </section>
+      </Section>
+
+      <CTABand />
     </>
   );
 }

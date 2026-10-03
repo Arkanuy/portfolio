@@ -1,0 +1,22 @@
+Revert the portfolio to how it was before the redesigns
+
+Arkan asked for the original version back. This restores the tree exactly as it
+was at 6c7a463 (the "aduhai" commit, the last state before I started rebuilding):
+66 files, components/ui/*, the clean light theme with the orange accent, the
+original eight verify scripts, and the original README.
+
+The five redesign attempts are preserved on branch archive/redesign-attempts so
+nothing is lost if any part of them is wanted later (EDITION's work table, the
+FIELD smooth-scroll engine, TRACE's source panel).
+
+Verified against the restored build:
+  verify-final       15/15
+  verify-quote        7/7
+  verify-band        10/10
+  verify-cards        7/7
+  verify-responsive  13/13
+  verify-rapi        11/11
+  verify-overflow     1/1
+  verify-rebuild     11/11
+  verify-parallax    14/14
+  total              89/89, 0 failures

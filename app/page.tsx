@@ -1,254 +1,214 @@
-import { Split, Reveal, Scrub } from "@/components/field/motion";
-import Begin from "@/components/field/begin";
-import { site, services, process, stack, numbers } from "@/lib/site";
-import { records } from "@/lib/records";
-
-/** Gambar nyata: tangkapan layar dari produk yang benar-benar jalan.
- *  Menggantikan "plate" desain — referensi keduanya memakai gambar asli. */
-const SHOTS: Record<string, { src: string; href: string; label: string }> = {
-  mafiablox: { src: "/shots/mafiablox.webp", href: "https://mafiablox.com", label: "mafiablox.com" },
-  "website-sekolah": { src: "/shots/next-deploy.webp", href: "https://next-deploy-gold-one.vercel.app", label: "live build" },
-  pixwatch: { src: "/shots/arkanuy-io.webp", href: "https://arkanuy.github.io", label: "arkanuy.github.io" },
-};
-
-const QUOTE = ["The problem is rarely", "the code. It is the flow —", "who does what, and", "where the work gets stuck."];
+import { Section, CTABand } from "@/components/ui/section";
+import CaseCard from "@/components/ui/case-card";
+import Counter from "@/components/ui/counter";
+import { BlurText, RotatingText, Spotlight, TiltCard, GlareCard, BorderBeam, ShimmerButton } from "@/components/ui/anim";
+import { ScrambleText, MovingCards } from "@/components/ui/anim-more";
+import WordFlow from "@/components/ui/word-flow";
+import { site, services, cases, numbers, process } from "@/lib/site";
 
 export default function Home() {
-  const live = records.filter((r) => r.state === "live").length;
-  const featured = records.filter((r) => SHOTS[r.id]);
+  const featured = cases.slice(0, 4);
 
   return (
     <>
-      {/* ================= PEMBUKA ================= */}
-      <section className="hero" data-scrub>
-        <div className="hero__media" aria-hidden="true">
-          <img src="/shots/mafiablox.webp" alt="" width={1440} height={900} fetchPriority="high" decoding="async" />
-          <span className="hero__scrim" />
-        </div>
-
-        <div className="wrap">
-          <p className="kicker" data-reveal>
-            {site.place} · available for work
-          </p>
-          <h1 className="serif hero__t" style={{ marginTop: 18 }}>
-            <Split text="Software that gets used," as="span" className="serif hero__t" />
-            <br />
-            <Split text="not just shipped." as="span" className="serif hero__t" accentLast />
-          </h1>
-          <p className="lead hero__sub" data-reveal style={{ ["--d" as string]: "180ms" }}>
-            I am {site.name}. I build business software, web apps and automation — and I map the process before writing
-            any code, because the problem is rarely the code.
-          </p>
-          <div className="hero__cta" data-reveal style={{ ["--d" as string]: "300ms" }}>
-            <a className="btn" href="/karya">
-              <span className="btn__fill" aria-hidden="true" />
-              See the work <i aria-hidden="true">→</i>
-            </a>
-            <a className="btn btn--line" href="/kontak">
-              <span className="btn__fill" aria-hidden="true" />
-              Start a project
-            </a>
-          </div>
-          <div className="hero__meta mono" data-reveal style={{ ["--d" as string]: "420ms" }}>
-            <span>{records.length} records</span>
-            <span>{live} in production</span>
-            <span>{stack.reduce((n, g) => n + g.items.length, 0)} tools</span>
-          </div>
-        </div>
-        <span className="hero__scroll mono" aria-hidden="true">
-          Scroll
-        </span>
-      </section>
-
-      {/* ================= MARQUEE ================= */}
-      <div className="mq" aria-hidden="true">
-        <div className="mq__row">
-          {[...records, ...records].map((r, i) => (
-            <span className="mq__i" key={`a${i}`}>
-              <s />
-              {r.title}
-              <span>{r.year}</span>
-            </span>
-          ))}
-        </div>
-        <div className="mq__row mq__row--rev">
-          {[...records, ...records].map((r, i) => (
-            <span className="mq__i" key={`b${i}`}>
-              <s />
-              {r.title}
-              <span>{r.year}</span>
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* ================= KERJA ================= */}
-      <section className="sec">
-        <div className="wrap">
-          <header className="sec__head" data-reveal>
-            <span className="sec__rule" />
-            <Split as="h2" className="serif sec__h" text="Work already running." />
-            <p className="sec__note">
-              Screenshots taken from the live products, not design plates.{" "}
-              <b>in production</b> means it takes real orders today.
+      {/* ================= HERO ================= */}
+      <section className="hero" id="beranda">
+        {/* pola latar bergerak: digeser lewat background-position, jadi selalu
+            terpotong oleh kotaknya sendiri dan tidak pernah merusak tata letak */}
+        <div className="hero__bg" data-bg="0.16" aria-hidden="true" />
+        <div className="wrap hero__in">
+          <div className="hero__text">
+            <Spotlight />
+            <p className="pill">
+              <span className="pill__dot" aria-hidden="true" />
+              <ScrambleText text={`${site.badge} · ${site.place}`} />
             </p>
-          </header>
 
-          <div className="cards">
-            {featured.map((r, i) => {
-              const s = SHOTS[r.id];
-              return (
-                <Reveal key={r.id} delay={i * 90}>
-                  <article className="card" data-scrub>
-                    <div className="card__media">
-                      <img src={s.src} alt={`${r.title} — live interface`} width={1440} height={900} loading={i < 1 ? "eager" : "lazy"} decoding="async" />
-                    </div>
-                    <div>
-                      <p className="card__no mono">{r.no} — {r.kind}</p>
-                      <h3 className="serif card__t">{r.title}</h3>
-                      <p className="card__d">{r.summary}</p>
-                      <p className="card__meta">
-                        <span className="card__st" data-s={r.state}>
-                          {r.state === "live" ? "in production" : r.state === "public" ? "source public" : r.state}
-                        </span>
-                        <span>{r.year}</span>
-                        <a href={s.href} target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)" }}>
-                          {s.label} ↗
-                        </a>
-                      </p>
-                      <p className="card__go">
-                        <a className="btn btn--line" href={r.href}>
-                          <span className="btn__fill" aria-hidden="true" />
-                          Case study <i aria-hidden="true">→</i>
-                        </a>
-                      </p>
-                    </div>
-                  </article>
-                </Reveal>
-              );
-            })}
+            <BlurText as="h1" className="hero__h1" text="Software that gets used," delay={120} />
+            <BlurText as="h1" className="hero__h1 hero__h1--second" text="not just shipped." delay={420} />
+
+            <p className="hero__lede" data-fx data-fx-delay="1">
+              {site.bio}
+            </p>
+
+            <div className="hero__rot">
+              <span className="hero__rotK">Currently building</span>
+              <RotatingText items={["business systems", "web apps", "Discord bots", "admin panels"]} />
+            </div>
+
+            <div className="hero__actions" data-fx data-fx-delay="2">
+              <ShimmerButton href="/kontak">Start a project</ShimmerButton>
+              <a className="btn btn--ghost" href="/karya">
+                See the work
+              </a>
+            </div>
+
+            <ul className="hero__proof">
+              {[
+                { v: numbers[0].value, l: numbers[0].label },
+                { v: numbers[1].value, l: numbers[1].label },
+                { v: "1", l: "Product running in production" },
+              ].map((x, i) => (
+                <li key={x.l} data-fx data-fx-delay={String(i + 1)}>
+                  <span className="hero__proofV">{x.v}</span>
+                  <span>{x.l}</span>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <div style={{ marginTop: 40 }} data-reveal>
-            <a className="btn" href="/karya">
-              <span className="btn__fill" aria-hidden="true" />
-              All {records.length} records <i aria-hidden="true">→</i>
-            </a>
+          {/* --- FOTO ---
+              Bingkai punya overflow: hidden SENDIRI, dan gambar diperbesar 8%
+              lalu digeser di dalamnya. Kliping disengaja → tidak mungkin
+              terlihat sebagai bug, dan tidak ada elemen lain yang menutupinya. */}
+          <div className="shotFrame">
+            <TiltCard className="shotFrame__tilt" max={5}>
+              <div className="shotFrame__inner">
+                <img
+                  className="shotFrame__img"
+                  data-inner="0.055"
+                  src="/github/arkan-avatar-2x.png"
+                  alt={`Portrait of ${site.name}`}
+                  width={680}
+                  height={680}
+                  fetchPriority="high"
+                  decoding="async"
+                />
+              </div>
+              <BorderBeam duration={6} size={90} />
+            </TiltCard>
+
+            <div className="shotMeta">
+              <p className="shotMeta__name">{site.name}</p>
+              <p className="shotMeta__handle">{site.handle}</p>
+              <p className="shotMeta__note">Portrait from GitHub</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="wrap">
+          <div data-x="0.35">
+          <MovingCards
+            items={["Laravel", "Next.js", "TypeScript", "Node.js", "Tailwind", "PHP", "MongoDB", "Prisma", "REST API", "Git"]}
+            duration={34}
+          />
           </div>
         </div>
       </section>
 
-      {/* ================= CARA KERJA (narasi berlangkah) ================= */}
-      <Begin />
+      {/* ================= PROBLEM ================= */}
+      <Section
+        eyebrow="The problem"
+        titleText="Plenty of software ships. ~Far less gets used."
+        sub="The cause is rarely the code. Usually the process is unclear: who does what, and where the work stalls."
+        center
+      >
+        <div className="painGrid">
+          {[
+            { t: "The workflow is invisible", d: "Orders and stock live in chat threads, so there is no single place to see the real state." },
+            { t: "Everything typed twice", d: "The same data gets entered in several places, and every copy can drift." },
+            { t: "Customers wait for replies", d: "People have to ask for status even though the answer is already in the system." },
+            { t: "Features nobody opens", d: "Built without clear requirements, they get abandoned by the people meant to use them." },
+          ].map((p, i) => (
+            <GlareCard key={p.t} className="pain">
+              <span className="pain__n">{String(i + 1).padStart(2, "0")}</span>
+              <h3 className="pain__t">{p.t}</h3>
+              <p className="pain__d">{p.d}</p>
+            </GlareCard>
+          ))}
+        </div>
+      </Section>
 
-      {/* ================= KUTIPAN ================= */}
-      <section className="sec">
-        <div className="wrap">
-          <h2 className="serif quote">
-            {QUOTE.map((line, i) => (
-              <span key={line} style={{ display: "block" }}>
-                <Split text={line} as="span" className="serif quote" accentLast={i === QUOTE.length - 1} />
-              </span>
-            ))}
+      {/* ================= SERVICES ================= */}
+      <Section
+        eyebrow="Services"
+        titleText="Four things I ~actually do."
+        sub="Every one of them comes from work already in the case studies, not a sales list."
+      >
+        <div className="svcGrid">
+          {services.map((s) => (
+            <GlareCard key={s.slug} className="svc">
+              <a href={`/layanan/${s.slug}`} className="svc__link">
+                <span className="svc__no">{s.no}</span>
+                <span className="svc__name">{s.name}</span>
+                <span className="svc__tag">{s.tagline}</span>
+                <span className="svc__for">{s.for}</span>
+                <span className="svc__go">
+                  Read more
+                  <i aria-hidden="true">→</i>
+                </span>
+              </a>
+            </GlareCard>
+          ))}
+        </div>
+      </Section>
+
+      {/* ================= WORK ================= */}
+      <Section
+        eyebrow="Selected work"
+        titleText="Already ~running."
+        sub="Each case has its own page: the problem, what I built, and the outcome."
+      >
+        <div className="ccGrid">
+          {featured.map((c, i) => (
+            <CaseCard key={c.slug} item={c} priority={i < 2} />
+          ))}
+        </div>
+        <div className="secMore">
+          <a className="btn btn--ghost" href="/karya">
+            All work ({cases.length})
+          </a>
+        </div>
+      </Section>
+
+      {/* ================= PROCESS ================= */}
+      <Section
+        eyebrow="How I work"
+        titleText="Four steps, ~in order."
+        tint
+      >
+        <ol className="stepsRow">
+          {process.map((p) => (
+            <GlareCard key={p.no} className="stepCard">
+              <span className="stepCard__n">{p.no}</span>
+              <h3 className="stepCard__t">{p.title}</h3>
+              <p className="stepCard__d">{p.body}</p>
+            </GlareCard>
+          ))}
+        </ol>
+      </Section>
+
+      {/* ================= NUMBERS ================= */}
+      <Section eyebrow="Track record" titleText="Numbers ~you can check.">
+        <div className="numGrid">
+          {numbers.map((n) => (
+            <GlareCard key={n.label} className="num">
+              <Counter value={n.value} className="num__v" />
+              <span className="num__l">{n.label}</span>
+              <span className="num__n">{n.note}</span>
+            </GlareCard>
+          ))}
+        </div>
+      </Section>
+
+      {/* ================= QUOTE ================= */}
+      <Section>
+        <div className="quote">
+          {/* WordFlow, BUKAN TextReveal: TextReveal memecah teks per HURUF dengan
+              display:inline-block, dan browser boleh memotong baris di antara dua
+              kotak inline-block — jadi kata terpotong di tengah ("fir" / "st,").
+              WordFlow memakai satu elemen per KATA, jadi pemotongan hanya terjadi
+              di spasi. Gerakannya sama: masuk per kata + garis aksen tumbuh. */}
+          <h2 className="quote__t">
+            <WordFlow text="I map the ~workflow first, then write the code." />
           </h2>
-          <p className="small mono" style={{ marginTop: 26 }}>
+          <p className="quote__src">
             {site.name} · {site.place}
           </p>
         </div>
-      </section>
+      </Section>
 
-      {/* ================= SEKSI DIPATOK: layanan ================= */}
-      <Scrub>
-        <div className="scrub__pin">
-          <div className="scrub__left">
-            <p className="kicker">Services</p>
-            <Split as="h2" className="serif sec__h" text="Four kinds of work." />
-            <ol className="scrub__list" style={{ marginTop: 28 }}>
-              {services.map((s, i) => (
-                <li key={s.slug}>
-                  <a className="scrub__item" href={`/layanan/${s.slug}`} data-on={i === 0 ? "true" : "false"}>
-                    <b>{s.no}</b>
-                    <span>
-                      {s.name}
-                      <em>{s.tagline}</em>
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ol>
-            <div className="scrub__prog" aria-hidden="true">
-              <span className="scrub__progFill" />
-            </div>
-          </div>
-          <div className="scrub__right" aria-hidden="true">
-            {services.map((s, i) => (
-              <figure className="scrub__panel" key={s.slug} data-on={i === 0 ? "true" : "false"}>
-                <img src={i === 0 ? "/shots/mafiablox.webp" : i === 1 ? "/shots/next-deploy.webp" : "/shots/arkanuy-io.webp"} alt="" width={1440} height={900} loading="lazy" decoding="async" />
-              </figure>
-            ))}
-          </div>
-        </div>
-      </Scrub>
-
-      {/* ================= TABEL BUKTI ================= */}
-      <section className="sec">
-        <div className="wrap">
-          <header className="sec__head" data-reveal>
-            <span className="sec__rule" />
-            <Split as="h2" className="serif sec__h" text="Every record, and how far it got." />
-          </header>
-          <table className="tbl">
-            <caption className="small" style={{ textAlign: "left", paddingBottom: 12 }}>
-              {records.length} records · {live} in production
-            </caption>
-            <thead>
-              <tr>
-                <th scope="col">No</th>
-                <th scope="col">Year</th>
-                <th scope="col">Record</th>
-                <th scope="col">Kind</th>
-                <th scope="col">Status</th>
-                <th scope="col" style={{ textAlign: "right" }}>
-                  <span className="sr">Open</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {records.map((r) => (
-                <tr key={r.id}>
-                  <td className="tbl__n mono">{r.no}</td>
-                  <td className="tbl__n mono">{r.year}</td>
-                  <td className="tbl__t">
-                    <a href={r.href}>{r.title}</a>
-                  </td>
-                  <td>{r.kind}</td>
-                  <td className="card__st mono" data-s={r.state}>
-                    {r.state === "live" ? "in production" : r.state === "public" ? "source public" : r.state === "building" ? "in progress" : r.state}
-                  </td>
-                  <td className="tbl__go">
-                    <a href={r.href}>Case study →</a>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      {/* ================= ANGKA ================= */}
-      <section className="sec sec--tight">
-        <div className="wrap">
-          <div className="nums">
-            {numbers.map((n) => (
-              <div className="num" key={n.label} data-reveal>
-                <p className="num__v">{n.value}</p>
-                <p className="num__l">{n.label}</p>
-                <p className="num__n">{n.note}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <CTABand />
     </>
   );
 }

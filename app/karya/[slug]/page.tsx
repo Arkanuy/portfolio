@@ -1,123 +1,111 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Split, Reveal } from "@/components/field/motion";
-import { records, recordById, STATUS } from "@/lib/records";
+import { CTABand } from "@/components/ui/section";
+import { cases, caseBySlug } from "@/lib/site";
 
 export function generateStaticParams() {
-  return records.map((r) => ({ slug: r.id }));
+  return cases.map((c) => ({ slug: c.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const r = recordById(slug);
-  if (!r) return { title: "Record not found" };
-  return { title: r.title, description: r.summary };
+  const c = caseBySlug(slug);
+  if (!c) return { title: "Case study not found" };
+  return { title: c.title, description: c.summary };
 }
 
-export default async function CasePage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function CaseDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const r = recordById(slug);
-  if (!r) notFound();
-  const i = records.findIndex((x) => x.id === slug);
-  const next = records[(i + 1) % records.length];
-  const st = STATUS[r.state];
+  const c = caseBySlug(slug);
+  if (!c) notFound();
+
+  const i = cases.findIndex((x) => x.slug === slug);
+  const next = cases[(i + 1) % cases.length];
 
   return (
     <>
-      <section className="page">
+      <section className="pageHero">
         <div className="wrap">
-          <p className="kicker" data-reveal>
-            {r.kind} · {r.year}
+          <p className="eyebrow">
+            Case {c.no} · {c.kind} · {c.year}
+            {c.badge ? ` · ${c.badge}` : ""}
           </p>
-          <Split as="h1" className="serif page__h" text={r.title} />
-          <p className="page__s lead" data-reveal style={{ ["--d" as string]: "160ms" }}>
-            {r.summary}
-          </p>
-          <p className="small mono" data-reveal style={{ marginTop: 18, ["--d" as string]: "240ms" }}>
-            By Arkan Mustofa · {r.where ?? "Personal project"}
-          </p>
-        </div>
-      </section>
+          <h1 className="pageHero__t">{c.title}</h1>
+          <p className="pageHero__s">{c.summary}</p>
 
-      <section className="sec sec--tight">
-        <div className="wrap split">
-          <div>
-            <Reveal>
-              <figure className="fig" data-scrub>
-                <img src={r.image} alt={`View of ${r.title}`} width={1200} height={750} fetchPriority="high" decoding="async" />
-              </figure>
-              <p className="figcap mono">{r.imageNote}</p>
-            </Reveal>
-
-            <div className="art" style={{ marginTop: "clamp(26px,4vw,46px)" }}>
-              <Reveal>
-                <Split as="h2" className="serif" text="The problem" style={{ fontSize: "clamp(22px,3vw,38px)" }} />
-                <p style={{ marginTop: 14 }}>{r.problem}</p>
-              </Reveal>
-              <Reveal delay={80}>
-                <Split as="h2" className="serif" text="What I built" style={{ fontSize: "clamp(22px,3vw,38px)" }} />
-                <ul>
-                  {r.built.map((b) => (
-                    <li key={b}>{b}</li>
-                  ))}
-                </ul>
-              </Reveal>
-              <Reveal delay={140}>
-                <Split as="h2" className="serif" text="Outcome" style={{ fontSize: "clamp(22px,3vw,38px)" }} />
-                <p>{r.evidence}</p>
-                <p>{st.note}</p>
-              </Reveal>
+          <div className="caseMeta">
+            <div>
+              <span className="caseMeta__k">Stack</span>
+              <span className="caseMeta__v">{c.stack}</span>
             </div>
+            <div>
+              <span className="caseMeta__k">Role</span>
+              <span className="caseMeta__v">Rolecang & pembangun</span>
+            </div>
+            <div>
+              <span className="caseMeta__k">Context</span>
+              <span className="caseMeta__v">{c.where}</span>
+            </div>
+            {c.link && (
+              <div>
+                <span className="caseMeta__k">Link</span>
+                <span className="caseMeta__v">
+                  <a href={c.link.href} target="_blank" rel="noopener noreferrer">
+                    {c.link.label} ↗
+                  </a>
+                </span>
+              </div>
+            )}
           </div>
-
-          <aside className="sticky">
-            <div className="rail">
-              <div className="rail__g">
-                <p className="rail__k">Status</p>
-                <p className="rail__v card__st mono" data-s={r.state}>
-                  {st.label}
-                </p>
-              </div>
-              <div className="rail__g">
-                <p className="rail__k">Year</p>
-                <p className="rail__v mono">{r.year}</p>
-              </div>
-              <div className="rail__g">
-                <p className="rail__k">Stack</p>
-                <p className="rail__v">{r.stack}</p>
-              </div>
-              {r.where && (
-                <div className="rail__g">
-                  <p className="rail__k">Context</p>
-                  <p className="rail__v">{r.where}</p>
-                </div>
-              )}
-              {r.external && (
-                <div className="rail__g">
-                  <p className="rail__k">Public artefact</p>
-                  <p className="rail__v">
-                    <a href={r.external.href} target="_blank" rel="noopener noreferrer">
-                      {r.external.label}
-                    </a>
-                  </p>
-                </div>
-              )}
-              <div className="rail__g">
-                <p className="rail__k">Next</p>
-                <p className="rail__v">
-                  <a href={next.href}>{next.title} →</a>
-                </p>
-              </div>
-            </div>
-            <p style={{ marginTop: 20 }}>
-              <a className="btn btn--line" href="/karya">
-                <span className="btn__fill" aria-hidden="true" />
-                ← All records
-              </a>
-            </p>
-          </aside>
         </div>
       </section>
+
+      <section className="wrap caseMedia">
+        <div className="caseShot">
+          <Image src={c.image} alt={`View of ${c.title}`} width={1400} height={876} priority sizes="(max-width: 1100px) 100vw, 1100px" />
+        </div>
+        {c.imageAlt && (
+          <div className="caseShotAlt">
+            <Image src={c.imageAlt} alt={`Mobile view of ${c.title}`} width={645} height={1320} sizes="220px" />
+            <span className="tiny">mobile view</span>
+          </div>
+        )}
+        <p className="caseNote">{c.imageNote}</p>
+      </section>
+
+      <section className="wrap caseBody">
+        <div data-fx className="caseBlock" >
+          <h2 className="caseBlock__k">The problem</h2>
+          <p className="caseBlock__p">{c.problem}</p>
+        </div>
+
+        <div data-fx className="caseBlock" >
+          <h2 className="caseBlock__k">What I built</h2>
+          <ul className="caseBlock__list">
+            {c.did.map((d) => (
+              <li key={d}>{d}</li>
+            ))}
+          </ul>
+        </div>
+
+        <div data-fx className="caseBlock" >
+          <h2 className="caseBlock__k">The outcome</h2>
+          <p className="caseBlock__p">{c.result}</p>
+        </div>
+      </section>
+
+      <nav className="wrap caseNav" aria-label="Other work">
+        <a className="caseNav__link" href="/karya">
+          ← all work
+        </a>
+        <a className="caseNav__next" href={`/karya/${next.slug}`}>
+          <span className="tiny">next</span>
+          <span className="caseNav__t">{next.title} →</span>
+        </a>
+      </nav>
+
+      <CTABand />
     </>
   );
 }

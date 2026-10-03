@@ -163,7 +163,7 @@ export const cases: Case[] = [
       "Added levels, EXP, daily quests, and badges; some episodes unlock with a key.",
     ],
     result: "Pixel-art neumorphic interface with light and dark mode. Source is public.",
-    image: "/projects/pixwatch.webp",
+    image: "/projects/pixwatch.png",
     imageNote: "Plate built from the pixel-art icons in its own repository.",
     link: { href: "https://github.com/Arkanuy/pixwatch", label: "Open repository" },
   },
@@ -183,7 +183,7 @@ export const cases: Case[] = [
       "Used the user's own API key, stored in the browser and never sent to a server.",
     ],
     result: "Still in progress. Source is public.",
-    image: "/projects/buildplan.webp",
+    image: "/projects/buildplan.png",
     imageNote: "Design plate, not an application screenshot.",
     link: { href: "https://github.com/Arkanuy/buildplan", label: "Open repository" },
     badge: "in progress",
@@ -199,7 +199,7 @@ export const cases: Case[] = [
     problem: "Competitors had to build a business solution that runs on two platforms within a tight time limit.",
     did: ["Built the desktop build of the business solution.", "Built the mobile build on the same flow."],
     result: "Third place, twice: 2024 and 2025. Source is public.",
-    image: "/projects/aplikasi-solusi-bisnis.webp",
+    image: "/projects/aplikasi-solusi-bisnis.png",
     imageNote: "Design plate, not an application screenshot.",
     link: { href: "https://github.com/Arkanuy/lks_mart", label: "Open repository" },
   },
@@ -219,7 +219,7 @@ export const cases: Case[] = [
       "Made it the development baseline before coding started.",
     ],
     result: "Used as the reference for the Rollerskool system build.",
-    image: "/projects/rollerskool.webp",
+    image: "/projects/rollerskool.png",
     imageNote: "Design plate, not an application screenshot.",
     link: null,
   },
@@ -235,7 +235,7 @@ export const cases: Case[] = [
     problem: "The owner needed to update the page themselves instead of calling a developer for every menu change.",
     did: ["Built the landing page as the product's front door.", "Built an admin panel so content can be edited in-house."],
     result: "Delivered as the internship product at Cyberlabs.",
-    image: "/projects/tasty-food.webp",
+    image: "/projects/tasty-food.png",
     imageNote: "Design plate, not an application screenshot.",
     link: null,
   },
@@ -251,7 +251,7 @@ export const cases: Case[] = [
     problem: "A system already in use needs someone to handle issues as they appear, not after they grow.",
     did: ["Ran day-to-day operations for the school website.", "Handled recurring fixes to keep it stable."],
     result: "The site stayed up throughout the internship.",
-    image: "/projects/website-manajemen-sekolah.webp",
+    image: "/projects/website-manajemen-sekolah.png",
     imageNote: "Design plate, not an application screenshot.",
     link: null,
   },
@@ -264,7 +264,6 @@ export const numbers = stats;
 export const stack = skillGroups;
 export const track = experiences;
 export const school = education;
-export { education, hobbies };
 export const offHours = hobbies;
 
 /** Label panggung hero. */
