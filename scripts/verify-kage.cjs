@@ -42,7 +42,7 @@ const sitePages = ["/", "/karya/", "/layanan/", "/tentang/", "/riwayat/", "/kont
     const res = await p.goto(BASE + "/kage/", { waitUntil: "networkidle", timeout: 45000 });
     check("rute /kage balas 200", !!res && res.status() === 200, { status: res ? res.status() : 0 });
 
-    await p.waitForTimeout(11000);
+    await p.waitForTimeout(13000);
 
     const host = await p.evaluate(() => {
       const wrap = document.querySelector(".landing-page-frame");
@@ -78,8 +78,13 @@ const sitePages = ["/", "/karya/", "/layanan/", "/tentang/", "/riwayat/", "/kont
     );
     check("iframe terukur penuh, bukan 0", host.frameRect && host.frameRect.h > 500 && host.frameRect.w > 1000, host.frameRect);
 
-    const fr = p.frames().find((f) => f.url().includes("kage.html"));
-    check("dokumen kanonik termuat di dalam frame", !!fr);
+    /* Cocokkan path-nya, BUKAN ".html"-nya.
+       Di Cloudflare Pages, rute statis "kage.html" disajikan dengan URL bersih
+       ("/landing-pages/kage"), jadi mencari literal "kage.html" gagal di live
+       padahal dokumennya termuat. Terukur di live: frame URL = 
+       //portfolio-arkan.pages.dev/landing-pages/kage, state=ready, tinggi 900. */
+    const fr = p.frames().find((f) => /\/landing-pages\/kage(\b|\.html)/.test(f.url()));
+    check("dokumen kanonik termuat di dalam frame", !!fr, { frames: p.frames().map((x) => x.url().slice(-44)) });
 
     if (fr) {
       const s = await fr.evaluate(() => {
