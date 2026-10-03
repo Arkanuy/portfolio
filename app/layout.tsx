@@ -1,23 +1,18 @@
 import type { Metadata } from "next";
-import { Newsreader, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Fraunces, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
-import Masthead from "@/components/edition/masthead";
-import Footer from "@/components/edition/footer";
-import Motion from "@/components/edition/motion";
+import Chrome from "@/components/field/chrome";
+import Footer from "@/components/field/footer";
+import Field from "@/components/field/engine";
 import { site } from "@/lib/site";
 
 /**
- * TIGA PERAN TIPE:
- *   display  Newsreader       → judul berita (serif baca)
- *   body     IBM Plex Sans    → badan teks
- *   mono     IBM Plex Mono    → kicker, tanggal, angka
+ * TIGA PERAN TIPE, dan hanya bobot yang dipakai.
+ * Fraunces = serif display dengan sumbu optis (menggantikan peran Brier/TT Lakes),
+ * IBM Plex Sans = badan, IBM Plex Mono = angka.
+ * 5 berkas font saja — 11 berkas pernah membuat FCP 1916ms.
  */
-/* HANYA bobot yang benar-benar dipakai, dan TANPA varian italic.
- * Sebelumnya: 3 bobot × 2 gaya untuk Newsreader + 3 + 2 = 11 berkas font,
- * dan 5 di antaranya di-preload sehingga memblokir render pertama — terukur
- * FCP 1916ms di origin live. Sekarang 5 berkas. Tidak ada yang hilang:
- * semua teks memakai 400 atau 600. */
-const display = Newsreader({ subsets: ["latin"], weight: ["400", "600"], variable: "--font-display", display: "swap" });
+const display = Fraunces({ subsets: ["latin"], weight: ["600", "700"], variable: "--font-display", display: "swap" });
 const body = IBM_Plex_Sans({ subsets: ["latin"], weight: ["400", "600"], variable: "--font-body", display: "swap" });
 const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400"], variable: "--font-mono", display: "swap" });
 
@@ -33,8 +28,8 @@ export const metadata: Metadata = {
 
 export const viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fbfaf7" },
-    { media: "(prefers-color-scheme: dark)", color: "#12110f" },
+    { media: "(prefers-color-scheme: light)", color: "#f7f5f0" },
+    { media: "(prefers-color-scheme: dark)", color: "#121210" },
   ],
 };
 
@@ -46,26 +41,18 @@ document.documentElement.setAttribute("data-theme",t);
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${display.variable} ${body.variable} ${mono.variable}`}
-    >
+    <html lang="en" suppressHydrationWarning className={`${display.variable} ${body.variable} ${mono.variable}`}>
       <head>
-        {/* Tema dipasang sebelum cat pertama supaya tidak ada kedipan.
-            CATATAN: tidak ada skrip yang menandai "JS hidup" — penanda itu
-            dipasang `Motion` saat React benar-benar jalan, dan seluruh CSS
-            yang menyembunyikan konten bergantung padanya. */}
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
       </head>
       <body>
         <a className="skip" href="#isi">
           Skip to content
         </a>
-        <Masthead />
+        <Chrome />
         <main id="isi">{children}</main>
         <Footer />
-        <Motion />
+        <Field />
       </body>
     </html>
   );

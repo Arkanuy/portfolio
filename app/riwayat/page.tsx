@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SetType, DrawRule, Rise } from "@/components/edition/type";
+import { Split, Reveal } from "@/components/field/motion";
 import { track, school, offHours } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -12,20 +12,22 @@ export default function HistoryPage() {
     <>
       <section className="page">
         <div className="wrap">
-          <p className="kicker">History · {track.length} entries</p>
-          <SetType as="h1" className="page__h" text="Where the work happened." accentLast />
-          <p className="page__s dek">
+          <p className="kicker" data-reveal>
+            History · {track.length} entries
+          </p>
+          <Split as="h1" className="serif page__h" text="Where the work happened." accentLast />
+          <p className="page__s lead" data-reveal style={{ ["--d" as string]: "160ms" }}>
             Newest first. Each entry is the context behind a record — a placement where the work ran, an award a third
             party recorded, or a programme still in progress.
           </p>
         </div>
       </section>
 
-      <section className="sec">
+      <section className="sec sec--tight">
         <div className="wrap">
           <ol className="steps">
-            {track.map((t) => (
-              <li key={t.title + t.date} data-rise data-on-enter style={{ gridTemplateColumns: "minmax(0, 190px) minmax(0, 1fr)" }}>
+            {track.map((t, i) => (
+              <li key={t.title + t.date} data-reveal style={{ ["--d" as string]: `${i * 70}ms`, gridTemplateColumns: "minmax(0,190px) minmax(0,1fr)" }}>
                 <p className="mono" style={{ fontSize: 13, color: "var(--accent)" }}>
                   {t.date}
                 </p>
@@ -33,10 +35,10 @@ export default function HistoryPage() {
                   <h2 className="steps__t" style={{ fontSize: 19 }}>
                     {t.title}
                   </h2>
-                  <p className="meta" style={{ marginTop: 3 }}>
+                  <p className="small" style={{ marginTop: 3 }}>
                     {t.org}
                   </p>
-                  <p className="steps__d" style={{ marginTop: 9 }}>
+                  <p className="steps__d" style={{ marginTop: 10 }}>
                     {t.desc}
                   </p>
                   <ul className="art" style={{ marginTop: 10 }}>
@@ -53,33 +55,27 @@ export default function HistoryPage() {
               </li>
             ))}
           </ol>
-        </div>
-      </section>
 
-      <section className="sec">
-        <div className="wrap">
-          <div className="sec__bar">
-            <DrawRule tone="ink" />
-            <SetType as="h2" className="sec__h" text="Study, and hours outside them." />
-          </div>
-          <table className="ledger">
-            <tbody>
-              {school.map((s) => (
-                <tr key={s.title}>
-                  <td className="ledger__yr mono">{s.period}</td>
-                  <td className="ledger__t">{s.title}</td>
-                  <td className="ledger__k">{s.org}</td>
-                </tr>
-              ))}
-              {offHours.map((h) => (
-                <tr key={h.name}>
-                  <td className="ledger__yr mono">outside class</td>
-                  <td className="ledger__t">{h.name}</td>
-                  <td className="ledger__k">{h.note}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <Reveal delay={100}>
+            <table className="tbl" style={{ marginTop: 44 }}>
+              <tbody>
+                {school.map((s) => (
+                  <tr key={s.title}>
+                    <td className="tbl__n mono">{s.period}</td>
+                    <td className="tbl__t">{s.title}</td>
+                    <td>{s.org}</td>
+                  </tr>
+                ))}
+                {offHours.map((h) => (
+                  <tr key={h.name}>
+                    <td className="tbl__n mono">outside class</td>
+                    <td className="tbl__t">{h.name}</td>
+                    <td>{h.note}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Reveal>
         </div>
       </section>
     </>

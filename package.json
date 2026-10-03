@@ -1,15 +1,16 @@
 {
   "name": "portfolio-arkan",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "scripts": {
     "dev": "next dev -p 4321",
     "build": "next build",
     "start": "next start -p 4321",
-    "verify": "npm run verify:edition && npm run verify:perf",
-    "verify:edition": "node scripts/verify-edition.cjs",
+    "verify": "npm run verify:field && npm run verify:perf",
+    "verify:field": "node scripts/verify-field.cjs",
     "verify:perf": "node scripts/verify-perf.cjs",
-    "shots:edition": "node scripts/shots-edition.cjs",
+    "shots:field": "node scripts/shots-field.cjs",
+    "assets:shots": "node scripts/make-shots.cjs",
     "assets:portrait": "node scripts/make-portrait.cjs",
     "assets:posters": "node scripts/make-posters.cjs"
   },

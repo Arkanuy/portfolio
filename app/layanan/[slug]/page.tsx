@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { SetType, DrawRule } from "@/components/edition/type";
+import { Split, Reveal } from "@/components/field/motion";
 import { services } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -24,32 +24,47 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
     <>
       <section className="page">
         <div className="wrap">
-          <p className="kicker">Service {s.no}</p>
-          <SetType as="h1" className="page__h" text={s.name} />
-          <p className="page__s dek">{s.tagline}</p>
+          <p className="kicker" data-reveal>
+            Service {s.no}
+          </p>
+          <Split as="h1" className="serif page__h" text={s.name} />
+          <p className="page__s lead" data-reveal style={{ ["--d" as string]: "160ms" }}>
+            {s.tagline}
+          </p>
         </div>
       </section>
 
-      <section className="sec">
+      <section className="sec sec--tight">
         <div className="wrap split">
           <div className="art">
-            <SetType as="h2" className="sec__h" text="Who it is for" />
-            <p>{s.for}</p>
-
-            <SetType as="h2" className="sec__h" text="What is included" />
-            <ul>
-              {s.includes.map((it) => (
-                <li key={it}>{it}</li>
-              ))}
-            </ul>
-
-            <SetType as="h2" className="sec__h" text="Evidence" />
-            <p>{s.proof}</p>
-            <p style={{ marginTop: 20 }}>
-              <a className="btn" href="/kontak">
-                Tell me about the project <i aria-hidden="true">→</i>
-              </a>
-            </p>
+            <Reveal>
+              <h2 className="serif" style={{ fontSize: "clamp(22px,3vw,38px)" }}>
+                <Split as="h2" text="Who it is for" />
+              </h2>
+              <p style={{ marginTop: 12 }}>{s.for}</p>
+            </Reveal>
+            <Reveal delay={80}>
+              <h2 className="serif" style={{ fontSize: "clamp(22px,3vw,38px)", marginTop: 32 }}>
+                <Split as="h2" text="What is included" />
+              </h2>
+              <ul>
+                {s.includes.map((it) => (
+                  <li key={it}>{it}</li>
+                ))}
+              </ul>
+            </Reveal>
+            <Reveal delay={140}>
+              <h2 className="serif" style={{ fontSize: "clamp(22px,3vw,38px)", marginTop: 32 }}>
+                <Split as="h2" text="Evidence" />
+              </h2>
+              <p style={{ marginTop: 12 }}>{s.proof}</p>
+              <p style={{ marginTop: 22 }}>
+                <a className="btn" href="/kontak">
+                  <span className="btn__fill" aria-hidden="true" />
+                  Tell me about the project <i aria-hidden="true">→</i>
+                </a>
+              </p>
+            </Reveal>
           </div>
 
           <aside className="sticky">
@@ -64,9 +79,9 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
               </div>
               <div className="rail__g">
                 <p className="rail__k">Other services</p>
-                <ul>
+                <ul style={{ display: "grid", gap: 7, marginTop: 6 }}>
                   {others.map((o) => (
-                    <li key={o.slug} style={{ marginTop: 6 }}>
+                    <li key={o.slug}>
                       <a className="rail__v" style={{ color: "var(--accent)", borderBottom: "1px solid var(--accent)" }} href={`/layanan/${o.slug}`}>
                         {o.name}
                       </a>

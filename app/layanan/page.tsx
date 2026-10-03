@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SetType, DrawRule, Rise } from "@/components/edition/type";
+import { Split, Reveal } from "@/components/field/motion";
 import { services, site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -12,72 +12,69 @@ export default function ServicesPage() {
     <>
       <section className="page">
         <div className="wrap">
-          <p className="kicker">Services · {services.length} kinds of work</p>
-          <SetType as="h1" className="page__h" text="What I actually do." accentLast />
-          <p className="page__s dek">
+          <p className="kicker" data-reveal>
+            Services · {services.length} kinds of work
+          </p>
+          <Split as="h1" className="serif page__h" text="What I actually do." accentLast />
+          <p className="page__s lead" data-reveal style={{ ["--d" as string]: "160ms" }}>
             Four kinds of work, each coming from a record on the work page. Pick whichever is closest to your problem.
           </p>
         </div>
       </section>
 
-      <section className="sec">
-        <div className="wrap">
-          <div className="grid3">
-            {services.map((s) => (
-              <article className="story" key={s.slug}>
-                <DrawRule tone="rule" onEnter={false} />
-                <p className="kicker" style={{ marginTop: 12 }}>
-                  {s.no}
-                </p>
-                <h2 className="story__h">
-                  <a href={`/layanan/${s.slug}`}>{s.name}</a>
-                </h2>
-                <p className="story__d">{s.tagline}</p>
-                <ul className="art" style={{ marginTop: 12 }}>
-                  {s.includes.slice(0, 3).map((it) => (
-                    <li key={it} style={{ fontSize: 14.5 }}>
-                      {it}
-                    </li>
-                  ))}
-                </ul>
-                <p className="story__meta meta">
-                  <b>Evidence.</b> {s.proof}
-                </p>
-              </article>
+      <section className="sec sec--tight">
+        <div className="wrap split">
+          <div>
+            {services.map((s, i) => (
+              <Reveal key={s.slug} delay={i * 80}>
+                <article className="card" style={{ display: "block", paddingBottom: 30, marginBottom: 30, borderBottom: "1px solid var(--rule)" }} data-scrub>
+                  <p className="card__no mono">{s.no} — {s.name}</p>
+                  <h2 className="serif card__t">{s.name}</h2>
+                  <p className="card__d">{s.tagline}</p>
+                  <p className="card__d">
+                    <b>Who it is for.</b> {s.for}
+                  </p>
+                  <ul className="art" style={{ marginTop: 14 }}>
+                    {s.includes.map((it) => (
+                      <li key={it} style={{ fontSize: 15.5 }}>
+                        {it}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="card__meta">
+                    <span>
+                      <b>Evidence.</b> {s.proof}
+                    </span>
+                  </p>
+                  <p className="card__go">
+                    <a className="btn btn--line" href={`/layanan/${s.slug}`}>
+                      <span className="btn__fill" aria-hidden="true" />
+                      Detail <i aria-hidden="true">→</i>
+                    </a>
+                  </p>
+                </article>
+              </Reveal>
             ))}
           </div>
-        </div>
-      </section>
 
-      <section className="sec">
-        <div className="wrap">
-          <div className="sec__bar">
-            <DrawRule tone="ink" />
-            <SetType as="h2" className="sec__h" text="When I tell you not to build an app." />
-          </div>
-          <div className="art">
-            <p className="art__drop">
-              Abandoned software costs more than software that was never started. Saying this before the work begins is
-              part of the job.
-            </p>
-            <ul>
-              <li>
-                <b>When the problem is one step.</b> Three people editing one file and pasting the wrong version is not
-                a software problem. That is one template and a naming rule.
-              </li>
-              <li>
-                <b>When nobody will use it.</b> Software only helps if people are willing to leave the old way behind.
-                If they are not, I would rather say so up front.
-              </li>
-            </ul>
-            <SetType as="h2" className="sec__h" text="Both sides of the same problem." />
-            <p>
-              I finished vocational school in Software Engineering and I am now studying Information Systems. That puts
-              me on both sides: writing the code, and tidying the business process behind it. The second one usually
-              decides whether software gets used at all.
-            </p>
-            <p>Based in {site.place}. {site.status}.</p>
-          </div>
+          <aside className="sticky">
+            <div className="rail">
+              <div className="rail__g">
+                <p className="rail__k">Based in</p>
+                <p className="rail__v">{site.place}</p>
+              </div>
+              <div className="rail__g">
+                <p className="rail__k">Status</p>
+                <p className="rail__v">{site.status}</p>
+              </div>
+              <div className="rail__g">
+                <p className="rail__k">Start</p>
+                <p className="rail__v">
+                  <a href="/kontak">Tell me about the project</a>
+                </p>
+              </div>
+            </div>
+          </aside>
         </div>
       </section>
     </>

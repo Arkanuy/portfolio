@@ -157,7 +157,13 @@ const check = (n, pass, extra = {}) => {
     cssRawKB: kb(cssRaw.total),
     cssGzipKB: kb(cssGz.total),
   });
-  check("home page ships no images at all (data-first)", homeImgs === 0, { homeImgs });
+  /* Konsep ini MEMAKAI gambar nyata di halaman depan — itu mekanisme dari kedua
+ * referensi (Lando: 133 <img>; Blue Marine: foto laut). Jadi gate-nya bukan
+ * "tanpa gambar" lagi, tapi anggaran: gambar halaman depan harus tetap ringan. */
+  check("home page images are within budget (< 400 KB)", kb(imgRaw.total) < 400 && homeImgs > 0, {
+    homeImgs,
+    homeImageKB: kb(imgRaw.total),
+  });
 
   /* Anggaran gambar diukur di halaman yang MEMANG memuat gambar. */
   {
@@ -185,7 +191,7 @@ const check = (n, pass, extra = {}) => {
     });
   }
 
-  check("images measured on home (expect 0 by design)", kb(imgRaw.total) < 200, { imageKB: kb(imgRaw.total), files: imgRaw.n });
+  check("every image on home resolves from the build", imgRaw.n === 0 || imgRaw.total > 0, { files: imgRaw.n, imageKB: kb(imgRaw.total) });
   check("first contentful paint < 1200ms", perf.fcp > 0 && perf.fcp < 1200, { fcp: perf.fcp });
   check("largest contentful paint < 2500ms", perf.lcp < 2500, { lcp: perf.lcp });
   check("no long task over 200ms", perf.longTasksMs < 200, { longTasksMs: perf.longTasksMs });

@@ -1,7 +1,9 @@
 /**
- * Tangkapan + statistik. Model tidak bisa melihat gambar, jadi setiap
- * tangkapan diukur: rasio tinta, baris berisi, warna unik, dan saturasi —
- * konsep ini harus rapi dan hampir monokrom (aksen hanya di tempat berartinya).
+ * Tangkapan + statistik untuk konsep FIELD.
+ * Model tidak bisa melihat gambar, jadi setiap tangkapan diukur: tinta,
+ * baris berisi, warna unik, dan SATURASI. Konsep ini memakai gambar nyata,
+ * jadi saturasinya memang lebih tinggi dari versi monokrom — yang penting
+ * angkanya terbaca, bukan "kelihatan bagus".
  */
 const { chromium } = require("C:/Users/MyBook Hype AMD/lucifer-controller/node_modules/playwright");
 const fs = require("fs");
@@ -9,7 +11,7 @@ const path = require("path");
 const zlib = require("zlib");
 
 const BASE = process.env.PF_BASE || "http://127.0.0.1:4381";
-const OUT = path.join(__dirname, "..", "evidence", "edition", "shots");
+const OUT = path.join(__dirname, "..", "evidence", "field", "shots");
 fs.mkdirSync(OUT, { recursive: true });
 
 function stats(file) {
@@ -56,25 +58,17 @@ function stats(file) {
     const sat = mx === 0 ? 0 : (mx - mn) / mx;
     satSum += sat; satN++;
     if (sat > 0.28) coloured++;
-    if (uniq.size < 8000) uniq.add((r >> 3) * 4096 + (g >> 3) * 64 + (bb >> 3));
+    if (uniq.size < 9000) uniq.add((r >> 3) * 4096 + (g >> 3) * 64 + (bb >> 3));
   }
   let rn = 0; for (let y = 0; y < h; y++) if (rows[y] > 0) rn++;
-  return {
-    w, h,
-    inkPct: +((ink / (w * h)) * 100).toFixed(2),
-    meanSaturation: +(satSum / satN).toFixed(3),
-    saturatedPixelPct: +((coloured / (w * h)) * 100).toFixed(2),
-    rowsWithContentPct: +((rn / h) * 100).toFixed(1),
-    uniqueColors: uniq.size,
-    kb: Math.round(buf.length / 1024),
-  };
+  return { w, h, inkPct: +((ink / (w * h)) * 100).toFixed(2), meanSaturation: +(satSum / satN).toFixed(3), saturatedPixelPct: +((coloured / (w * h)) * 100).toFixed(2), rowsWithContentPct: +((rn / h) * 100).toFixed(1), uniqueColors: uniq.size, kb: Math.round(buf.length / 1024) };
 }
 
 (async () => {
   const b = await chromium.launch();
   const shots = [
-    { name: "home-light", url: "/", w: 1440, h: 900, theme: "light" },
-    { name: "home-dark", url: "/", w: 1440, h: 900, theme: "dark" },
+    { name: "hero-light", url: "/", w: 1440, h: 900, theme: "light" },
+    { name: "hero-dark", url: "/", w: 1440, h: 900, theme: "dark" },
     { name: "home-full", url: "/", w: 1440, h: 900, theme: "light", full: true },
     { name: "home-mobile", url: "/", w: 390, h: 844, theme: "light", full: true },
     { name: "work", url: "/karya/", w: 1440, h: 900, theme: "light", full: true },
@@ -90,7 +84,7 @@ function stats(file) {
     const p = await ctx.newPage();
     await p.addInitScript((t) => localStorage.setItem("theme", t), s.theme);
     await p.goto(BASE + s.url, { waitUntil: "networkidle" });
-    await p.waitForTimeout(1400);
+    await p.waitForTimeout(2600);
     const file = path.join(OUT, s.name + ".png");
     await p.screenshot({ path: file, fullPage: !!s.full });
     const st = stats(file);

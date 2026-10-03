@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { SetType, DrawRule } from "@/components/edition/type";
+import { Split, Reveal } from "@/components/field/motion";
 import { site } from "@/lib/site";
 import { records } from "@/lib/records";
 
@@ -26,8 +26,6 @@ export default function ContactPage() {
     }
   }
 
-  /** Form ini tidak menyimpan apa pun di server: ia menyusun email di perangkat
-   *  pengunjung lalu menyerahkannya ke aplikasi mail. */
   function submit(e: React.FormEvent) {
     e.preventDefault();
     const subject = encodeURIComponent(`Project enquiry from ${form.name || "website"}`);
@@ -40,16 +38,18 @@ export default function ContactPage() {
     <>
       <section className="page">
         <div className="wrap">
-          <p className="kicker">Contact</p>
-          <SetType as="h1" className="page__h" text="Start with one message." accentLast />
-          <p className="page__s dek">
+          <p className="kicker" data-reveal>
+            Contact
+          </p>
+          <Split as="h1" className="serif page__h" text="Start with one message." accentLast />
+          <p className="page__s lead" data-reveal style={{ ["--d" as string]: "160ms" }}>
             Describe how the work runs today — who does what, and which part hurts most. I usually reply within one
             business day, and the first reply says whether software is even the right answer.
           </p>
         </div>
       </section>
 
-      <section className="sec">
+      <section className="sec sec--tight">
         <div className="wrap split">
           <form className="form" onSubmit={submit}>
             <div className="f">
@@ -62,22 +62,14 @@ export default function ContactPage() {
             </div>
             <div className="f">
               <label htmlFor="brief">How the work runs today</label>
-              <textarea
-                id="brief"
-                required
-                rows={7}
-                value={form.brief}
-                onChange={(e) => setForm({ ...form, brief: e.target.value })}
-                placeholder="Who does what, and which part is the most painful"
-              />
+              <textarea id="brief" required rows={7} value={form.brief} onChange={(e) => setForm({ ...form, brief: e.target.value })} placeholder="Who does what, and which part is the most painful" />
             </div>
             <button className="btn" type="submit">
+              <span className="btn__fill" aria-hidden="true" />
               Compose email <i aria-hidden="true">→</i>
             </button>
-            <p className="meta">
-              {sent
-                ? "Your mail app is open with the message filled in. Press send."
-                : "This form stores nothing on a server. It composes the email on your device."}
+            <p className="small">
+              {sent ? "Your mail app is open with the message filled in. Press send." : "This form stores nothing on a server. It composes the email on your device."}
             </p>
           </form>
 
@@ -86,12 +78,7 @@ export default function ContactPage() {
               {rows.map((r) => (
                 <div className="dl__row" key={r.k}>
                   <span className="dl__k">{r.k}</span>
-                  <a
-                    className="dl__v"
-                    href={r.href}
-                    target={r.href.startsWith("http") ? "_blank" : undefined}
-                    rel="noopener noreferrer"
-                  >
+                  <a className="dl__v" href={r.href} target={r.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer">
                     {r.v}
                   </a>
                   <button type="button" className="dl__b" onClick={() => copy(r.copy)}>
@@ -114,15 +101,10 @@ export default function ContactPage() {
                 <span />
               </div>
             </div>
-            <div className="rail" style={{ marginTop: 22 }}>
-              <div className="rail__g">
-                <p className="rail__k">Not sure yet?</p>
-                <p className="rail__v">
-                  Asking a question first is fine. I am happy to talk through a workflow without you committing to any
-                  work.
-                </p>
-              </div>
-            </div>
+            <p className="small" style={{ marginTop: 20 }}>
+              Not sure yet? Asking a question first is fine. I am happy to talk through a workflow without you
+              committing to any work.
+            </p>
           </aside>
         </div>
       </section>

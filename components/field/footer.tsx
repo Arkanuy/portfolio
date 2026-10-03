@@ -1,15 +1,17 @@
 import { site } from "@/lib/site";
+import { Split, Reveal } from "./motion";
 
 export default function Footer() {
   return (
     <footer className="foot">
       <div className="wrap">
-        <div className="foot__in">
+        <h2>
+          <Split text="Tell me how the work runs today." as="span" className="serif foot__t" accentLast />
+        </h2>
+        <Reveal className="foot__in" delay={120}>
           <p className="foot__id">
-            Arkan Mustofa
-            <span>
-              {site.role}
-            </span>
+            <b>{site.name}</b>
+            {site.place}
           </p>
           <nav className="foot__links" aria-label="Elsewhere">
             <a href={`mailto:${site.email}`}>Email</a>
@@ -23,9 +25,9 @@ export default function Footer() {
               CV (PDF)
             </a>
           </nav>
-        </div>
+        </Reveal>
         <p className="foot__note">
-          {site.status}. Every entry comes from the CV and public repositories — no invented metrics, no placeholder
+          {site.status}. Everything here comes from the CV and public repositories — no invented metrics, no placeholder
           screenshots.
         </p>
       </div>

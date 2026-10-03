@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { SetType, DrawRule, Rise } from "@/components/edition/type";
+import { Split, Reveal } from "@/components/field/motion";
 import { records, recordById, STATUS } from "@/lib/records";
 
 export function generateStaticParams() {
@@ -18,51 +18,61 @@ export default async function CasePage({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const r = recordById(slug);
   if (!r) notFound();
-
   const i = records.findIndex((x) => x.id === slug);
   const next = records[(i + 1) % records.length];
   const st = STATUS[r.state];
-  const today = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" });
 
   return (
     <>
       <section className="page">
         <div className="wrap">
-          <p className="kicker">
-            {r.kind.split("·")[0].trim()} · {r.year}
+          <p className="kicker" data-reveal>
+            {r.kind} · {r.year}
           </p>
-          <SetType as="h1" className="page__h" text={r.title} />
-          <p className="page__s dek">{r.summary}</p>
-          <p className="byline" style={{ marginTop: 18 }}>
-            By <b>Arkan Mustofa</b> · {r.where ?? "Personal project"} · filed {r.year}
+          <Split as="h1" className="serif page__h" text={r.title} />
+          <p className="page__s lead" data-reveal style={{ ["--d" as string]: "160ms" }}>
+            {r.summary}
+          </p>
+          <p className="small mono" data-reveal style={{ marginTop: 18, ["--d" as string]: "240ms" }}>
+            By Arkan Mustofa · {r.where ?? "Personal project"}
           </p>
         </div>
       </section>
 
-      <section className="sec">
+      <section className="sec sec--tight">
         <div className="wrap split">
           <div>
-            <figure className="figure">
-              <img src={r.image} alt={`View of ${r.title}`} width={1200} height={750} fetchPriority="high" decoding="async" />
-            </figure>
-            <p className="figcap mono">{r.imageNote}</p>
+            <Reveal>
+              <figure className="fig" data-scrub>
+                <img src={r.image} alt={`View of ${r.title}`} width={1200} height={750} fetchPriority="high" decoding="async" />
+              </figure>
+              <p className="figcap mono">{r.imageNote}</p>
+            </Reveal>
 
-            <div className="art" style={{ marginTop: "clamp(26px,3.6vw,44px)" }}>
-              <SetType as="h2" className="sec__h" text="The problem" />
-              <p className="art__drop" style={{ marginTop: 14 }}>
-                {r.problem}
-              </p>
-
-              <SetType as="h2" className="sec__h" text="What I built" />
-              <ul>
-                {r.built.map((b) => (
-                  <li key={b}>{b}</li>
-                ))}
-              </ul>
-
-              <SetType as="h2" className="sec__h" text="Outcome" />
-              <p>{r.evidence}</p>
-              <p>{st.note}</p>
+            <div className="art" style={{ marginTop: "clamp(26px,4vw,46px)" }}>
+              <Reveal>
+                <h2 className="serif sec__h" style={{ fontSize: "clamp(22px,3vw,38px)" }}>
+                  <Split as="h2" text="The problem" />
+                </h2>
+                <p style={{ marginTop: 14 }}>{r.problem}</p>
+              </Reveal>
+              <Reveal delay={80}>
+                <h2 className="serif sec__h" style={{ fontSize: "clamp(22px,3vw,38px)", marginTop: 34 }}>
+                  <Split as="h2" text="What I built" />
+                </h2>
+                <ul>
+                  {r.built.map((b) => (
+                    <li key={b}>{b}</li>
+                  ))}
+                </ul>
+              </Reveal>
+              <Reveal delay={140}>
+                <h2 className="serif sec__h" style={{ fontSize: "clamp(22px,3vw,38px)", marginTop: 34 }}>
+                  <Split as="h2" text="Outcome" />
+                </h2>
+                <p>{r.evidence}</p>
+                <p>{st.note}</p>
+              </Reveal>
             </div>
           </div>
 
@@ -70,19 +80,13 @@ export default async function CasePage({ params }: { params: Promise<{ slug: str
             <div className="rail">
               <div className="rail__g">
                 <p className="rail__k">Status</p>
-                <p className="rail__v">
-                  <span className="st" data-s={r.state}>
-                    {st.label}
-                  </span>
+                <p className="rail__v card__st mono" data-s={r.state}>
+                  {st.label}
                 </p>
               </div>
               <div className="rail__g">
                 <p className="rail__k">Year</p>
                 <p className="rail__v mono">{r.year}</p>
-              </div>
-              <div className="rail__g">
-                <p className="rail__k">Kind</p>
-                <p className="rail__v">{r.kind}</p>
               </div>
               <div className="rail__g">
                 <p className="rail__k">Stack</p>
@@ -111,8 +115,9 @@ export default async function CasePage({ params }: { params: Promise<{ slug: str
                 </p>
               </div>
             </div>
-            <p style={{ marginTop: 18 }}>
+            <p style={{ marginTop: 20 }}>
               <a className="btn btn--line" href="/karya">
+                <span className="btn__fill" aria-hidden="true" />
                 ← All records
               </a>
             </p>

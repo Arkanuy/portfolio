@@ -1,0 +1,47 @@
+FIELD: rebuild on the mechanisms of two real references
+
+Four previous attempts failed because I invented a direction instead of reading
+examples. This time two references were given (and one corrected mid-flight), so
+the first step was dissection, not design:
+
+  landonorris.com                  lenis smooth scroll · .sticky-item ·
+                                   .horizontal-pin-sticky · .css-split-type ·
+                                   exactly ONE CSS keyframe · 133 img · 21 canvas
+  bluemarinefoundation.com/        docH 900px = NOT a document flow: preloader
+  the-sea-we-breathe/              (pageLoaderLogo) -> full canvas -> "Let's
+                                   Begin" (.js-enter-si) -> stepped narrative ->
+                                   Project Spotlight · ambient audio toggle ·
+                                   clipped-corner buttons (clip-path polygon)
+
+Mechanisms ported (structure, not looks), with no library added:
+- smooth scroll implemented as lerp + window.scrollTo, NOT a transform wrapper,
+  so anchors, sticky and IntersectionObserver keep working
+- pinned section: .scrub 2340px tall, sticky inner, right panel swaps by progress
+- headline split per WORD (per-letter splits the line mid-word and drops spaces)
+- scrub progress written to --p, CSS owns the motion
+- stepped narrative: "Let's begin" then four steps that replace each other
+- short preloader that leaves by reveal, max ~900ms
+- two-row marquee, opposite direction, 38s vs 62s, pauses on hover
+- real screenshots of live products instead of design plates
+- clipped-corner buttons (clip-path polygon)
+
+All eight anti-slop gates still demand ZERO across 17 routes. Gradients posed a
+specific problem: the hero scrim needs one for legibility, but gradients are
+banned - solved with stacked opacity layers, no background-image gradient.
+
+58 gates green locally (45 field + 13 perf).
+
+Six defects measurement caught:
+1. Narrative steps vanished without JS - the first version only rendered them
+   after a click, so the section was empty. All four are now always in the DOM;
+   without JS they show as a list, with JS one is active.
+2. All four steps overlaid each other - grid-area 1/1 in list state put them in
+   the same cell (measured: all at top=390). Fixed with grid-area: auto.
+3. Gate order was wrong - it checked the pre-start state AFTER clicking, so it
+   always reported failure. The measurement was wrong, not the page.
+4. Playwright refused the automated click: the smooth-scroll engine keeps the
+   element moving through its easing, so it is never "stable". A real side
+   effect of the reference mechanism; the gate now clicks through the DOM.
+5. "Let's begin" failed contrast in BOTH themes (1.89:1 light, 3.06:1 dark)
+   because it used tokens that flip per theme. Now a fixed light-on-dark pair.
+6. Turbopack cache corruption after bulk edits; clear .next + node_modules/.cache.
