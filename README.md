@@ -53,7 +53,7 @@ saat menggulir adalah **garis progres baca** di bawah masthead.
 
 ---
 
-## Verifikasi: 45 gate, dan gate-nya diuji bisa gagal
+## Verifikasi: 49 gate, dan gate-nya diuji bisa gagal
 
 ```bash
 npm run build
@@ -67,7 +67,7 @@ besar gate di sini **menuntut nol** — bukan menuntut "ada".
 | Suite | Gate | Isi |
 |---|---|---|
 | `verify:editorial` | **36/36** | 17 rute 200 tanpa error · **nol** backdrop-filter · **nol** CSS filter · **nol** box-shadow · **nol** gradien · **nol** teks bergradien · **nol** radius > 14px · **nol** glow berwarna · **nol** orb · animasi keyframe ≤ 2 · tanpa loop ambient · tanpa overshoot · tanpa hover-transform · tanpa eyebrow · kerja = tabel 7 baris dgn `tabular-nums` · kontras ≥4.5:1 di 2 tema · tanpa overflow di 6 viewport · target sentuh · reduced-motion · tanpa JS · tanpa kata menempel / kebocoran metadata |
-| `verify:perf` | **9/9** | tanpa pustaka UI pihak ketiga · anggaran JS/CSS · gambar <200 KB · FCP/LCP · biaya JS handler gulir · long task |
+| `verify:perf` | **13/13** | tanpa pustaka UI pihak ketiga · anggaran JS/CSS · gambar <200 KB · FCP/LCP · biaya JS handler gulir · long task |
 | `shots:editorial` | 10 tangkapan | tiap tangkapan diukur: rasio tinta, baris berisi, warna unik, **dan saturasi** |
 
 **Gate-nya sudah dibuktikan bisa gagal.** Saya menyuntikkan satu contoh setiap

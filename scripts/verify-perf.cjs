@@ -41,6 +41,11 @@ const check = (n, pass, extra = {}) => {
 
   await p.goto(BASE + "/", { waitUntil: "networkidle" });
 
+  /* Halaman depan konsep ini memang tidak memuat satu pun gambar (kerjanya
+   * disajikan sebagai tabel). Itu fakta yang diuji, bukan kebetulan — dan
+   * penting supaya gate anggaran gambar tidak "lulus" karena mengukur nol. */
+  const homeImgs = await p.evaluate(() => document.querySelectorAll("img").length);
+
   const perf = await p.evaluate(async () => {
     const nav = performance.getEntriesByType("navigation")[0] || {};
     const paints = Object.fromEntries(performance.getEntriesByType("paint").map((e) => [e.name, Math.round(e.startTime)]));
@@ -152,7 +157,35 @@ const check = (n, pass, extra = {}) => {
     cssRawKB: kb(cssRaw.total),
     cssGzipKB: kb(cssGz.total),
   });
-  check("images stay light (< 200 KB)", kb(imgRaw.total) < 200, { imageKB: kb(imgRaw.total), files: imgRaw.n });
+  check("home page ships no images at all (data-first)", homeImgs === 0, { homeImgs });
+
+  /* Anggaran gambar diukur di halaman yang MEMANG memuat gambar. */
+  {
+    const urls2 = [];
+    const onResp = (r) => {
+      try {
+        if (r.request().resourceType() === "image") urls2.push(new URL(r.url()).pathname);
+      } catch {}
+    };
+    p.on("response", onResp);
+    await p.goto(BASE + "/karya/mafiablox/", { waitUntil: "networkidle" });
+    p.off("response", onResp);
+    let total = 0;
+    let n = 0;
+    for (const u of new Set(urls2)) {
+      const buf = diskSize(u);
+      if (buf) {
+        total += buf.length;
+        n++;
+      }
+    }
+    check("case-study images stay light (< 200 KB)", n > 0 && kb(total) < 200, {
+      imageKB: kb(total),
+      files: n,
+    });
+  }
+
+  check("images measured on home (expect 0 by design)", kb(imgRaw.total) < 200, { imageKB: kb(imgRaw.total), files: imgRaw.n });
   check("first contentful paint < 1200ms", perf.fcp > 0 && perf.fcp < 1200, { fcp: perf.fcp });
   check("largest contentful paint < 2500ms", perf.lcp < 2500, { lcp: perf.lcp });
   check("no long task over 200ms", perf.longTasksMs < 200, { longTasksMs: perf.longTasksMs });
