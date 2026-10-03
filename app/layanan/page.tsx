@@ -1,97 +1,94 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import { Section, CTABand } from "@/components/ui/section";
 import { services, site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Services",
-  description: "Four services: business systems, web, analysis and documentation, and automation.",
+  title: "Layanan",
+  description: "Empat jenis pekerjaan: sistem bisnis, web, analisis & dokumentasi, otomasi.",
 };
 
-export default function LayananPage() {
+export default function ServicesPage() {
   return (
-    <>
-      <section className="pageHero">
-        <div className="wrap">
-          <p className="eyebrow">Services</p>
-          <h1 className="pageHero__t">
-            What I <em>actually do</em>.
-          </h1>
-          <p className="pageHero__s">
-            Four kinds of work, all of them coming from the experience listed on the history page. Pick whichever
-            is closest to your problem.
-          </p>
-        </div>
-      </section>
+    <article className="page">
+      <p className="k">Layanan · {services.length} jenis</p>
+      <h1 className="h1" style={{ marginTop: 10 }}>
+        Yang benar-benar saya kerjakan.
+      </h1>
+      <p className="lede">
+        Empat jenis pekerjaan, semuanya berasal dari catatan di katalog. Pilih yang paling dekat dengan masalahmu.
+      </p>
 
-      <Section>
-        <div className="svcList">
-          {services.map((s, i) => (
-            <div data-fx className="svcRow" key={s.slug} >
-              <div className="svcRow__head">
-                <span className="svcRow__no">{s.no}</span>
-                <h2 className="svcRow__name">{s.name}</h2>
-                <p className="svcRow__tag">{s.tagline}</p>
-              </div>
+      {services.map((s) => (
+        <section key={s.slug}>
+          <h2 className="h2">
+            <span className="sig">{s.no}</span> {s.name}
+          </h2>
+          <p className="p">{s.tagline}</p>
 
-              <div className="svcRow__body">
-                <p className="svcRow__for">
-                  <strong>Who it is for:</strong> {s.for}
-                </p>
-                <ul className="svcRow__list">
-                  {s.includes.map((it) => (
-                    <li key={it}>{it}</li>
-                  ))}
-                </ul>
-                <p className="svcRow__proof">
-                  <strong>Evidence:</strong> {s.proof}
-                </p>
-                <a className="btn btn--ghost" href={`/layanan/${s.slug}`}>
-                  More about {s.name}
-                </a>
-              </div>
+          <div className="spec">
+            <div className="spec__ti">
+              <span className="k" style={{ color: "var(--ink-2)" }}>
+                Spesifikasi
+              </span>
             </div>
-          ))}
-        </div>
-      </Section>
-
-      <Section eyebrow="Not everything needs software" titleText="When I tell you ~not to build an app." tint>
-        <div className="twoCol2">
-          <div data-fx className="noteCard" >
-            <h3 className="noteCard__t">When the problem is one step</h3>
-            <p className="noteCard__d">
-              Three people editing one file and copy-pasting the wrong version? That is solved with one template
-              and a naming rule. No application needed.
-            </p>
+            <table className="tbl">
+              <tbody>
+                <tr>
+                  <td className="tbl__f">untuk</td>
+                  <td className="tbl__ty">string</td>
+                  <td className="tbl__v">{s.for}</td>
+                </tr>
+                <tr>
+                  <td className="tbl__f">termasuk</td>
+                  <td className="tbl__ty">array[{s.includes.length}]</td>
+                  <td className="tbl__v">{s.includes.join(" · ")}</td>
+                </tr>
+                <tr>
+                  <td className="tbl__f">bukti</td>
+                  <td className="tbl__ty">record</td>
+                  <td className="tbl__v">{s.proof}</td>
+                </tr>
+                <tr>
+                  <td className="tbl__f">titik mulai</td>
+                  <td className="tbl__ty">string</td>
+                  <td className="tbl__v">{s.from}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div data-fx className="noteCard" >
-            <h3 className="noteCard__t">When nobody wants to use it</h3>
-            <p className="noteCard__d">
-              Software only helps if people are willing to leave the old way behind. If they are not, I say so up
-              front instead of building something that gets abandoned.
-            </p>
-          </div>
-        </div>
-      </Section>
 
-      <div className="wrap aboutStrip">
-        <div className="aboutStrip__text">
-          <p className="eyebrow">Why me</p>
-          <p className="aboutStrip__p">
-            I graduated from a vocational school in Software Engineering, and I am now studying Information Systems.
-            That puts me on both sides: writing code, and tidying the business process behind it. The second one is
-            usually what decides whether the software gets used at all.
+          <p style={{ marginTop: 12, display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <a className="btn" href={`/layanan/${s.slug}`}>
+              Detail <span aria-hidden="true">→</span>
+            </a>
           </p>
-          <a className="btn btn--ghost" href="/tentang">
-            More about me
-          </a>
-        </div>
-        <figure className="aboutStrip__photo">
-          <Image src="/github/arkan-avatar-2x.png" alt={`Portrait of ${site.name}`} width={680} height={680} sizes="(max-width: 860px) 92vw, 340px" />
-        </figure>
-      </div>
+        </section>
+      ))}
 
-      <CTABand />
-    </>
+      <h2 className="h2">Kapan saya bilang jangan bikin aplikasi</h2>
+      <p className="p">
+        Perangkat lunak yang ditinggalkan lebih mahal daripada yang tidak pernah dimulai. Mengatakan ini sebelum kerja
+        dimulai adalah bagian dari pekerjaannya.
+      </p>
+      <ul className="list">
+        <li>
+          <b>Kalau masalahnya cuma satu langkah.</b> Tiga orang mengedit satu berkas lalu menempel versi yang salah bukan
+          masalah perangkat lunak. Itu satu templat dan satu aturan penamaan.
+        </li>
+        <li>
+          <b>Kalau tidak ada yang mau memakainya.</b> Perangkat lunak hanya menolong kalau orang bersedia meninggalkan
+          cara lama.
+        </li>
+      </ul>
+
+      <h2 className="h2">Dua sisi dari masalah yang sama</h2>
+      <p className="p">
+        Saya lulus dari SMK jurusan Rekayasa Perangkat Lunak dan sekarang menempuh Sistem Informasi. Itu menempatkan saya
+        di dua sisi: menulis kodenya, dan merapikan proses bisnis di belakangnya. Yang kedua biasanya yang menentukan
+        apakah perangkat lunaknya dipakai.
+      </p>
+      <p className="p">
+        Berbasis di {site.place}. {site.status}.
+      </p>
+    </article>
   );
 }

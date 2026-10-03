@@ -1,20 +1,13 @@
 {
   "name": "portfolio-arkan",
-  "version": "0.1.0",
+  "version": "0.8.0",
   "private": true,
   "scripts": {
     "dev": "next dev -p 4321",
     "build": "next build",
     "start": "next start -p 4321",
-    "verify:quote": "node scripts/verify-quote.cjs",
-    "verify:band": "node scripts/verify-band.cjs",
-    "verify:cards": "node scripts/verify-cards.cjs",
-    "verify:responsive": "node scripts/verify-responsive.cjs",
-    "verify:parallax": "node scripts/verify-parallax.cjs",
-    "verify:rebuild": "node scripts/verify-rebuild.cjs",
-    "verify:rapi": "node scripts/verify-rapi.cjs",
-    "verify:overflow": "node scripts/verify-overflow.cjs",
-    "verify:final": "node scripts/verify-final.cjs"
+    "verify": "node scripts/verify-browse.cjs",
+    "shots": "node scripts/shots-browse.cjs"
   },
   "dependencies": {
     "next": "16.3.6",
