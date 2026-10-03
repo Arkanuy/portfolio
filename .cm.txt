@@ -1,22 +1,28 @@
-Revert the portfolio to how it was before the redesigns
+PUNCH: portfolio as a punch-card deck and its reader
 
-Arkan asked for the original version back. This restores the tree exactly as it
-was at 6c7a463 (the "aduhai" commit, the last state before I started rebuilding):
-66 files, components/ui/*, the clean light theme with the orange accent, the
-original eight verify scripts, and the original README.
+The old direction is gone. Component galleries on the web all repeat the same
+things - shader buttons, liquid metal, 3D cloth, sylva/temple scenes, holo
+cards, typography vortex, portal fields, constellation backgrounds. All of that
+is deliberately avoided here: no WebGL, no shaders, no glass, no glow.
 
-The five redesign attempts are preserved on branch archive/redesign-attempts so
-nothing is lost if any part of them is wanted later (EDITION's work table, the
-FIELD smooth-scroll engine, TRACE's source panel).
+Instead: Hollerith 80-column cards. Each work record is one card and its HOLES
+ARE ITS DATA. lib/punch.ts maps the data to card geometry with rules anyone can
+check: column 1 stores the status zone, 2-5 the year, 6-7 how many parts were
+built, 8-13 the first six letters of the title, 14-79 a check pattern whose
+DENSITY follows the title length, column 80 an end mark.
 
-Verified against the restored build:
-  verify-final       15/15
-  verify-quote        7/7
-  verify-band        10/10
-  verify-cards        7/7
-  verify-responsive  13/13
-  verify-rapi        11/11
-  verify-overflow     1/1
-  verify-rebuild     11/11
-  verify-parallax    14/14
-  total              89/89, 0 failures
+The reader head sweeps columns as you scroll and the column it crosses lights
+up. Picking a card LIFTS IT OUT OF THE DECK, and the print area below the
+machine shows that card - including a legend so every hole can be accounted
+for. Keys 1-7 pick a card.
+
+Two defects measurement caught:
+1. Every card had exactly 86 holes. The check pattern started as one hole per
+   column, so density was identical and the cards read as decoration rather
+   than data. Title length now drives the density; measured 86 / 119 / 152.
+2. The accent failed contrast in the print area (3.28:1 light, 4.49:1 dark
+   against the metal). Added a --metal-accent token with per-theme values
+   (#7a1a0a 5.28:1 and #ff8a6e 5.35:1).
+
+41 gates green, all 8 anti-slop gates at zero across 17 routes. Without JS all
+833 holes still render and every step stays in the document.
