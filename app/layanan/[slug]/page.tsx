@@ -38,15 +38,11 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
         <div className="wrap split">
           <div className="art">
             <Reveal>
-              <h2 className="serif" style={{ fontSize: "clamp(22px,3vw,38px)" }}>
-                <Split as="h2" text="Who it is for" />
-              </h2>
+              <Split as="h2" className="serif" text="Who it is for" style={{ fontSize: "clamp(22px,3vw,38px)" }} />
               <p style={{ marginTop: 12 }}>{s.for}</p>
             </Reveal>
             <Reveal delay={80}>
-              <h2 className="serif" style={{ fontSize: "clamp(22px,3vw,38px)", marginTop: 32 }}>
-                <Split as="h2" text="What is included" />
-              </h2>
+              <Split as="h2" className="serif" text="What is included" style={{ fontSize: "clamp(22px,3vw,38px)" }} />
               <ul>
                 {s.includes.map((it) => (
                   <li key={it}>{it}</li>
@@ -54,9 +50,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
               </ul>
             </Reveal>
             <Reveal delay={140}>
-              <h2 className="serif" style={{ fontSize: "clamp(22px,3vw,38px)", marginTop: 32 }}>
-                <Split as="h2" text="Evidence" />
-              </h2>
+              <Split as="h2" className="serif" text="Evidence" style={{ fontSize: "clamp(22px,3vw,38px)" }} />
               <p style={{ marginTop: 12 }}>{s.proof}</p>
               <p style={{ marginTop: 22 }}>
                 <a className="btn" href="/kontak">

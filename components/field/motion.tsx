@@ -7,15 +7,17 @@ export function Split({
   as: Tag = "h2",
   className = "",
   accentLast = false,
+  style,
 }: {
   text: string;
   as?: "h1" | "h2" | "h3" | "span" | "p";
   className?: string;
   accentLast?: boolean;
+  style?: React.CSSProperties;
 }) {
   const words = text.split(" ");
   return (
-    <Tag className={className} data-split data-reveal>
+    <Tag className={className} data-split data-reveal style={style}>
       {words.map((w, i) => (
         <Fragment key={`${w}-${i}`}>
           <span className="w">

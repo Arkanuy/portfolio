@@ -28,9 +28,7 @@ export default function AboutPage() {
               <p>{site.bioLong}</p>
             </Reveal>
             <Reveal delay={90}>
-              <h2 className="serif" style={{ fontSize: "clamp(22px,3vw,38px)", marginTop: 34 }}>
-                <Split as="h2" text="Facts" />
-              </h2>
+              <Split as="h2" className="serif" text="Facts" style={{ fontSize: "clamp(22px,3vw,38px)" }} />
               <ul>
                 <li>
                   <b>Born</b> — {site.born}
@@ -56,9 +54,7 @@ export default function AboutPage() {
               </ul>
             </Reveal>
             <Reveal delay={140}>
-              <h2 className="serif" style={{ fontSize: "clamp(22px,3vw,38px)", marginTop: 34 }}>
-                <Split as="h2" text="Tooling" />
-              </h2>
+              <Split as="h2" className="serif" text="Tooling" style={{ fontSize: "clamp(22px,3vw,38px)" }} />
               <ul>
                 {stack.map((g) => (
                   <li key={g.group}>
@@ -68,9 +64,7 @@ export default function AboutPage() {
               </ul>
             </Reveal>
             <Reveal delay={180}>
-              <h2 className="serif" style={{ fontSize: "clamp(22px,3vw,38px)", marginTop: 34 }}>
-                <Split as="h2" text="Outside class" />
-              </h2>
+              <Split as="h2" className="serif" text="Outside class" style={{ fontSize: "clamp(22px,3vw,38px)" }} />
               <ul>
                 {hobbies.map((h: { name: string; note: string }) => (
                   <li key={h.name}>

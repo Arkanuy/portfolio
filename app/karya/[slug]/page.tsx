@@ -51,15 +51,11 @@ export default async function CasePage({ params }: { params: Promise<{ slug: str
 
             <div className="art" style={{ marginTop: "clamp(26px,4vw,46px)" }}>
               <Reveal>
-                <h2 className="serif sec__h" style={{ fontSize: "clamp(22px,3vw,38px)" }}>
-                  <Split as="h2" text="The problem" />
-                </h2>
+                <Split as="h2" className="serif" text="The problem" style={{ fontSize: "clamp(22px,3vw,38px)" }} />
                 <p style={{ marginTop: 14 }}>{r.problem}</p>
               </Reveal>
               <Reveal delay={80}>
-                <h2 className="serif sec__h" style={{ fontSize: "clamp(22px,3vw,38px)", marginTop: 34 }}>
-                  <Split as="h2" text="What I built" />
-                </h2>
+                <Split as="h2" className="serif" text="What I built" style={{ fontSize: "clamp(22px,3vw,38px)" }} />
                 <ul>
                   {r.built.map((b) => (
                     <li key={b}>{b}</li>
@@ -67,9 +63,7 @@ export default async function CasePage({ params }: { params: Promise<{ slug: str
                 </ul>
               </Reveal>
               <Reveal delay={140}>
-                <h2 className="serif sec__h" style={{ fontSize: "clamp(22px,3vw,38px)", marginTop: 34 }}>
-                  <Split as="h2" text="Outcome" />
-                </h2>
+                <Split as="h2" className="serif" text="Outcome" style={{ fontSize: "clamp(22px,3vw,38px)" }} />
                 <p>{r.evidence}</p>
                 <p>{st.note}</p>
               </Reveal>
