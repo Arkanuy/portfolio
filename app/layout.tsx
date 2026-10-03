@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/ui/header";
-import Footer from "@/components/ui/footer";
-import Motion from "@/components/ui/motion";
-import ScrollProgress from "@/components/ui/scroll-progress";
+import Header from "@/components/trace/header";
+import Footer from "@/components/trace/footer";
+import Motion from "@/components/trace/motion";
 import { site } from "@/lib/site";
-import { ClickSpark } from "@/components/ui/anim";
 
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
@@ -31,8 +29,8 @@ export const metadata: Metadata = {
 
 export const viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b0c0e" },
+    { media: "(prefers-color-scheme: light)", color: "#eeebe3" },
+    { media: "(prefers-color-scheme: dark)", color: "#14140f" },
   ],
 };
 
@@ -53,12 +51,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a className="skip" href="#isi">
           Skip to content
         </a>
-        <ScrollProgress />
+        <span className="prog" aria-hidden="true">
+          <span className="prog__bar" id="trace-prog" />
+        </span>
         <Header />
-        <main id="isi">{children}</main>
+        <main id="isi">
+          <div className="wrap">
+            <p className="nojs">
+              JavaScript is off, so the source panel and index filters are inert. Every record, status, and link on
+              this page is still readable as static text — that is deliberate.
+            </p>
+          </div>
+          {children}
+        </main>
         <Footer />
         <Motion />
-        <ClickSpark />
       </body>
     </html>
   );
