@@ -1,123 +1,99 @@
 import type { Metadata } from "next";
-import { site, stack, numbers, school, offHours } from "@/lib/site";
-import { records, traceStats } from "@/lib/records";
+import Image from "next/image";
+import { BlurText } from "@/components/ui/anim";
+import { Section, CTABand } from "@/components/ui/section";
+import { site, process, stack, numbers } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Metode",
-  description: "Latar belakang, cara kerja, dan perkakas Arkan Mustofa.",
+  title: "About",
+  description: "Background, working process, and tooling of Arkan Mustofa.",
 };
 
-export default function AboutPage() {
+export default function TentangPage() {
   return (
     <>
-      <section className="page">
-        <div className="wrap">
-          <p className="stamp stamp--accent">Metode</p>
-          <h1 className="page__h">Proses dulu, kode kemudian.</h1>
-        </div>
-      </section>
-
-      <section className="sec" style={{ paddingTop: 0 }}>
-        <div className="wrap split">
-          <div className="art">
-            <p style={{ fontSize: 18 }}>{site.bio}</p>
-            <p>{site.bioLong}</p>
-
-            <header className="head" style={{ marginTop: 34 }}>
-              <span className="head__r" />
-              <h2 className="sec__h">Cara saya bekerja</h2>
-            </header>
-            <p>
-              Urutannya adalah metodenya. Kalau langkah kedua tidak menghasilkan dokumen, daftar fiturnya ditemukan
-              sambil menulis kode — dan itu yang membuat orang meninggalkan perangkat lunaknya.
-            </p>
-
-            <header className="head" style={{ marginTop: 34 }}>
-              <span className="head__r" />
-              <h2 className="sec__h">Fakta</h2>
-            </header>
-            <ul>
-              <li>
-                <b>Lahir</b> — {site.born}
-              </li>
-              <li>
-                <b>Berbasis di</b> — {site.place}
-              </li>
-              <li>
-                <b>Status</b> — {site.status}
-              </li>
-              {school.map((e: { period: string; title: string; org?: string }) => (
-                <li key={e.title}>
-                  <b>{e.period}</b> — {e.title}
-                  {e.org ? `, ${e.org}` : ""}
-                </li>
-              ))}
-              {numbers.map((n) => (
-                <li key={n.label}>
-                  <b>{n.value}</b> — {n.label}
-                  {n.note ? ` (${n.note})` : ""}
-                </li>
-              ))}
-            </ul>
-
-            <header className="head" style={{ marginTop: 34 }}>
-              <span className="head__r" />
-              <h2 className="sec__h">Perkakas</h2>
-            </header>
-            <ul>
-              {stack.map((g) => (
-                <li key={g.group}>
-                  <b>{g.group}</b> — {g.items.map((it) => `${it.name} (${it.evidence})`).join("; ")}
-                </li>
-              ))}
-            </ul>
-            <p style={{ marginTop: 14, fontSize: 14, color: "var(--ink-3)" }}>
-              {traceStats.capabilities} kemampuan terdaftar; {traceStats.gaps} belum punya kartu yang membuktikannya.
-            </p>
-
-            <header className="head" style={{ marginTop: 34 }}>
-              <span className="head__r" />
-              <h2 className="sec__h">Di luar jam kelas</h2>
-            </header>
-            <ul>
-              {offHours.map((h: { name: string; note: string }) => (
-                <li key={h.name}>
-                  <b>{h.name}</b> — {h.note}
-                </li>
-              ))}
-            </ul>
+      <section className="aboutHero">
+        <div className="wrap aboutHero__in">
+          <div className="aboutHero__text">
+            <p className="eyebrow">About</p>
+            <BlurText as="h1" className="aboutHero__t" text="I am Arkan. Process first, code second." />
+            <p className="aboutHero__p">{site.bio}</p>
+            <p className="aboutHero__p">{site.bioLong}</p>
+            <dl className="aboutFacts">
+              <div>
+                <dt>Born</dt>
+                <dd>{site.born}</dd>
+              </div>
+              <div>
+                <dt>Based in</dt>
+                <dd>{site.place}</dd>
+              </div>
+              <div>
+                <dt>Status</dt>
+                <dd>{site.status}</dd>
+              </div>
+            </dl>
           </div>
 
-          <aside className="sticky">
-            <figure className="fig">
-              <img src="/github/arkan-avatar-2x.png" alt={`Foto ${site.name}`} width={340} height={340} fetchPriority="high" decoding="async" />
+          <div className="aboutHero__media">
+            <figure className="aboutPhoto">
+              <Image src="/github/arkan-avatar-2x.png" alt={`Portrait of ${site.name}`} width={680} height={680} priority sizes="(max-width: 940px) 92vw, 470px" />
+              <figcaption>
+                <strong>{site.name}</strong>
+                <span>{site.handle}</span>
+              </figcaption>
             </figure>
-            <p className="figcap mono">
-              {site.name} · {site.handle}
-            </p>
-            <div className="rail" style={{ marginTop: 22 }}>
-              <div className="rail__g">
-                <p className="rail__k">Kartu</p>
-                <p className="rail__v">{records.length} dengan bukti</p>
-              </div>
-              <div className="rail__g">
-                <p className="rail__k">Kelompok perkakas</p>
-                <p className="rail__v">
-                  {stack.length} · {stack.reduce((n, g) => n + g.items.length, 0)} perkakas
-                </p>
-              </div>
-              <div className="rail__g">
-                <p className="rail__k">CV</p>
-                <p className="rail__v">
-                  <a href={site.cv} download>
-                    Unduh PDF
-                  </a>
-                </p>
-              </div>
-            </div>
-          </aside>
+          </div>
         </div>
       </section>
+
+      <Section
+        eyebrow="How I work"
+        titleText="Four steps, ~in order."
+        sub="This sequence is what makes the result get used, not merely finished."
+      >
+        <ol className="stepsRow">
+          {process.map((p, i) => (
+            <div data-fx className="stepCard" key={p.no} >
+              <span className="stepCard__n">{p.no}</span>
+              <h3 className="stepCard__t">{p.title}</h3>
+              <p className="stepCard__d">{p.body}</p>
+            </div>
+          ))}
+        </ol>
+      </Section>
+
+      <Section eyebrow="Tooling" titleText="What I use, with the ~evidence." tint>
+        <div className="kitGrid">
+          {stack.map((g, i) => (
+            <div data-fx className="kit" key={g.group} >
+              <h3 className="kit__t">{g.group}</h3>
+              <ul>
+                {g.items.map((it) => (
+                  <li key={it.name}>
+                    <span className="kit__n">{it.name}</span>
+                    <span className="kit__e">{it.evidence}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section eyebrow="Numbers" titleText="What ~you can verify.">
+        <div className="numGrid">
+          {numbers.map((n, i) => (
+            <div data-fx className="num" key={n.label} >
+              <span className="num__v">{n.value}</span>
+              <span className="num__l">{n.label}</span>
+              <span className="num__n">{n.note}</span>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <CTABand />
     </>
   );
 }

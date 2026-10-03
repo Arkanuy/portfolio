@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import { site } from "@/lib/site";
-import { records } from "@/lib/records";
 
 const rows = [
   { k: "Email", v: site.email, href: `mailto:${site.email}`, copy: site.email },
@@ -10,103 +10,136 @@ const rows = [
   { k: "Instagram", v: site.handle, href: site.instagram, copy: site.handle },
 ];
 
-export default function ContactPage() {
+export default function KontakPage() {
   const [copied, setCopied] = useState("");
-  const [form, setForm] = useState({ name: "", reach: "", brief: "" });
+  const [form, setForm] = useState({ nama: "", kontak: "", pesan: "" });
   const [sent, setSent] = useState(false);
+
+  useEffect(() => {
+    if (!copied) return;
+    const t = window.setTimeout(() => setCopied(""), 1800);
+    return () => window.clearTimeout(t);
+  }, [copied]);
 
   async function copy(v: string) {
     try {
       await navigator.clipboard.writeText(v);
       setCopied(v);
-      window.setTimeout(() => setCopied(""), 1800);
     } catch {
-      setCopied("gagal menyalin");
+      setCopied("copy failed");
     }
   }
 
-  /** Form ini tidak menyimpan apa pun di server: ia menyusun email di perangkat
-   *  pengunjung lalu menyerahkannya ke aplikasi mail. */
+  /** This form does not post to a server. It builds a ready-to-send email and
+   *  hands it to the visitor's mail client, so nothing gets lost or stored. */
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    const subject = encodeURIComponent(`Pertanyaan proyek dari ${form.name || "website"}`);
-    const body = encodeURIComponent(`Nama: ${form.name}\nKontak: ${form.reach}\n\nBagaimana kerjanya berjalan hari ini:\n${form.brief}\n`);
+    const subject = encodeURIComponent(`Project enquiry from ${form.nama || "website"}`);
+    const body = encodeURIComponent(
+      `Name: ${form.nama}\nContact: ${form.kontak}\n\nHow the work runs today:\n${form.pesan}\n`,
+    );
     window.location.href = `mailto:${site.email}?subject=${subject}&body=${body}`;
     setSent(true);
   }
 
   return (
     <>
-      <section className="page">
+      <section className="pageHero">
         <div className="wrap">
-          <p className="stamp stamp--accent">Kontak</p>
-          <h1 className="page__h">Mulai dari satu pesan.</h1>
-          <p className="page__s">
-            Ceritakan bagaimana kerjanya berjalan hari ini — siapa mengerjakan apa, dan bagian mana yang paling
-            menyakitkan. Biasanya saya balas dalam satu hari kerja, dan balasan pertama itu menyebut apakah perangkat
-            lunak memang jawabannya.
+          <p className="eyebrow">Contact</p>
+          <h1 className="pageHero__t">
+            Start with <em>one message</em>.
+          </h1>
+          <p className="pageHero__s">
+            Describe how the work runs today. I usually reply within one business day.
           </p>
         </div>
       </section>
 
-      <section className="sec" style={{ paddingTop: 0 }}>
-        <div className="wrap split">
+      <section className="wrap contactGrid">
+        <div className="contactFormWrap" data-fx>
           <form className="form" onSubmit={submit}>
-            <div className="f">
-              <label htmlFor="name">Nama</label>
-              <input id="name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Nama kamu" />
+            <div className="field">
+              <label htmlFor="nama">Name</label>
+              <input
+                id="nama"
+                required
+                value={form.nama}
+                onChange={(e) => setForm({ ...form, nama: e.target.value })}
+                placeholder="Your name"
+              />
             </div>
-            <div className="f">
-              <label htmlFor="reach">Email atau WhatsApp</label>
-              <input id="reach" required value={form.reach} onChange={(e) => setForm({ ...form, reach: e.target.value })} placeholder="supaya bisa saya balas" />
+            <div className="field">
+              <label htmlFor="kontak">Email or WhatsApp</label>
+              <input
+                id="kontak"
+                required
+                value={form.kontak}
+                onChange={(e) => setForm({ ...form, kontak: e.target.value })}
+                placeholder="so I can reply"
+              />
             </div>
-            <div className="f">
-              <label htmlFor="brief">Bagaimana kerjanya berjalan hari ini</label>
-              <textarea id="brief" required rows={7} value={form.brief} onChange={(e) => setForm({ ...form, brief: e.target.value })} placeholder="Siapa mengerjakan apa, dan bagian mana yang paling menyakitkan" />
+            <div className="field">
+              <label htmlFor="pesan">How the work runs today</label>
+              <textarea
+                id="pesan"
+                required
+                rows={6}
+                value={form.pesan}
+                onChange={(e) => setForm({ ...form, pesan: e.target.value })}
+                placeholder="Who does what, and which part is the most painful"
+              />
             </div>
-            <button className="btn" type="submit">
-              Susun email <i aria-hidden="true">→</i>
+            <button className="btn btn--dark form__go" type="submit">
+              Compose email
+              <span aria-hidden="true">→</span>
             </button>
-            <p style={{ fontSize: 13, color: "var(--ink-3)" }}>
+            <p className="form__hint">
               {sent
-                ? "Aplikasi email kamu sudah terbuka dengan isinya. Tinggal kirim."
-                : "Form ini tidak menyimpan apa pun di server. Emailnya disusun di perangkatmu."}
+                ? "Your mail app is open with the message filled in. Just press send."
+                : "This form stores nothing on a server. It composes the email on your device."}
             </p>
           </form>
-
-          <aside className="sticky">
-            <div className="dl">
-              {rows.map((r) => (
-                <div className="dl__r" key={r.k}>
-                  <span className="dl__k">{r.k}</span>
-                  <a className="dl__v" href={r.href} target={r.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer">
-                    {r.v}
-                  </a>
-                  <button type="button" className="dl__b" onClick={() => copy(r.copy)}>
-                    {copied === r.copy ? "tersalin" : "salin"}
-                  </button>
-                </div>
-              ))}
-              <div className="dl__r">
-                <span className="dl__k">CV</span>
-                <span className="dl__v">Dokumen PDF</span>
-                <a className="dl__b" href={site.cv} download>
-                  unduh
-                </a>
-              </div>
-              <div className="dl__r">
-                <span className="dl__k">Kartu</span>
-                <a className="dl__v" href="/karya">
-                  {records.length} catatan
-                </a>
-                <span />
-              </div>
-            </div>
-            <p style={{ marginTop: 20, fontSize: 14, color: "var(--ink-2)" }}>
-              Belum yakin? Boleh tanya dulu. Saya senang membahas alur kerja tanpa kamu harus memutuskan apa pun.
-            </p>
-          </aside>
         </div>
+
+        <aside className="contactSide">
+          <figure className="contactPhoto">
+            <Image src="/github/arkan-avatar-2x.png" alt={`Portrait of ${site.name}`} width={680} height={680} sizes="(max-width: 900px) 92vw, 420px" />
+            <figcaption>
+              <strong>{site.name}</strong>
+              <span>{site.place}</span>
+            </figcaption>
+          </figure>
+
+          <div className="contactRows">
+            {rows.map((r) => (
+              <div key={r.k} className="contactRow">
+                <span className="contactRow__k">{r.k}</span>
+                <a className="contactRow__v" href={r.href} target={r.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer">
+                  {r.v}
+                </a>
+                <button type="button" className="contactRow__b" onClick={() => copy(r.copy)}>
+                  {copied === r.copy ? "Copied" : "Copy"}
+                </button>
+              </div>
+            ))}
+            <div className="contactRow">
+              <span className="contactRow__k">CV</span>
+              <span className="contactRow__v">PDF document</span>
+              <a className="contactRow__b" href={site.cv} download>
+                Download
+              </a>
+            </div>
+          </div>
+
+          <div className="contactNote">
+            <p className="contactNote__k">Not sure yet?</p>
+            <p className="contactNote__d">
+              Asking a question first is fine. I am happy to talk about a workflow without you committing to any
+              work.
+            </p>
+          </div>
+        </aside>
       </section>
     </>
   );

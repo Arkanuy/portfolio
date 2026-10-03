@@ -264,7 +264,6 @@ export const numbers = stats;
 export const stack = skillGroups;
 export const track = experiences;
 export const school = education;
-export { education, hobbies };
 export const offHours = hobbies;
 
 /** Label panggung hero. */

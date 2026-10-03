@@ -1,150 +1,88 @@
-# portfolio-arkan — **PUNCH**
+# portfolio-arkan
 
-Portfolio pribadi **Arkan Mustofa**. Situs statis Next.js.
-Deploy: **https://portfolio-arkan.pages.dev**
+Personal portfolio site for **Arkan Mustofa** — Information Systems student in Bandung, Indonesia.
+Built as a static Next.js site, deployed on Cloudflare Pages at **https://portfolio-arkan.pages.dev**
 
----
+## What this is
 
-## Konsepnya: portfolio sebagai setumpuk kartu punch dan mesin pembacanya
+A multi-page site (home, services, work, about, history, contact) with case-study detail
+pages. Everything on it comes from real sources: the CV (`public/arkan-mustofa-cv.pdf`)
+and public GitHub repos. No invented metrics, no placeholder screenshots.
 
-Arah lama dibuang semua. Referensi komponen WebGL di internet berisi hal yang
-sama berulang: tombol shader, liquid metal, kain 3D, silva/temple scene, holo
-card, typography vortex, portal field, constellation background. Semua itu
-justru **dihindari** di sini — tidak ada WebGL, tidak ada shader, tidak ada
-kaca, tidak ada glow.
+## Stack
 
-Yang dipakai: **kartu Hollerith 80 kolom**. Setiap catatan kerja adalah satu
-kartu, dan **lubangnya adalah datanya**. Ini pra-komputer, dan jujur untuk
-orang yang pekerjaannya membangun sistem dan menulis requirement:
-antarmuka yang bisa dibaca mesin.
+- **Next.js 16** (App Router) with `output: "export"` → fully static HTML
+- **React 19**, **TypeScript**
+- **Tailwind v4** plus a hand-written stylesheet for the layout system
+- No runtime dependencies, no server, no database
 
-### Lubangnya benar-benar data
+## Why static
 
-`lib/punch.ts` memetakan data ke geometri kartu. Aturannya bisa diperiksa:
+The site has no API routes, no forms that post to a server, and no per-request data.
+Static export gives the fastest load, zero server cost, and nothing to maintain.
 
-| Kolom | Isi | Contoh dari kartu 01 |
-|---|---|---|
-| 1 | zona status | `zona 12` = berjalan di produksi |
-| 2–5 | tahun, satu kolom per digit | 2026 |
-| 6–7 | banyak bagian yang dibangun (2 digit) | 4 bagian |
-| 8–13 | enam huruf pertama judul (puluhan + satuan) | MAFIAB |
-| 14–79 | pola periksa | **kepadatan mengikuti panjang judul** |
-| 80 | tanda akhir | panjang stack judul mod 10 |
+Because of that, all navigation uses plain `<a>` tags. Next.js client-side navigation
+needs RSC payload files that static export writes under different names, which produced
+404s on every internal link — plain anchors are the correct choice here.
 
-Kepadatan pola sengaja **tidak seragam**: percobaan pertama membuat satu lubang
-per kolom dan hasilnya semua kartu punya 86 lubang — seragam, jadi terbaca
-sebagai hiasan. Sekarang panjang judul menentukan berapa lubang per kolom, dan
-terukur: **86 / 119 / 152 lubang** antar kartu.
+## Motion
 
-Yang penting: tujuh kartu menghasilkan **tujuh pola berbeda**, dan polanya
-**deterministik** — muat ulang, lubangnya sama.
+Animation is written from scratch (no animation libraries) and follows one hard rule:
 
-### Mekanisme mesinnya
+> Parallax may only move things that are **guaranteed to be clipped by their own box**:
+> `background-position`, or the contents of a frame that already has `overflow: hidden`.
 
-- **Kepala pembaca** menyapu kolom mengikuti gulir. Terukur: `x` bergerak
-  0 → 808 → 1406 sepanjang halaman, dan kolom yang dilewati menyala
-  (`[25,26,27]` lalu `[79,80,63]`).
-- **Memilih kartu mengangkatnya dari tumpukan**, dan area cetak di bawah mesin
-  menampilkan kartu itu — termasuk **legenda pengkodeannya**, supaya tiap lubang
-  bisa dipertanggungjawabkan.
-- **Tombol angka 1–7** di keyboard memilih kartu, seperti panel mesin.
-- Tiap kartu punya `aria-label` yang menyebut jumlah lubangnya.
+Moving layout elements freely is what caused content to visibly tear and clip on scroll
+in earlier iterations. The current engine (`components/ui/motion.tsx`) handles:
 
----
+| Mechanism | Trigger | What moves |
+| --- | --- | --- |
+| Reveal | `[data-fx]` | opacity + 22px translate |
+| Background parallax | `[data-bg="0.16"]` | `background-position-y` |
+| In-frame parallax | `[data-inner="0.055"]` | image inside its own clipped frame |
+| Horizontal drag | `[data-x="0.35"]` | a row inside an `overflow: hidden` track |
 
-## Anti-slop: semuanya nol, dan diukur
+Everything is disabled under `prefers-reduced-motion`, and positions are re-measured after
+fonts and images finish loading (stale measurements were a source of bugs).
 
-| Tell | Hasil di 17 rute |
-|---|---|
-| backdrop-filter (kaca) | **0** |
-| CSS filter (blur/glow) | **0** |
-| box-shadow | **0** |
-| latar gradien | **0** |
-| teks gradien | **0** |
-| radius > 14px | **0** |
-| glow berwarna | **0** |
-| orb (lingkaran besar) | **0** |
+## Verification
 
-Warna: kertas kartu ivory, logam dingin untuk area cetak, dan **satu aksen
-merah pita** yang hanya dipakai di tempat berartinya.
-
----
-
-## Verifikasi: 41 gate
+Design claims are checked by measurement, not by eye. The scripts in `scripts/` drive a real
+browser and assert on computed styles, geometry, and contrast:
 
 ```bash
 npm run build
-npx serve out
-PF_BASE=http://localhost:3000 npm run verify
+npx serve out            # or any static server
+PF_BASE=http://localhost:3000 npm run verify:quote
 ```
 
-| Kelompok | Isi |
-|---|---|
-| **Lubang = data** | 7 kartu tergambar · 80 kolom tiap kartu · 7 pola unik · kepadatan bervariasi (86/119/152) · deterministik setelah muat ulang · legenda menjelaskan tiap lubang |
-| **Mekanisme mesin** | kepala pembaca bergerak · kolom menyala & berpindah · memilih kartu mengangkatnya · area cetak ikut berubah · tombol angka berfungsi |
-| **Anti-slop** | 8 gate menuntut nol |
-| **Aman** | tanpa JS: 833 lubang tetap tergambar, nol elemen tersembunyi · reduced-motion: nol tersembunyi |
-| **Lain-lain** | 17 rute 200 tanpa error · kontras ≥4.5:1 di 2 tema · tanpa overflow di 6 viewport · target sentuh ≥40px · tanpa kata menempel / kebocoran |
+| Script | What it proves |
+| --- | --- |
+| `verify:quote` | headline wraps into 2 balanced lines at 10 viewport widths |
+| `verify:band` | CTA band text/button contrast ≥4.5:1 in **both** themes |
+| `verify:cards` | service cards keep identical padding and content across pages |
+| `verify:responsive` | 88 page × viewport combinations: no overflow, no orphans, 44px touch targets |
+| `verify:parallax` | parallax values actually change on scroll, and framerate stays ~16.6ms |
+| `verify:overflow` | zero horizontal scroll across 5 viewports |
+| `verify:rebuild` | clipping, spacing, photo coverage, language, theme toggle |
+| `verify:rapi` | spacing scale, radius, grid alignment, nesting |
+| `verify:final` | navigation, pages, forms, reduced-motion behaviour |
 
-Angka rilis:
+The scripts found real defects that were invisible by inspection — a heading collapsing to a
+271px column, headline words rendering with no spaces, images covered by a 50%-opacity glare
+layer, and `contain: paint` clipping parallax layers.
 
-```
-Lubang per kartu   86 / 119 / 152   (mengikuti panjang judul)
-Pola unik          7 dari 7 kartu
-Kepala pembaca     x: 0 → 808 → 1406
-Saturasi rata-rata 0.071 – 0.086    (praktis monokrom)
-Tanpa JS           833 lubang tetap tergambar
-```
-
-### Dua cacat yang ketahuan karena diukur
-
-1. **Semua kartu punya 86 lubang.** Pola periksa awalnya satu lubang per kolom,
-   jadi kepadatannya identik dan kartunya terbaca sebagai hiasan. Sekarang
-   panjang judul menentukan kepadatan.
-2. **Aksen gagal kontras di area cetak.** `--accent` di atas logam cuma 3.28:1
-   (terang) dan 4.49:1 (gelap). Ditambah token `--metal-accent` yang nilainya
-   berbeda per tema: `#7a1a0a` (5.28:1) dan `#ff8a6e` (5.35:1).
-
----
-
-## Susunan berkas
-
-```
-app/
-  layout.tsx       3 peran tipe, kepala mesin, mesin, footer
-  page.tsx         pembuka + tumpukan kartu + layanan + metode + angka + perkakas
-  karya/           7 kartu (+ halaman kasus dengan kartu ukuran penuh)
-  layanan/ tentang/ riwayat/ kontak/
-components/punch/
-  card.tsx         kartu 80×12 sebagai SVG + kepala pembaca
-  deck.tsx         tumpukan + area cetak + legenda
-  masthead.tsx     kepala mesin (bilah status + nama + bagian)
-  footer.tsx
-lib/punch.ts       pengkodean data ke geometri kartu  ← inti konsepnya
-lib/records.ts     kartu + status bukti
-scripts/verify-punch.cjs   41 gate
-scripts/shots-punch.cjs    tangkapan + statistik
-```
-
-**20 rute statis**, semua ter-render jadi HTML (`output: "export"`).
-
-## Menjalankan
+## Running locally
 
 ```bash
 npm install
 npm run dev      # http://localhost:4321
-npm run build    # 20 rute statis -> out/
-npm run verify   # 41 gate
-npm run shots    # tangkapan + statistik
 ```
 
-## Deploy
+## Deploying
 
-Cloudflare Pages: build `npm run build`, output `out`, Node 20+.
-Autodeploy saat push ke `main`.
+Cloudflare Pages builds from this repo:
 
-## Sumber konten
-
-Semua teks dari CV (`public/arkan-mustofa-cv.pdf`) dan repo publik
-`github.com/Arkanuy`. Tidak ada metrik, tangkapan layar, atau kredensial yang
-dikarang — termasuk lubang di kartunya, yang seluruhnya dihitung dari data itu.
+- Build command: `npm run build`
+- Output directory: `out`
+- Node version: 20 or newer

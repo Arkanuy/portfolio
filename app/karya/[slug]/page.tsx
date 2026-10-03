@@ -1,160 +1,111 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
-import { encode, byColumn } from "@/lib/punch";
-import { records, recordById, STATUS } from "@/lib/records";
+import { CTABand } from "@/components/ui/section";
+import { cases, caseBySlug } from "@/lib/site";
 
 export function generateStaticParams() {
-  return records.map((r) => ({ slug: r.id }));
+  return cases.map((c) => ({ slug: c.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const r = recordById(slug);
-  if (!r) return { title: "Kartu tidak ditemukan" };
-  return { title: r.title, description: r.summary };
+  const c = caseBySlug(slug);
+  if (!c) return { title: "Case study not found" };
+  return { title: c.title, description: c.summary };
 }
 
-export default async function CasePage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function CaseDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const r = recordById(slug);
-  if (!r) notFound();
+  const c = caseBySlug(slug);
+  if (!c) notFound();
 
-  const i = records.findIndex((x) => x.id === slug);
-  const next = records[(i + 1) % records.length];
-  const st = STATUS[r.state];
-  const code = encode({ slug: r.id, title: r.title, year: r.year, state: r.state, built: r.built.length });
-  const cols = byColumn(code);
-  const open = new Set(code.holes.map((h: { col: number; row: number }) => `${h.col}:${h.row}`));
-  const cw = 100 / code.columns;
-  const rh = 100 / code.rows;
+  const i = cases.findIndex((x) => x.slug === slug);
+  const next = cases[(i + 1) % cases.length];
 
   return (
     <>
-      <section className="page">
+      <section className="pageHero">
         <div className="wrap">
-          <p className="stamp stamp--accent">
-            Kartu {r.no} · {r.year} · {r.kind}
+          <p className="eyebrow">
+            Case {c.no} · {c.kind} · {c.year}
+            {c.badge ? ` · ${c.badge}` : ""}
           </p>
-          <h1 className="page__h">{r.title}</h1>
-          <p className="page__s">{r.summary}</p>
-          <p className="stamp" style={{ marginTop: 16 }}>
-            {r.where ?? "Proyek pribadi"} · {st.label}
-          </p>
-        </div>
-      </section>
+          <h1 className="pageHero__t">{c.title}</h1>
+          <p className="pageHero__s">{c.summary}</p>
 
-      {/* kartu lengkapnya, ukuran penuh */}
-      <section className="wrap" style={{ paddingBottom: "clamp(20px,3vw,34px)" }}>
-        <div className="card" data-lifted="true" data-in="true">
-          <header className="card__head">
-            <span className="card__no">{r.no}</span>
-            <span className="card__title">{r.title}</span>
-            <span>{code.holes.length} lubang</span>
-          </header>
-          <div className="field">
-            <svg
-              className="field__grid"
-              viewBox="0 0 100 20"
-              preserveAspectRatio="none"
-              role="img"
-              aria-label={`Punch card ${r.no}: ${code.holes.length} holes`}
-            >
-              {Array.from({ length: 9 }, (_, i) => (i + 1) * 10).map((c) => (
-                <line key={`g${c}`} className="field__guide" x1={c * cw} y1="0" x2={c * cw} y2="20" vectorEffect="non-scaling-stroke" />
-              ))}
-              {Array.from({ length: code.rows }, (_, k) => k).map((k) => (
-                <line key={`h${k}`} className="field__guide" x1="0" y1={k * rh * 2} x2="100" y2={k * rh * 2} vectorEffect="non-scaling-stroke" />
-              ))}
-              {cols.map(({ col, rows }) => (
-                <g className="field__col" key={col} data-col={col}>
-                  {rows.map((row) => (
-                    <rect key={`${col}:${row}`} x={(col - 0.86) * cw} y={(row * rh + rh * 0.14) * 2} width={cw * 0.72} height={rh * 1.72} />
-                  ))}
-                </g>
-              ))}
-            </svg>
-          </div>
-        </div>
-      </section>
-
-      <section className="sec">
-        <div className="wrap split">
-          <div className="art">
-            <header className="head">
-              <span className="head__r" />
-              <h2 className="sec__h">Masalahnya</h2>
-            </header>
-            <p>{r.problem}</p>
-
-            <header className="head" style={{ marginTop: 34 }}>
-              <span className="head__r" />
-              <h2 className="sec__h">Yang saya bangun</h2>
-            </header>
-            <ul>
-              {r.built.map((b) => (
-                <li key={b}>{b}</li>
-              ))}
-            </ul>
-
-            <header className="head" style={{ marginTop: 34 }}>
-              <span className="head__r" />
-              <h2 className="sec__h">Hasilnya</h2>
-            </header>
-            <p>{r.evidence}</p>
-            <p>{st.note}</p>
-
-            <figure className="fig" style={{ marginTop: 30 }}>
-              <img src={r.image} alt={`Tampilan ${r.title}`} width={1200} height={750} fetchPriority="high" decoding="async" />
-            </figure>
-            <p className="figcap">{r.imageNote}</p>
-          </div>
-
-          <aside className="sticky">
-            <div className="rail">
-              <div className="rail__g">
-                <p className="rail__k">Status</p>
-                <p className="rail__v">{st.label}</p>
-              </div>
-              <div className="rail__g">
-                <p className="rail__k">Stack</p>
-                <p className="rail__v">{r.stack}</p>
-              </div>
-              {r.external && (
-                <div className="rail__g">
-                  <p className="rail__k">Artefak publik</p>
-                  <p className="rail__v">
-                    <a href={r.external.href} target="_blank" rel="noopener noreferrer">
-                      {r.external.label}
-                    </a>
-                  </p>
-                </div>
-              )}
-              <div className="rail__g">
-                <p className="rail__k">Kartu berikutnya</p>
-                <p className="rail__v">
-                  <a href={next.href}>{next.title} →</a>
-                </p>
-              </div>
-              <div className="rail__g">
-                <p className="rail__k">Cara membaca</p>
-                {code.legend.slice(0, 5).map((l) => (
-                  <p className="code__r" key={`${l.col}:${l.row}`}>
-                    <span className="code__c">
-                      k{l.col}/b{l.row}
-                    </span>
-                    <span>{l.text}</span>
-                  </p>
-                ))}
-              </div>
+          <div className="caseMeta">
+            <div>
+              <span className="caseMeta__k">Stack</span>
+              <span className="caseMeta__v">{c.stack}</span>
             </div>
-            <p style={{ marginTop: 18 }}>
-              <a className="btn btn--line" href="/karya">
-                ← Semua kartu
-              </a>
-            </p>
-          </aside>
+            <div>
+              <span className="caseMeta__k">Role</span>
+              <span className="caseMeta__v">Rolecang & pembangun</span>
+            </div>
+            <div>
+              <span className="caseMeta__k">Context</span>
+              <span className="caseMeta__v">{c.where}</span>
+            </div>
+            {c.link && (
+              <div>
+                <span className="caseMeta__k">Link</span>
+                <span className="caseMeta__v">
+                  <a href={c.link.href} target="_blank" rel="noopener noreferrer">
+                    {c.link.label} ↗
+                  </a>
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </section>
+
+      <section className="wrap caseMedia">
+        <div className="caseShot">
+          <Image src={c.image} alt={`View of ${c.title}`} width={1400} height={876} priority sizes="(max-width: 1100px) 100vw, 1100px" />
+        </div>
+        {c.imageAlt && (
+          <div className="caseShotAlt">
+            <Image src={c.imageAlt} alt={`Mobile view of ${c.title}`} width={645} height={1320} sizes="220px" />
+            <span className="tiny">mobile view</span>
+          </div>
+        )}
+        <p className="caseNote">{c.imageNote}</p>
+      </section>
+
+      <section className="wrap caseBody">
+        <div data-fx className="caseBlock" >
+          <h2 className="caseBlock__k">The problem</h2>
+          <p className="caseBlock__p">{c.problem}</p>
+        </div>
+
+        <div data-fx className="caseBlock" >
+          <h2 className="caseBlock__k">What I built</h2>
+          <ul className="caseBlock__list">
+            {c.did.map((d) => (
+              <li key={d}>{d}</li>
+            ))}
+          </ul>
+        </div>
+
+        <div data-fx className="caseBlock" >
+          <h2 className="caseBlock__k">The outcome</h2>
+          <p className="caseBlock__p">{c.result}</p>
+        </div>
+      </section>
+
+      <nav className="wrap caseNav" aria-label="Other work">
+        <a className="caseNav__link" href="/karya">
+          ← all work
+        </a>
+        <a className="caseNav__next" href={`/karya/${next.slug}`}>
+          <span className="tiny">next</span>
+          <span className="caseNav__t">{next.title} →</span>
+        </a>
+      </nav>
+
+      <CTABand />
     </>
   );
 }

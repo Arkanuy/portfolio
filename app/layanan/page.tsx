@@ -1,92 +1,97 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import { Section, CTABand } from "@/components/ui/section";
 import { services, site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Layanan",
-  description: "Empat jenis pekerjaan: sistem bisnis, web, analisis & dokumentasi, otomasi.",
+  title: "Services",
+  description: "Four services: business systems, web, analysis and documentation, and automation.",
 };
 
-export default function ServicesPage() {
+export default function LayananPage() {
   return (
     <>
-      <section className="page">
+      <section className="pageHero">
         <div className="wrap">
-          <p className="stamp stamp--accent">Layanan · {services.length} jenis</p>
-          <h1 className="page__h">Yang benar-benar saya kerjakan.</h1>
-          <p className="page__s">
-            Empat jenis pekerjaan, semuanya berasal dari kartu di halaman kerja. Pilih yang paling dekat dengan
-            masalahmu.
+          <p className="eyebrow">Services</p>
+          <h1 className="pageHero__t">
+            What I <em>actually do</em>.
+          </h1>
+          <p className="pageHero__s">
+            Four kinds of work, all of them coming from the experience listed on the history page. Pick whichever
+            is closest to your problem.
           </p>
         </div>
       </section>
 
-      <section className="sec">
-        <div className="wrap">
-          <div className="steps">
-            {services.map((s) => (
-              <li key={s.slug}>
-                <span className="steps__n">{s.no}</span>
-                <span className="steps__t">
-                  <a href={`/layanan/${s.slug}`}>{s.name}</a>
-                </span>
-                <span className="steps__d">
-                  <b>{s.tagline}</b>
-                  <br />
-                  Untuk: {s.for}
-                  <ul style={{ marginTop: 10 }}>
-                    {s.includes.map((it) => (
-                      <li key={it} style={{ position: "relative", paddingLeft: 18, fontSize: 15 }}>
-                        <span style={{ position: "absolute", left: 0, top: 10, width: 9, height: 1, background: "var(--ink-3)", display: "block" }} />
-                        {it}
-                      </li>
-                    ))}
-                  </ul>
-                  <span style={{ display: "block", marginTop: 12, color: "var(--ink-3)", fontSize: 14 }}>
-                    <b style={{ color: "var(--ink-2)" }}>Bukti.</b> {s.proof}
-                  </span>
-                </span>
-                <span className="steps__o">→ /layanan/{s.slug}</span>
-              </li>
-            ))}
+      <Section>
+        <div className="svcList">
+          {services.map((s, i) => (
+            <div data-fx className="svcRow" key={s.slug} >
+              <div className="svcRow__head">
+                <span className="svcRow__no">{s.no}</span>
+                <h2 className="svcRow__name">{s.name}</h2>
+                <p className="svcRow__tag">{s.tagline}</p>
+              </div>
+
+              <div className="svcRow__body">
+                <p className="svcRow__for">
+                  <strong>Who it is for:</strong> {s.for}
+                </p>
+                <ul className="svcRow__list">
+                  {s.includes.map((it) => (
+                    <li key={it}>{it}</li>
+                  ))}
+                </ul>
+                <p className="svcRow__proof">
+                  <strong>Evidence:</strong> {s.proof}
+                </p>
+                <a className="btn btn--ghost" href={`/layanan/${s.slug}`}>
+                  More about {s.name}
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section eyebrow="Not everything needs software" titleText="When I tell you ~not to build an app." tint>
+        <div className="twoCol2">
+          <div data-fx className="noteCard" >
+            <h3 className="noteCard__t">When the problem is one step</h3>
+            <p className="noteCard__d">
+              Three people editing one file and copy-pasting the wrong version? That is solved with one template
+              and a naming rule. No application needed.
+            </p>
+          </div>
+          <div data-fx className="noteCard" >
+            <h3 className="noteCard__t">When nobody wants to use it</h3>
+            <p className="noteCard__d">
+              Software only helps if people are willing to leave the old way behind. If they are not, I say so up
+              front instead of building something that gets abandoned.
+            </p>
           </div>
         </div>
-      </section>
+      </Section>
 
-      <section className="sec">
-        <div className="wrap art">
-          <header className="head">
-            <span className="head__r" />
-            <h2 className="sec__h">Kapan saya bilang jangan bikin aplikasi</h2>
-          </header>
-          <p>
-            Perangkat lunak yang ditinggalkan lebih mahal daripada perangkat lunak yang tidak pernah dimulai. Mengatakan
-            ini sebelum kerja dimulai adalah bagian dari pekerjaannya.
+      <div className="wrap aboutStrip">
+        <div className="aboutStrip__text">
+          <p className="eyebrow">Why me</p>
+          <p className="aboutStrip__p">
+            I graduated from a vocational school in Software Engineering, and I am now studying Information Systems.
+            That puts me on both sides: writing code, and tidying the business process behind it. The second one is
+            usually what decides whether the software gets used at all.
           </p>
-          <ul>
-            <li>
-              <b>Kalau masalahnya cuma satu langkah.</b> Tiga orang mengedit satu berkas lalu menempel versi yang salah
-              bukan masalah perangkat lunak. Itu satu templat dan satu aturan penamaan.
-            </li>
-            <li>
-              <b>Kalau tidak ada yang mau memakainya.</b> Perangkat lunak hanya menolong kalau orang bersedia
-              meninggalkan cara lama. Kalau tidak, saya lebih baik bilang di depan.
-            </li>
-          </ul>
-
-          <header className="head" style={{ marginTop: 34 }}>
-            <span className="head__r" />
-            <h2 className="sec__h">Dua sisi dari masalah yang sama</h2>
-          </header>
-          <p>
-            Saya lulus dari SMK jurusan Rekayasa Perangkat Lunak dan sekarang menempuh Sistem Informasi. Itu menempatkan
-            saya di dua sisi: menulis kodenya, dan merapikan proses bisnis di belakangnya. Yang kedua biasanya yang
-            menentukan apakah perangkat lunaknya dipakai.
-          </p>
-          <p>
-            Berbasis di {site.place}. {site.status}.
-          </p>
+          <a className="btn btn--ghost" href="/tentang">
+            More about me
+          </a>
         </div>
-      </section>
+        <figure className="aboutStrip__photo">
+          <Image src="/github/arkan-avatar-2x.png" alt={`Portrait of ${site.name}`} width={680} height={680} sizes="(max-width: 860px) 92vw, 340px" />
+        </figure>
+      </div>
+
+      <CTABand />
     </>
   );
 }
