@@ -1,8 +1,7 @@
 /**
  * Tangkapan + statistik. Model tidak bisa melihat gambar, jadi setiap
- * tangkapan diukur: rasio tinta, baris berisi, jumlah warna unik, dan
- * SATURASI rata-rata — konsep sebelumnya penuh warna aksen, konsep ini harus
- * hampir monokrom, dan itu bisa diuji angkanya.
+ * tangkapan diukur: rasio tinta, baris berisi, warna unik, dan saturasi —
+ * konsep ini harus rapi dan hampir monokrom (aksen hanya di tempat berartinya).
  */
 const { chromium } = require("C:/Users/MyBook Hype AMD/lucifer-controller/node_modules/playwright");
 const fs = require("fs");
@@ -10,7 +9,7 @@ const path = require("path");
 const zlib = require("zlib");
 
 const BASE = process.env.PF_BASE || "http://127.0.0.1:4381";
-const OUT = path.join(__dirname, "..", "evidence", "editorial", "shots");
+const OUT = path.join(__dirname, "..", "evidence", "edition", "shots");
 fs.mkdirSync(OUT, { recursive: true });
 
 function stats(file) {
@@ -57,7 +56,7 @@ function stats(file) {
     const sat = mx === 0 ? 0 : (mx - mn) / mx;
     satSum += sat; satN++;
     if (sat > 0.28) coloured++;
-    if (uniq.size < 6000) uniq.add((r >> 3) * 4096 + (g >> 3) * 64 + (bb >> 3));
+    if (uniq.size < 8000) uniq.add((r >> 3) * 4096 + (g >> 3) * 64 + (bb >> 3));
   }
   let rn = 0; for (let y = 0; y < h; y++) if (rows[y] > 0) rn++;
   return {
@@ -81,8 +80,8 @@ function stats(file) {
     { name: "work", url: "/karya/", w: 1440, h: 900, theme: "light", full: true },
     { name: "case-study", url: "/karya/mafiablox/", w: 1440, h: 900, theme: "light", full: true },
     { name: "services", url: "/layanan/", w: 1440, h: 900, theme: "light" },
-    { name: "about", url: "/tentang/", w: 1440, h: 900, theme: "light" },
-    { name: "history", url: "/riwayat/", w: 1440, h: 900, theme: "dark" },
+    { name: "about", url: "/tentang/", w: 1440, h: 900, theme: "dark" },
+    { name: "history", url: "/riwayat/", w: 1440, h: 900, theme: "light" },
     { name: "contact", url: "/kontak/", w: 1440, h: 900, theme: "light" },
   ];
   const rep = [];
@@ -91,7 +90,7 @@ function stats(file) {
     const p = await ctx.newPage();
     await p.addInitScript((t) => localStorage.setItem("theme", t), s.theme);
     await p.goto(BASE + s.url, { waitUntil: "networkidle" });
-    await p.waitForTimeout(900);
+    await p.waitForTimeout(1400);
     const file = path.join(OUT, s.name + ".png");
     await p.screenshot({ path: file, fullPage: !!s.full });
     const st = stats(file);
@@ -100,23 +99,6 @@ function stats(file) {
     await ctx.close();
   }
   fs.writeFileSync(path.join(OUT, "shots.json"), JSON.stringify(rep, null, 2));
-
-  const ctx = await b.newContext({ viewport: { width: 1440, height: 900 } });
-  const p = await ctx.newPage();
-  await p.goto(BASE + "/", { waitUntil: "networkidle" });
-  await p.waitForTimeout(800);
-  const motion = await p.evaluate(() => {
-    const names = new Set();
-    let trans = 0;
-    for (const el of Array.from(document.querySelectorAll("body *"))) {
-      const cs = getComputedStyle(el);
-      if (cs.animationName && cs.animationName !== "none") cs.animationName.split(",").forEach((n) => names.add(n.trim()));
-      if (cs.transitionProperty && cs.transitionProperty !== "none") trans++;
-    }
-    return { keyframeAnimations: [...names], elementsWithTransition: trans };
-  });
-  console.log("\nmotion:", JSON.stringify(motion));
-
   const susp = rep.filter((r) => r.inkPct < 1 || r.rowsWithContentPct < 10 || r.uniqueColors < 20);
   console.log(`\n${rep.length} screenshots · ${susp.length} suspicious`);
   if (susp.length) console.log(JSON.stringify(susp, null, 1));

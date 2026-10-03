@@ -1,59 +1,80 @@
-# portfolio-arkan — **Editorial Index**
+# portfolio-arkan — **EDITION**
 
 Portfolio pribadi **Arkan Mustofa** — mahasiswa Sistem Informasi di Bandung.
 Situs statis Next.js. Deploy: **https://portfolio-arkan.pages.dev**
 
 ---
 
-## Konsepnya: halaman data yang tenang
+## Arahnya: surat kabar yang seluruhnya bergerak
 
-Konsep sebelumnya (dua kali) gagal karena satu sebab yang sama: ia berusaha
-terlihat mengesankan. Yang pertama sengaja beku, yang kedua penuh orb bercahaya,
-kartu kaca, dan teks bergradien — dan itu bukan selera, itu **daftar tell AI
-yang sudah punya nama**.
+Tiga percobaan sebelumnya gagal karena masing-masing menjawab pertanyaan yang
+salah. Yang pertama sengaja beku. Yang kedua penuh orb bercahaya dan kartu kaca
+(ditolak: "glossy, AI slop"). Yang ketiga datar tapi tanpa gerak
+(ditolak: "lebih parah lagi").
 
-Versi ini dibangun dari arah sebaliknya. Yang dihindari bukan "jelek", tapi
-**pola yang gampang dikenali sebagai hasil generate**:
+Yang diminta: **konsep yang geraknya penuh, tapi rapi, clean, terasa seperti
+halaman berita.** Gabungan itu yang jadi batasannya — dan batasan itulah yang
+menentukan desainnya.
 
-| Tell | Kenapa dilarang | Yang dipakai |
-|---|---|---|
-| Orb bercahaya / aurora blob | "floating-orb decoration" — ambient tanpa peran | permukaan datar |
-| Teks `background-clip: text` bergradien | "the gradient headline" — tell paling cepat dikenali | satu warna ink + satu aksen |
-| Panel kaca / `backdrop-filter` | "glassmorphism without purpose" | pemisah 1px |
-| `box-shadow` berwarna (glow) | "shadow-glow on dark" | hirarki dari garis, bukan cahaya |
-| Satu font untuk semua | "Inter-everywhere" — halaman template | 3 peran: serif / sans / mono |
-| Label kecil di atas tiap judul | "eyebrow on every section" | judul langsung |
-| `hover:scale` di semua kartu | "universal hover:scale-105" | garis bawah + geser 3px |
-| Easing overshoot/bounce | "bouncy overshoot easings" | satu `cubic-bezier` kalibrasi tenang |
-| Animasi masuk di tiap seksi | "animate-on-scroll on everything" | satu wipe judul saat muat |
-| Nav AI + footer 4 kolom | fingerprint paling dikenali | masthead dokumen + footer penutup |
+**Kuncinya: yang bergerak adalah TIPOGRAFI, bukan cahaya.**
+Orb/glow/kaca sudah dicoret dari kosakatanya. Yang bergerak sekarang adalah
+huruf, garis, dan angka — kosakata halaman cetak:
 
----
+| Gerak | Apa yang terjadi |
+|---|---|
+| **Typesetting** | Judul **terpasang kata demi kata**. Tiap kata punya `clip-path` sendiri + transform, dengan jeda bertingkat (46ms per kata). Terukur: 7 kata, 7 jeda berbeda. |
+| **Draw rule** | Aturan 1px **tertarik dari kiri** saat bagiannya masuk layar. Terukur: 15 dari 17 garis mulai dari scaleX 0. |
+| **Wipe** | Potret dan blok judul **disapu masuk** dari kiri, bukan fade. |
+| **Rise** | Baris tabel dan kartu berita **naik 16px** dengan jeda bertingkat. |
+| **Ticker** | Dua baris `LIVE / RECORD / IN PROGRESS` — **arah berlawanan**, kecepatan 42s vs 74s. Berhenti saat disorot. Berjalan tanpa henti. |
+| **Counter** | Angka **menghitung naik** dan **mendarat tepat** di nilai aslinya. |
+| **Live dot** | Titik status berdenyut di masthead. |
 
-## Yang membuatnya tetap punya karakter
-
-Menghapus slop tidak berarti jadi kosong. Tiga hal dipertahankan:
-
-**1 · Data kerja disajikan sebagai tabel.** Nomor, tahun, nama, jenis, status,
-tautan — angka rata (`tabular-nums`), pemisah 1px, tanpa kartu. Di ponsel
-tabelnya jadi baris berlabel, bukan ditumpuk jadi kartu. Ini sekaligus cara
-menjawab "jangan dump skill sebagai daftar": bukti jadi **data yang bisa
-dibandingkan**, bukan lencana warna.
-
-**2 · Status bukti ditulis sebagai kata.** `in production` · `source public` ·
-`awarded` · `delivered` · `document` · `in progress`. Tanpa pil, tanpa ikon,
-tanpa titik status.
-
-**3 · Satu gerak, dan ia membawa arti.** Judul masuk dengan wipe keras sekali
-saat muat (`clip-path`), lalu halaman diam. Satu-satunya elemen yang bergerak
-saat menggulir adalah **garis progres baca** di bawah masthead.
-
-**Tipografi** tiga peran: Newsreader (judul, serif baca) + IBM Plex Sans (badan)
-+ IBM Plex Mono (angka & status).
+Terukur: **48 elemen beranimasi** saat muat/masuk, 4 keyframe
+(`setType`, `drawRule`→transisi, `wipeIn`/`riseIn`, `tickRun`, `livePulse`),
+dan hanya 3 elemen yang animasinya tanpa akhir (ticker + titik live).
 
 ---
 
-## Verifikasi: 49 gate, dan gate-nya diuji bisa gagal
+## Struktur persnya
+
+- **Masthead:** baris atas = tanggal terbit + lokasi + status; wordmark besar
+  **ARKAN MUSTOFA**; baris seksi bergaris tebal di atas-bawah; garis progres baca.
+- **Ticker** band gelap berisi rekam jejak terbaru, dua baris berlawanan arah.
+- **Lead story:** kicker + judul raksasa + kolom dek di sebelah kanan dengan
+  aturan pemisah, plus blok fakta (based / status / records).
+- **Grid berita:** enam berita sekunder dalam kolom rapat 1px — garis atas
+  berubah merah saat disorot, bukan kartu.
+- **Ledger:** tabel hasil, angka `tabular-nums`, dulu → sekarang.
+- **Rail** yang menempel di halaman kasus (status, tahun, stack, artefak publik).
+- **Drop cap** di paragraf pertama artikel.
+- Tiga peran tipe: **Newsreader** (judul) / **IBM Plex Sans** (badan) / **IBM Plex Mono** (kicker, tanggal, angka).
+
+---
+
+## Ban anti-slop tetap berlaku — dan diukur sebagai NOL
+
+Kicker di sini **dipakai** (kategori berita: `LIVE`, `RECORD`, `IN PROGRESS`),
+tapi hanya pada berita — pemakaian kategoris yang sah, bukan label dekoratif di
+atas tiap judul seksi. Judul seksi tetap polos.
+
+| Tell | Terukur |
+|---|---|
+| backdrop-filter (kaca) | **0** |
+| CSS filter (blur/glow) | **0** |
+| box-shadow | **0** |
+| latar bergradien | **0** |
+| teks bergradien | **0** |
+| glow berwarna | **0** |
+| radius piksel > 14px | **0** |
+| orb (bulatan besar) | **0** |
+
+Catatan: `border-radius: 50%` pada **titik 7px** tidak dihitung pelanggaran —
+itu lingkaran (titik/pil), bukan sudut membulat yang jadi tell.
+
+---
+
+## Verifikasi: 52 gate
 
 ```bash
 npm run build
@@ -61,30 +82,40 @@ npx serve out
 PF_BASE=http://localhost:3000 npm run verify
 ```
 
-Karena keluhannya soal *tampilan* ("glossy", "ambient-nya AI slop"), sebagian
-besar gate di sini **menuntut nol** — bukan menuntut "ada".
-
 | Suite | Gate | Isi |
 |---|---|---|
-| `verify:editorial` | **36/36** | 17 rute 200 tanpa error · **nol** backdrop-filter · **nol** CSS filter · **nol** box-shadow · **nol** gradien · **nol** teks bergradien · **nol** radius > 14px · **nol** glow berwarna · **nol** orb · animasi keyframe ≤ 2 · tanpa loop ambient · tanpa overshoot · tanpa hover-transform · tanpa eyebrow · kerja = tabel 7 baris dgn `tabular-nums` · kontras ≥4.5:1 di 2 tema · tanpa overflow di 6 viewport · target sentuh · reduced-motion · tanpa JS · tanpa kata menempel / kebocoran metadata |
-| `verify:perf` | **13/13** | tanpa pustaka UI pihak ketiga · anggaran JS/CSS · gambar <200 KB · FCP/LCP · biaya JS handler gulir · long task |
-| `shots:editorial` | 10 tangkapan | tiap tangkapan diukur: rasio tinta, baris berisi, warna unik, **dan saturasi** |
+| `verify:edition` | **39/39** | 17 rute 200 tanpa error · 8 gate anti-slop = nol · **gerak nyata** (kata terpasang, jeda bertingkat, garis tertarik, ticker jalan, counter mendarat di nilai benar) · 48 elemen beranimasi · kosakata animasi = typesetting · **tanpa JS: nol elemen terpotong & teks utuh** · reduced-motion: nol terpotong · kontras ≥4.5:1 di 2 tema · tanpa overflow di 6 viewport · target sentuh · tanpa kata menempel / kebocoran metadata |
+| `verify:perf` | **13/13** | tanpa pustaka UI pihak ketiga · JS & CSS benar-benar terukur · anggaran · halaman depan tanpa gambar (memang) · gambar studi kasus <200 KB · FCP/LCP · biaya JS handler gulir · long task |
+| `shots:edition` | 10 tangkapan | tiap tangkapan diukur: tinta, baris berisi, warna unik, **saturasi** |
 
-**Gate-nya sudah dibuktikan bisa gagal.** Saya menyuntikkan satu contoh setiap
-tell ke halaman yang berjalan (blur, backdrop, shadow berwarna, gradien, radius
-999px beserta lingkarannya) dan memastikan **ketujuhnya terdeteksi**. Gate
-negatif yang tidak bisa gagal lebih berbahaya daripada tidak ada gate — suite
-versi sebelumnya sempat "lulus" karena CSS-nya tidak termuat sama sekali.
-
-Angka rilis terakhir:
+Angka rilis:
 
 ```
-Saturasi rata-rata   0.039 – 0.059   (praktis monokrom)
-Piksel beraksen      2.1 % – 4.6 %
-Animasi keyframe     1  ("wipe")
-Elemen bertransisi   263  (transisi hover 130ms, bukan animasi masuk)
-FCP / LCP            216 ms      long task 0 ms
+Saturasi rata-rata   0.028 – 0.069   (praktis monokrom; aksen hanya di tempatnya)
+Elemen beranimasi    48
+Keyframe             4  (typesetting / draw / wipe / ticker / live dot)
+Ticker               42s ↔ 74s, arah berlawanan
+FCP / LCP            228 ms      long task 0 ms
+JS                   446 KB raw / 131 KB gzip
+CSS                   40 KB raw /   8 KB gzip
 ```
+
+### Tiga hal yang cuma ketahuan karena diukur
+
+1. **Kata menempel saat JS mati.** `innerText` = `"Softwarethatgetsused,notjustshipped."`
+   Spasi ikut masuk ke elemen ber-`clip-path` dan dibuang browser. Sekarang spasi
+   jadi text node **di luar** span. Gate `tanpa JS` yang menemukannya — dan gate itu
+   ada justru karena "animasi penuh" berarti halaman bisa kosong kalau salah.
+2. **Gerak yang tidak bisa diukur karena sudah selesai.** Gate pertama menunggu
+   `networkidle` lalu 1,2 detik — pada saat itu animasinya sudah berakhir, jadi
+   gate melaporkan "tidak bergerak" padahal geraknya nyata. Sekarang perekam
+   dipasang **sebelum** halaman dimuat dan mengambil sampel tiap frame.
+3. **Kontras ticker gagal di DUA tema.** `--accent` di atas permukaan `--ink`
+   cuma 2.40:1 (tema terang). Tidak ada satu nilai yang aman untuk keduanya,
+   jadi ditambah token `--accent-on-ink` yang nilainya dibalik antar tema.
+
+Semua gate negatif sudah **dibuktikan bisa gagal**: satu contoh setiap tell
+disuntikkan ke halaman yang berjalan dan ketujuhnya terdeteksi.
 
 ---
 
@@ -92,17 +123,19 @@ FCP / LCP            216 ms      long task 0 ms
 
 ```
 app/
-  layout.tsx        3 peran font + masthead + footer
-  page.tsx          buka + kerja(tabel) + layanan + proses + perkakas + ajakan
-  karya/            7 catatan (+ halaman kasus)
+  layout.tsx        3 peran font, masthead, footer, engine
+  page.tsx          ticker + lead story + grid berita + proses + angka + tooling
+  karya/            7 catatan (+ halaman kasus ber-rail)
   layanan/          4 jenis kerja (+ detail)
   tentang/ riwayat/ kontak/
-components/site/
-  masthead.tsx      running head + garis progres baca
-  footer.tsx        penutup, bukan katalog sitemap
-  work-table.tsx    tabel kerja
+components/edition/
+  motion.tsx        engine: reveal per bagian, indeks animasi, counter, garis progres
+  type.tsx          SetType / DrawRule / Wipe / Rise / Count  (kosakata gerak)
+  masthead.tsx      kepala surat kabar
+  ticker.tsx        band terbaru, dua baris berlawanan arah
+  footer.tsx
 lib/site.ts         konten (CV + repo publik)
-lib/records.ts      status bukti + label
+lib/records.ts      status bukti tiap catatan
 ```
 
 **20 rute statis**, semua ter-render jadi HTML (`output: "export"`), tanpa server.
@@ -111,10 +144,10 @@ lib/records.ts      status bukti + label
 
 ```bash
 npm install
-npm run dev              # http://localhost:4321
-npm run build            # 20 rute statis -> out/
-npm run verify           # 45 gate
-npm run shots:editorial  # tangkapan + statistik termasuk saturasi
+npm run dev             # http://localhost:4321
+npm run build           # 20 rute statis -> out/
+npm run verify          # 52 gate
+npm run shots:edition   # tangkapan + statistik termasuk saturasi
 ```
 
 ## Deploy
@@ -126,5 +159,5 @@ Autodeploy saat push ke `main`.
 
 Semua teks dari CV (`public/arkan-mustofa-cv.pdf`) dan repo publik
 `github.com/Arkanuy`. Tidak ada metrik, tangkapan layar, atau kredensial yang
-dikarang. Foto aslinya 340×340 (avatar GitHub dibatasi 340px); dipakai 680px
-WebP untuk layar retina.
+dikarang — termasuk isi ticker, yang seluruhnya diambil dari catatan asli.
+Foto aslinya 340×340 (avatar GitHub dibatasi 340px); dipakai 680px WebP.

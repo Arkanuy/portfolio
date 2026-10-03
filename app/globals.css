@@ -1,64 +1,61 @@
 /* =========================================================================
-   PORTFOLIO — sistem "Editorial Index"
+   EDITION — bahasa desain surat kabar + gerak sebagai inti
    =========================================================================
-   ATURAN ANTI-SLOP YANG DIJAGA DI SINI (semuanya dari daftar tell yang
-   sudah terverifikasi, bukan selera):
+   Arah: "looks news". Struktur editorial yang rapi (masthead, kicker,
+   dateline, byline, aturan 1px, grid rapat) + gerak yang MENJADI konsepnya.
 
-   TIDAK ADA — karena tiap satu ini punya nama di daftar tell:
-     · orb bercahaya / aurora blob      → "floating-orb decoration"
-     · latar bergradien                 → "aurora-blob background"
-     · teks ber-`background-clip:text`  → "the gradient headline"
-     · panel kaca / backdrop-filter     → "glassmorphism without purpose"
-     · box-shadow berwarna (glow)       → "shadow-glow on dark"
-     · easing overshoot / bounce        → "bouncy overshoot easings"
-     · hover:scale di semua kartu       → "universal hover:scale-105"
-     · label kecil di atas tiap judul   → "eyebrow on every section"
-     · animasi masuk di setiap seksi    → "animate-on-scroll on everything"
+   GERAKNYA ADALAH TYPESETTING, BUKAN CAHAYA. Itu bedanya dengan versi yang
+   ditolak: yang dulu bergerak adalah glow/orb/kaca; yang sekarang bergerak
+   adalah HURUF, GARIS, dan TATA LETAK — kosakata milik halaman cetak.
 
-   YANG DIPAKAI SEBAGAI GANTINYA:
-     · permukaan datar, pemisah 1px
-     · satu aksen (oxblood), hanya di tempat yang membawa arti
-     · tipografi tiga peran: serif (judul), sans (badan), mono (data)
-     · data kerja disajikan sebagai TABEL, bukan kartu
-     · gerak: satu wipe judul saat muat + satu garis progres + reaksi hover
+   BAN ANTI-SLOP TETAP BERLAKU (semuanya tell yang sudah punya nama):
+     nol orb/aurora-blob · nol gradien · nol backdrop-filter · nol box-shadow
+     nol glow berwarna · nol radius > 14px · nol easing bounce
+     nol hover:scale · nol animasi masuk generik di semua seksi
+
+   KICKER: di sini kicker DIPAKAI — tapi hanya pada BERITA (kategori: WORK,
+   LIVE, ANALYSIS). Itu pemakaian ordinal/kategoris yang sah, bukan label
+   dekoratif di atas tiap judul seksi. Judul seksi tetap polos.
    ========================================================================= */
 
 @import "tailwindcss";
 
 :root {
-  --paper: #f5f3ee;
-  --paper-2: #ece8df;
-  --paper-3: #e2ddd1;
-  --ink: #15140f;
-  --ink-2: #45433c;
-  --ink-3: #6b6862;
-  --rule: #d7d3c8;
-  --rule-2: #b9b4a7;
-  --accent: #8c2d1c;
-  --accent-on: #fff8f6;
-  --focus: #15140f;
+  /* kertas koran: putih gading hangat, bukan #fff (putih murni = tell) */
+  --paper: #fbfaf7;
+  --paper-2: #f3f1ea;
+  --paper-3: #e9e6dc;
+  --ink: #14120e;
+  --ink-2: #3f3c34;
+  --ink-3: #6b675c;
+  --rule: #d9d5c8;
+  --rule-2: #b3ad9c;
+  --accent: #a31621;      /* merah koran */
+  --accent-on: #fff;
+  /* dipakai di atas permukaan --ink (ticker). Terang di tema terang,
+     gelap di tema gelap: tidak ada satu nilai yang aman untuk keduanya. */
+  --accent-on-ink: #ff8a7a;
+  --focus: #14120e;
 
-  --gut: clamp(18px, 4vw, 44px);
-  --wrap: 1160px;
-  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-
-  --fs-display: clamp(34px, 6.4vw, 82px);
-  --fs-h2: clamp(24px, 3.6vw, 44px);
-  --fs-h3: clamp(17px, 1.7vw, 21px);
+  --gut: clamp(16px, 3.6vw, 40px);
+  --wrap: 1240px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 480ms;
 }
 
 [data-theme="dark"] {
-  --paper: #131311;
-  --paper-2: #1b1b18;
-  --paper-3: #232320;
-  --ink: #f2efe6;
-  --ink-2: #c2beb2;
-  --ink-3: #9a968b;
-  --rule: #2e2e29;
-  --rule-2: #43423b;
-  --accent: #e0705a;
-  --accent-on: #1a0d09;
-  --focus: #f2efe6;
+  --paper: #12110f;
+  --paper-2: #1a1916;
+  --paper-3: #232118;
+  --ink: #f4f1e9;
+  --ink-2: #c4c0b4;
+  --ink-3: #96918a;
+  --rule: #2c2a25;
+  --rule-2: #423f38;
+  --accent: #e2544a;
+  --accent-on: #180603;
+  --accent-on-ink: #a31621;
+  --focus: #f4f1e9;
 }
 
 * { box-sizing: border-box; }
@@ -68,19 +65,18 @@ html {
   background: var(--paper);
   scroll-behavior: smooth;
 }
-
 body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   font-size: 16.5px;
-  line-height: 1.62;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
 }
 
-h1, h2, h3, h4, p, dl, dd, dt, ol, ul, table { margin: 0; }
+h1, h2, h3, h4, p, dl, dd, dt, ol, ul, table, figure, blockquote { margin: 0; }
 ol, ul { padding: 0; list-style: none; }
 a { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }
@@ -90,432 +86,424 @@ button { font: inherit; color: inherit; }
 :where(a, button, input, textarea, [tabindex]):focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
-  border-radius: 2px;   /* radius kecil saja; 20px+ adalah tell */
+  border-radius: 2px;
 }
 
-/* ---------- tipe ---------- */
-.display {
+/* ---------- tipe: tiga peran ---------- */
+.serif {
   font-family: var(--font-display), Georgia, "Times New Roman", serif;
   font-weight: 600;
-  font-style: normal;      /* judul miring = tell */
-  letter-spacing: -0.02em;
-  line-height: 1.06;
+  font-style: normal;
+  letter-spacing: -0.015em;
+  line-height: 1.04;
 }
 .mono {
   font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-variant-numeric: tabular-nums;   /* kolom angka wajib rata */
+  font-variant-numeric: tabular-nums;
 }
-.lead { font-size: clamp(17px, 1.9vw, 20px); color: var(--ink-2); line-height: 1.6; }
-.small { font-size: 13.5px; color: var(--ink-3); }
-.rule { height: 1px; background: var(--rule); border: 0; }
-.rule--ink { background: var(--ink); }
-.rule--accent { background: var(--accent); }
+.kicker {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.dek { font-size: clamp(16px, 1.7vw, 19px); color: var(--ink-2); line-height: 1.55; }
+.meta { font-size: 12.5px; color: var(--ink-3); }
+.byline { font-size: 13px; color: var(--ink-2); }
+.byline b { font-weight: 620; }
 
-.wrap {
-  width: 100%;
-  max-width: var(--wrap);
-  margin-inline: auto;
-  padding-inline: var(--gut);
-}
+.wrap { width: 100%; max-width: var(--wrap); margin-inline: auto; padding-inline: var(--gut); }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 
 .skip {
-  position: fixed;
-  top: 8px; left: 8px;
-  z-index: 300;
-  padding: 10px 14px;
-  background: var(--ink);
-  color: var(--paper);
-  font-size: 13px;
-  clip-path: inset(50%);
-  transition: clip-path 140ms var(--ease);
+  position: fixed; top: 8px; left: 8px; z-index: 300;
+  padding: 10px 14px; background: var(--ink); color: var(--paper);
+  font-size: 13px; clip-path: inset(50%); transition: clip-path 140ms var(--ease);
 }
 .skip:focus { clip-path: inset(0); }
 
 /* =========================================================================
-   MASTHEAD — "running head" satu baris gaya dokumen.
-   Sengaja BUKAN pola nav AI (wordmark kiri + 5 tautan + tombol pil kanan).
-   Tidak ada tombol. Tidak ada CTA di header. Tidak ada latar putih mengapung.
+   GERAK — semuanya di bawah `html[data-anim="on"]`.
+   Kalau JS mati atau reduced-motion, atribut itu tidak dipasang, jadi konten
+   TIDAK PERNAH tersembunyi. Ini mencegah bug "konten tak terlihat" yang
+   pernah terjadi, sekaligus tetap memberi gerak penuh saat JS hidup.
    ========================================================================= */
-.head {
-  position: sticky;
-  top: 0;
-  z-index: 60;
-  background: var(--paper);
-  border-bottom: 1px solid var(--ink);
+html[data-anim="on"] [data-set] > span {
+  display: inline-block;
+  clip-path: inset(0 0 108% 0);
+  transform: translateY(0.34em);
+  animation: setType 620ms var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 46ms);
 }
-.head__in {
-  display: flex;
-  align-items: baseline;
-  gap: 6px 18px;
-  flex-wrap: wrap;
-  padding: 13px 0 11px;
+@keyframes setType {
+  to { clip-path: inset(0 0 -12% 0); transform: none; }
 }
-.head__me {
-  font-size: 15px;
-  font-weight: 650;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
+
+/* Aturan digambar dengan TRANSISI + state, bukan animasi kedatangan.
+   Alasannya terukur: animasi "both" langsung melompat ke frame akhir kalau
+   bagiannya belum terlihat, sehingga tidak ada transisi yang bisa diamati dan
+   gate "apakah bergerak" tidak punya apa pun untuk diukur. Dengan state,
+   nilainya berubah 0 -> 1 saat bagiannya masuk, dan itu bisa dibuktikan. */
+html[data-anim="on"] [data-draw] > i {
+  display: block; height: 1px; background: var(--ink);
+  transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform 720ms var(--ease);
+  transition-delay: calc(var(--i, 0) * 90ms);
 }
-.head__me span { display: block; font-size: 12px; font-weight: 400; color: var(--ink-3); letter-spacing: 0.02em; }
+html[data-anim="on"] [data-on-enter][data-in="true"] [data-draw] > i,
+html[data-anim="on"] [data-draw][data-in="true"] > i {
+  transform: scaleX(1);
+}
+
+html[data-anim="on"] [data-wipe] {
+  clip-path: inset(0 100% 0 0);
+  animation: wipeIn 760ms var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+@keyframes wipeIn { to { clip-path: inset(0 0 0 0); } }
+
+html[data-anim="on"] [data-rise] {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: riseIn 560ms var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+@keyframes riseIn { to { opacity: 1; transform: none; } }
+
+/* di luar layar: belum jalan. Begitu masuk, atribut in dipasang engine. */
+html[data-anim="on"] [data-on-enter]:not([data-in="true"]) [data-set] > span,
+html[data-anim="on"] [data-on-enter]:not([data-in="true"]) [data-wipe],
+html[data-anim="on"] [data-on-enter]:not([data-in="true"]) [data-rise] {
+  animation-play-state: paused;
+}
+html[data-anim="on"] [data-on-enter]:not([data-in="true"]) [data-draw] > i {
+  animation-play-state: paused;
+}
+
+/* =========================================================================
+   MASTHEAD — kepala surat kabar
+   baris atas: tanggal + edisi. lalu wordmark besar. lalu baris seksi.
+   ========================================================================= */
+.head { position: sticky; top: 0; z-index: 60; background: var(--paper); }
+.head__top {
+  display: flex; align-items: baseline; gap: 10px 18px; flex-wrap: wrap;
+  padding: 8px 0 7px; font-size: 11.5px; color: var(--ink-3);
+  border-bottom: 1px solid var(--rule);
+}
+.head__top .mono { letter-spacing: 0.06em; text-transform: uppercase; }
+.head__clock { margin-left: auto; color: var(--ink-2); }
+.head__lock {
+  display: inline-flex; align-items: center; gap: 7px;
+  color: var(--accent); font-weight: 600;
+}
+.head__dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--accent); /* 7px = titik, bukan orb */
+  animation: livePulse 2.2s var(--ease) infinite;
+}
+@keyframes livePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.72); }
+}
+
+.head__mid { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; padding: 12px 0 10px; }
+.head__name {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(30px, 5.6vw, 62px);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+}
+.head__name span { color: var(--accent); }
+.head__tag { font-size: 12.5px; color: var(--ink-3); max-width: 30ch; margin-left: auto; text-align: right; }
+@media (max-width: 700px) { .head__tag { text-align: left; margin-left: 0; } }
+
 .head__nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 14px;
-  margin-left: auto;
-  font-size: 14px;
+  display: flex; flex-wrap: wrap; gap: 0;
+  border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink);
 }
 .head__nav a {
-  color: var(--ink-3);
-  padding: 2px 0;
-  border-bottom: 1px solid transparent;
-  transition: color 140ms var(--ease), border-color 140ms var(--ease);
+  padding: 9px 14px 8px; font-size: 13.5px; font-weight: 550;
+  color: var(--ink-2); border-right: 1px solid var(--rule);
+  transition: color 130ms var(--ease), background-color 130ms var(--ease);
   white-space: nowrap;
 }
-.head__nav a:hover { color: var(--ink); border-bottom-color: var(--ink); }
-.head__nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
-.head__cta { color: var(--accent); border-bottom: 1px solid var(--accent) !important; }
-
-/* progres baca: satu garis, di bawah masthead. Satu-satunya elemen yang
-   bergerak saat menggulir — dan ia membawa arti (posisi baca). */
-.head__prog { height: 2px; background: var(--rule); }
-.head__progFill {
-  display: block;
-  height: 100%;
-  background: var(--accent);
-  transform-origin: 0 50%;
-  transform: scaleX(0);
+.head__nav a:first-child { padding-left: 0; }
+.head__nav a:hover { color: var(--ink); background: var(--paper-2); }
+.head__nav a[aria-current="page"] { color: var(--accent); }
+.head__nav a[aria-current="page"]::after {
+  content: ""; display: block; height: 2px; background: var(--accent); margin-top: 4px;
+}
+@media (max-width: 700px) {
+  .head__nav { border-bottom: 1px solid var(--rule); }
+  .head__nav a { padding: 8px 10px 7px; font-size: 12.5px; border-right: 0; }
+  .head__nav a:first-child { padding-left: 0; }
 }
 
-@media (max-width: 720px) {
-  .head__nav { width: 100%; margin-left: 0; gap: 3px 12px; font-size: 13px; }
-  .head__in { padding-bottom: 9px; }
-}
+/* progres baca */
+.head__bar { height: 2px; background: var(--rule); }
+.head__barFill { display: block; height: 100%; background: var(--accent); transform-origin: 0 50%; transform: scaleX(0); }
 
 /* =========================================================================
-   BUKA HALAMAN
+   TICKER — band "terbaru", dua baris arah berlawanan
    ========================================================================= */
-.open { padding: clamp(40px, 7vw, 88px) 0 clamp(28px, 4vw, 48px); }
-
-/* wipe keras pada judul saat muat — satu-satunya animasi masuk.
-   clip-path, bukan fade-up, dan tidak diulang di seksi lain. */
-@keyframes wipe { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
-.open__t {
-  font-size: var(--fs-display);
-  max-width: 20ch;
-  animation: wipe 620ms var(--ease) both;
-}
-.open__t b { font-weight: 600; color: var(--accent); }
-.open__rows {
-  display: grid;
-  gap: 16px 40px;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-  margin-top: clamp(22px, 3.4vw, 40px);
-  padding-top: clamp(18px, 2.4vw, 28px);
-  border-top: 1px solid var(--ink);
-}
-.open__rows p { font-size: 16.5px; color: var(--ink-2); max-width: 58ch; }
-.open__links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 20px;
-  margin-top: clamp(20px, 3vw, 30px);
-  font-size: 14.5px;
-}
-.open__links a { color: var(--accent); border-bottom: 1px solid var(--accent); }
-.open__links a:hover { color: var(--ink); border-bottom-color: var(--ink); }
-
-@media (max-width: 860px) { .open__rows { grid-template-columns: minmax(0, 1fr); } }
-
-/* =========================================================================
-   SEKSI
-   ========================================================================= */
-.sec { padding: clamp(34px, 5vw, 62px) 0; }
-.sec + .sec { border-top: 1px solid var(--rule); }
-.sec__h {
-  font-size: var(--fs-h2);
-  max-width: 30ch;
-  margin-bottom: clamp(18px, 2.6vw, 30px);
-}
-.sec__note { margin-top: 14px; font-size: 15px; color: var(--ink-2); max-width: 68ch; }
-
-/* =========================================================================
-   TABEL KERJA — pengganti grid kartu.
-   Angka rata (tabular-nums), garis 1px, tanpa bayangan, tanpa radius besar.
-   ========================================================================= */
-.work { width: 100%; border-collapse: collapse; font-size: 15px; }
-.work caption { text-align: left; font-size: 13.5px; color: var(--ink-3); padding-bottom: 10px; }
-.work thead th {
-  text-align: left;
-  font-weight: 600;
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-  padding: 0 14px 9px 0;
+.tick {
+  display: grid; gap: 0;
   border-bottom: 1px solid var(--ink);
-  white-space: nowrap;
+  background: var(--ink); color: var(--paper);
+  overflow: hidden;
 }
-.work tbody td {
-  padding: 15px 14px 15px 0;
-  border-bottom: 1px solid var(--rule);
-  vertical-align: top;
+.tick__row { display: flex; width: max-content; gap: 0; animation: tickRun 42s linear infinite; }
+.tick__row--rev { animation-duration: 74s; animation-direction: reverse; opacity: 0.62; }
+.tick:hover .tick__row { animation-play-state: paused; }
+@keyframes tickRun { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.tick__i {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 9px 18px; font-size: 12.5px; white-space: nowrap;
+  border-right: 1px solid color-mix(in srgb, var(--paper) 22%, transparent);
 }
-.work tbody tr { transition: background-color 130ms var(--ease); }
-.work tbody tr:hover { background: var(--paper-2); }
-.work__no { color: var(--ink-3); width: 3ch; }
-.work__yr { color: var(--ink-3); white-space: nowrap; width: 9ch; }
-.work__name { font-weight: 620; }
-.work__name a { display: inline-block; transition: transform 130ms var(--ease); }
-.work tbody tr:hover .work__name a { transform: translateX(3px); }
-.work__kind { color: var(--ink-2); }
-.work__st { white-space: nowrap; }
-.work__go { text-align: right; color: var(--ink-3); white-space: nowrap; }
-.work tbody tr:hover .work__go { color: var(--accent); }
-
-/* status: teks, bukan lencana berwarna */
-.st { font-family: var(--font-mono), monospace; font-size: 12px; color: var(--ink-2); }
-.st[data-s="live"] { color: var(--accent); }
-.st[data-s="public"], .st[data-s="doc"] { color: var(--ink-2); }
-.st[data-s="building"] { color: var(--ink-3); }
-
-/* ponsel: tabel jadi baris berlabel */
-@media (max-width: 760px) {
-  .work thead { display: none; }
-  .work, .work tbody, .work tr, .work td { display: block; width: 100%; }
-  .work tbody tr { padding: 16px 0; border-bottom: 1px solid var(--rule); }
-  .work tbody td { padding: 0; border: 0; }
-  .work__no { display: inline; }
-  .work__no::after { content: " · "; }
-  .work__yr { display: inline; }
-  .work__name { font-size: 19px; margin-top: 2px; }
-  .work__kind { margin-top: 5px; }
-  .work__st { margin-top: 7px; }
-  .work__go { text-align: left; margin-top: 7px; }
-}
+.tick__i b { color: var(--accent-on-ink); font-weight: 600; }
+.tick__i:hover { background: color-mix(in srgb, var(--paper) 10%, transparent); }
 
 /* =========================================================================
-   DAFTAR DEFINISI — kemampuan & bukti. Kolom, bukan pil.
+   LEAD STORY — berita utama
    ========================================================================= */
-.defs { border-top: 1px solid var(--ink); }
-.defs__row {
+.lead { padding: clamp(26px, 4vw, 48px) 0 clamp(22px, 3vw, 36px); }
+.lead__grid {
   display: grid;
-  grid-template-columns: minmax(0, 200px) minmax(0, 1fr);
-  gap: 6px 28px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--rule);
-}
-.defs__t { font-weight: 620; }
-.defs__t span { display: block; font-weight: 400; font-size: 12.5px; color: var(--ink-3); margin-top: 2px; }
-.defs__v { color: var(--ink-2); font-size: 15px; }
-.defs__v em { font-style: normal; color: var(--accent); }
-@media (max-width: 700px) { .defs__row { grid-template-columns: minmax(0, 1fr); } }
-
-/* =========================================================================
-   DAFTAR BERNOMOR — dipakai HANYA di proses (memang berurutan)
-   ========================================================================= */
-.steps { border-top: 1px solid var(--ink); counter-reset: s; }
-.steps li {
-  display: grid;
-  grid-template-columns: 3ch minmax(0, 1fr) minmax(0, 300px);
-  gap: 6px 24px;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--rule);
-}
-.steps__n { color: var(--accent); font-weight: 600; }
-.steps__t { font-weight: 620; }
-.steps__d { color: var(--ink-2); font-size: 15px; }
-.steps__o { color: var(--ink-3); font-size: 13.5px; grid-column: 3; }
-@media (max-width: 760px) {
-  .steps li { grid-template-columns: 3ch minmax(0, 1fr); }
-  .steps__o { grid-column: 2; }
-}
-
-/* =========================================================================
-   BLOK ISI (baca panjang)
-   ========================================================================= */
-.body { max-width: 68ch; }
-.body p + p { margin-top: 16px; }
-.body p { font-size: 16.5px; color: var(--ink-2); }
-.body ul { margin-top: 16px; display: grid; gap: 9px; }
-.body li { position: relative; padding-left: 20px; font-size: 16px; color: var(--ink-2); }
-.body li::before { content: ""; position: absolute; left: 0; top: 11px; width: 9px; height: 1px; background: var(--ink-3); }
-
-/* =========================================================================
-   HALAMAN DALAM
-   ========================================================================= */
-.page { padding: clamp(38px, 6vw, 76px) 0 clamp(24px, 3vw, 38px); }
-.page__t { font-size: var(--fs-display); max-width: 24ch; animation: wipe 520ms var(--ease) both; }
-.page__s { margin-top: 20px; max-width: 62ch; }
-
-/* spesifikasi kasus: blok meta yang menempel */
-.spec {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 250px);
-  gap: clamp(24px, 4vw, 56px);
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: clamp(20px, 3.4vw, 48px);
   align-items: start;
-  padding: clamp(28px, 4vw, 48px) 0;
 }
-.spec__aside { position: sticky; top: 96px; }
-.spec__k { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
-.spec__v { font-size: 15px; margin-top: 3px; }
-.spec__v a { color: var(--accent); border-bottom: 1px solid var(--accent); }
-.spec__grp + .spec__grp { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--rule); }
-@media (max-width: 860px) {
-  .spec { grid-template-columns: minmax(0, 1fr); }
-  .spec__aside { position: static; }
+.lead__h {
+  font-size: clamp(34px, 6.2vw, 78px);
+  margin-top: 10px;
 }
-
-.shot { border: 1px solid var(--rule-2); }
-.shot img { width: 100%; height: auto; }
-.shot__cap { margin-top: 10px; font-size: 13px; color: var(--ink-3); }
-
-.nextrow {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-  align-items: baseline;
-  padding: 20px 0;
-  border-top: 1px solid var(--ink);
-  border-bottom: 1px solid var(--rule);
-  font-size: 15px;
+.lead__h span { display: inline-block; }
+.lead__cut {
+  border-left: 1px solid var(--rule);
+  padding-left: clamp(16px, 2.4vw, 28px);
 }
-.nextrow a { color: var(--accent); border-bottom: 1px solid var(--accent); }
+.lead__cut p + p { margin-top: 14px; }
+.lead__cut .dek { margin-top: 0; }
+.lead__facts { margin-top: 18px; border-top: 1px solid var(--ink); }
+.lead__facts > div { display: grid; grid-template-columns: minmax(0, 84px) minmax(0, 1fr); gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--rule); }
+.lead__facts dt { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); padding-top: 3px; }
+.lead__facts dd { font-size: 14px; }
+.lead__cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+@media (max-width: 900px) {
+  .lead__grid { grid-template-columns: minmax(0, 1fr); }
+  .lead__cut { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 18px; }
+}
 
 /* =========================================================================
-   KONTAK + FORM (label di atas, tanpa kaca)
+   TOMBOL — tajam, kecil radiusnya
    ========================================================================= */
-.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 300px); gap: clamp(24px, 4vw, 56px); align-items: start; }
-@media (max-width: 860px) { .two { grid-template-columns: minmax(0, 1fr); } }
-
-.form { display: grid; gap: 20px; max-width: 560px; }
-.f { display: grid; gap: 7px; }
-.f label { font-size: 12.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-3); }
-.f input, .f textarea {
-  width: 100%;
-  padding: 11px 13px;
-  border: 1px solid var(--rule-2);
-  border-radius: 4px;
-  background: var(--paper);
-  color: var(--ink);
-  font: inherit;
-  resize: vertical;
-  transition: border-color 130ms var(--ease);
-}
-.f input:focus, .f textarea:focus { outline: none; border-color: var(--ink); }
-.f input::placeholder, .f textarea::placeholder { color: var(--ink-3); }
-
 .btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 11px 18px;
-  border: 1px solid var(--ink);
-  border-radius: 4px;      /* kecil. pil = tell. */
-  background: var(--ink);
-  color: var(--paper);
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 130ms var(--ease), border-color 130ms var(--ease);
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 18px; border: 1px solid var(--ink); border-radius: 3px;
+  background: var(--ink); color: var(--paper);
+  font-size: 14.5px; font-weight: 600; cursor: pointer;
+  transition: background-color 130ms var(--ease), border-color 130ms var(--ease), color 130ms var(--ease);
 }
 .btn:hover { background: var(--accent); border-color: var(--accent); color: var(--accent-on); }
 .btn--line { background: transparent; color: var(--ink); }
 .btn--line:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-
-.dl { border-top: 1px solid var(--ink); }
-.dl__row {
-  display: grid;
-  grid-template-columns: minmax(0, 90px) minmax(0, 1fr) auto;
-  gap: 6px 14px;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--rule);
-}
-.dl__k { font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-3); }
-.dl__v { font-size: 15px; overflow-wrap: anywhere; }
-.dl__v:hover { color: var(--accent); }
-.dl__b {
-  padding: 6px 11px;
-  border: 1px solid var(--rule-2);
-  border-radius: 4px;
-  background: transparent;
-  font-size: 12px;
-  color: var(--ink-2);
-  cursor: pointer;
-  transition: border-color 130ms var(--ease), color 130ms var(--ease);
-}
-.dl__b:hover { border-color: var(--accent); color: var(--accent); }
+.btn i { font-style: normal; transition: transform 220ms var(--ease); }
+.btn:hover i { transform: translateX(3px); }
 
 /* =========================================================================
-   FOOTER — penutup, bukan katalog sitemap 4 kolom + baris ikon sosial.
+   SEKSI
    ========================================================================= */
-.foot { border-top: 1px solid var(--ink); padding: clamp(30px, 4vw, 52px) 0 26px; }
-.foot__in { display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: baseline; }
-.foot__id { font-size: 15px; }
-.foot__id b { display: block; font-size: 17px; }
+.sec { padding: clamp(28px, 4vw, 52px) 0; }
+.sec__bar { margin-bottom: clamp(18px, 2.4vw, 28px); }
+.sec__bar i { display: block; height: 2px; background: var(--ink); }
+.sec__h { font-size: clamp(22px, 3.2vw, 40px); margin-top: 12px; max-width: 26ch; }
+.sec__note { margin-top: 14px; font-size: 14.5px; color: var(--ink-2); max-width: 72ch; }
+
+/* =========================================================================
+   GRID BERITA — berita sekunder. Kolom rapat, aturan pemisah, tanpa kartu.
+   ========================================================================= */
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+.grid3 > * { background: var(--paper); padding: 20px 18px; }
+@media (max-width: 980px) { .grid3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .grid3 { grid-template-columns: minmax(0, 1fr); } }
+
+.story { position: relative; transition: background-color 160ms var(--ease); }
+.story:hover { background: var(--paper-2); }
+.story__h { font-size: clamp(18px, 2vw, 23px); margin-top: 9px; }
+.story__h a { display: inline; }
+.story__h a::after { content: ""; position: absolute; inset: 0; }
+.story__d { margin-top: 9px; font-size: 14.5px; color: var(--ink-2); }
+.story__meta { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; }
+.story__rule { display: block; height: 2px; background: var(--rule-2); transform-origin: 0 50%; transition: transform 260ms var(--ease), background-color 260ms var(--ease); }
+.story:hover .story__rule { background: var(--accent); }
+
+/* status = kata, bukan lencana */
+.st { font-family: var(--font-mono), monospace; font-size: 11.5px; letter-spacing: 0.04em; color: var(--ink-2); }
+.st[data-s="live"] { color: var(--accent); }
+
+/* =========================================================================
+   LEDGER — tabel hasil
+   ========================================================================= */
+.ledger { width: 100%; border-collapse: collapse; font-size: 15px; }
+.ledger caption { text-align: left; font-size: 13.5px; color: var(--ink-3); padding-bottom: 10px; }
+.ledger thead th {
+  text-align: left; font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-3); font-weight: 600; padding: 0 14px 9px 0;
+  border-bottom: 1px solid var(--ink); white-space: nowrap;
+}
+.ledger tbody td { padding: 14px 14px 14px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.ledger tbody tr { transition: background-color 140ms var(--ease); }
+.ledger tbody tr:hover { background: var(--paper-2); }
+.ledger__no, .ledger__yr { color: var(--ink-3); width: 1%; white-space: nowrap; }
+.ledger__t { font-weight: 620; }
+.ledger__t a { position: relative; }
+.ledger__t a::before { content: ""; position: absolute; left: 0; bottom: -1px; width: 0; height: 1px; background: var(--accent); transition: width 260ms var(--ease); }
+.ledger tbody tr:hover .ledger__t a::before { width: 100%; }
+.ledger__k { color: var(--ink-2); }
+.ledger__go { text-align: right; white-space: nowrap; color: var(--ink-3); }
+.ledger tbody tr:hover .ledger__go { color: var(--accent); }
+@media (max-width: 780px) {
+  .ledger thead { display: none; }
+  .ledger, .ledger tbody, .ledger tr, .ledger td { display: block; width: 100%; }
+  .ledger tbody tr { padding: 16px 0; border-bottom: 1px solid var(--rule); }
+  .ledger tbody td { padding: 0; border: 0; }
+  .ledger__no { display: inline; }
+  .ledger__no::after { content: " · "; }
+  .ledger__yr { display: inline; }
+  .ledger__t { font-size: 18px; margin-top: 3px; }
+  .ledger__go { text-align: left; margin-top: 6px; }
+}
+
+/* =========================================================================
+   BLOK ARTIKEL
+   ========================================================================= */
+.art { max-width: 70ch; }
+.art p + p { margin-top: 16px; }
+.art p { font-size: 17px; color: var(--ink-2); }
+.art h2 + p, .art h2 + ul { margin-top: 14px; }
+.art ul { display: grid; gap: 9px; margin-top: 14px; }
+.art li { position: relative; padding-left: 20px; font-size: 16.5px; color: var(--ink-2); }
+.art li::before { content: ""; position: absolute; left: 0; top: 11px; width: 10px; height: 1px; background: var(--ink-3); }
+.art__drop::first-letter {
+  font-family: var(--font-display), Georgia, serif;
+  float: left; font-size: 3.4em; line-height: 0.82; padding: 4px 10px 0 0; color: var(--accent);
+}
+
+/* =========================================================================
+   PROSES (satu-satunya daftar bernomor — memang berurutan)
+   ========================================================================= */
+.steps { border-top: 1px solid var(--ink); }
+.steps li {
+  display: grid; grid-template-columns: 3.5ch minmax(0, 240px) minmax(0, 1fr);
+  gap: 6px 24px; padding: 16px 0; border-bottom: 1px solid var(--rule);
+}
+.steps__n { color: var(--accent); font-weight: 700; }
+.steps__t { font-weight: 620; }
+.steps__d { color: var(--ink-2); font-size: 15px; }
+.steps__o { grid-column: 3; font-size: 12.5px; color: var(--ink-3); }
+@media (max-width: 780px) {
+  .steps li { grid-template-columns: 3.5ch minmax(0, 1fr); }
+  .steps__o { grid-column: 2; }
+}
+
+/* =========================================================================
+   ANGKA (counter)
+   ========================================================================= */
+.nums { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 1px; background: var(--rule); border-block: 1px solid var(--ink); }
+.num { background: var(--paper); padding: 20px 16px; }
+.num__v { font-family: var(--font-display), Georgia, serif; font-size: clamp(30px, 4vw, 48px); font-weight: 700; line-height: 1; letter-spacing: -0.03em; }
+.num__l { margin-top: 8px; font-size: 14px; color: var(--ink-2); }
+.num__n { margin-top: 4px; font-size: 12px; color: var(--ink-3); }
+
+/* =========================================================================
+   FOOTER
+   ========================================================================= */
+.foot { border-top: 1px solid var(--ink); margin-top: clamp(28px, 4vw, 52px); padding: 26px 0 30px; }
+.foot__in { display: flex; flex-wrap: wrap; gap: 18px 40px; align-items: baseline; }
+.foot__id { font-family: var(--font-display), Georgia, serif; font-size: 20px; font-weight: 700; }
+.foot__id span { display: block; font-family: var(--font-body), sans-serif; font-size: 13px; font-weight: 400; color: var(--ink-3); margin-top: 4px; }
 .foot__links { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-left: auto; font-size: 14px; }
-.foot__links a { color: var(--ink-2); border-bottom: 1px solid transparent; }
+.foot__links a { color: var(--ink-2); border-bottom: 1px solid transparent; transition: border-color 180ms var(--ease), color 180ms var(--ease); }
 .foot__links a:hover { color: var(--accent); border-bottom-color: var(--accent); }
 .foot__note { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--rule); font-size: 13px; color: var(--ink-3); }
 
 /* =========================================================================
-   RIWAYAT
+   HALAMAN DALAM
    ========================================================================= */
-.tl { border-top: 1px solid var(--ink); }
-.tl__row {
-  display: grid;
-  grid-template-columns: minmax(0, 170px) minmax(0, 1fr);
-  gap: 6px 28px;
-  padding: 18px 0;
-  border-bottom: 1px solid var(--rule);
-}
-.tl__d { color: var(--ink-3); font-size: 14px; }
-.tl__t { font-weight: 620; font-size: 18px; }
-.tl__o { color: var(--accent); font-size: 14px; margin-top: 2px; }
-.tl__p { color: var(--ink-2); font-size: 15px; margin-top: 9px; max-width: 68ch; }
-.tl__ul { margin-top: 9px; display: grid; gap: 6px; }
-.tl__ul li { position: relative; padding-left: 18px; font-size: 14.5px; color: var(--ink-2); }
-.tl__ul li::before { content: ""; position: absolute; left: 0; top: 10px; width: 8px; height: 1px; background: var(--ink-3); }
-@media (max-width: 700px) { .tl__row { grid-template-columns: minmax(0, 1fr); } }
+.page { padding: clamp(28px, 4vw, 56px) 0 clamp(20px, 2.6vw, 32px); }
+.page__h { font-size: clamp(30px, 5.4vw, 68px); max-width: 24ch; margin-top: 12px; }
+.page__s { margin-top: 18px; max-width: 62ch; }
+
+/* dua kolom: isi + rel meta yang menempel */
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 270px); gap: clamp(22px, 3.6vw, 52px); align-items: start; }
+@media (max-width: 880px) { .split { grid-template-columns: minmax(0, 1fr); } }
+.rail { border-top: 2px solid var(--ink); padding-top: 14px; }
+.rail__g + .rail__g { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--rule); }
+.rail__k { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+.rail__v { font-size: 14.5px; margin-top: 3px; }
+.rail__v a { color: var(--accent); border-bottom: 1px solid var(--accent); }
+.sticky { position: sticky; top: 150px; }
+@media (max-width: 880px) { .sticky { position: static; } }
+
+.figure { border: 1px solid var(--rule-2); }
+.figure img { width: 100%; height: auto; }
+.figcap { margin-top: 9px; font-size: 12.5px; color: var(--ink-3); }
 
 /* =========================================================================
-   MEDAN KERJA (layanan)
+   FORM
    ========================================================================= */
-.svc { border-top: 1px solid var(--ink); }
-.svc__row {
-  display: grid;
-  grid-template-columns: 3ch minmax(0, 1fr);
-  gap: 6px 24px;
-  padding: 24px 0;
-  border-bottom: 1px solid var(--rule);
+.form { display: grid; gap: 18px; max-width: 560px; }
+.f { display: grid; gap: 6px; }
+.f label { font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.f input, .f textarea {
+  width: 100%; padding: 11px 12px; border: 1px solid var(--rule-2); border-radius: 3px;
+  background: var(--paper); color: var(--ink); font: inherit; resize: vertical;
+  transition: border-color 140ms var(--ease);
 }
-.svc__n { color: var(--ink-3); }
-.svc__t { font-size: var(--fs-h3); font-weight: 640; }
-.svc__tag { color: var(--ink-2); margin-top: 6px; max-width: 60ch; }
-.svc__ul { margin-top: 12px; display: grid; gap: 8px; }
-.svc__ul li { position: relative; padding-left: 18px; font-size: 15px; color: var(--ink-2); max-width: 66ch; }
-.svc__ul li::before { content: ""; position: absolute; left: 0; top: 10px; width: 8px; height: 1px; background: var(--ink-3); }
-.svc__proof { margin-top: 14px; font-size: 14px; color: var(--ink-3); max-width: 64ch; }
-.svc__proof b { color: var(--ink-2); font-weight: 620; }
+.f input:focus, .f textarea:focus { outline: none; border-color: var(--ink); }
+.f input::placeholder, .f textarea::placeholder { color: var(--ink-3); }
+
+.dl { border-top: 2px solid var(--ink); }
+.dl__row { display: grid; grid-template-columns: minmax(0, 84px) minmax(0, 1fr) auto; gap: 6px 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.dl__k { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.dl__v { font-size: 15px; overflow-wrap: anywhere; }
+.dl__v:hover { color: var(--accent); }
+.dl__b { padding: 6px 11px; border: 1px solid var(--rule-2); border-radius: 3px; background: transparent; font-size: 12px; color: var(--ink-2); cursor: pointer; transition: border-color 140ms var(--ease), color 140ms var(--ease); }
+.dl__b:hover { border-color: var(--accent); color: var(--accent); }
 
 /* =========================================================================
-   REDUCED MOTION — judul tidak ber-wipe, tidak ada transisi
+   POTRET
+   ========================================================================= */
+.portrait { border: 1px solid var(--rule-2); }
+.portrait img { width: 100%; height: auto; aspect-ratio: 1/1; object-fit: cover; object-position: 50% 40%; }
+.portrait__cap { display: flex; justify-content: space-between; gap: 10px; padding: 9px 11px; border-top: 1px solid var(--rule-2); font-size: 12px; color: var(--ink-3); }
+
+/* =========================================================================
+   REDUCED MOTION — semua gerak mati, konten WAJIB terlihat
    ========================================================================= */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.001ms !important;
-    transition-duration: 0.001ms !important;
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  html [data-set] > span, html [data-wipe], html [data-rise], html [data-draw] > i {
+    clip-path: none !important; transform: none !important; opacity: 1 !important;
   }
-  .open__t, .page__t { animation: none !important; clip-path: none !important; }
+  .tick__row { animation: none !important; }
+  .head__dot { animation: none !important; }
   html { scroll-behavior: auto; }
 }
 
-/* target sentuh ukuran memadai di layar kecil (di akhir berkas, supaya menang
-   urutan sumber atas .btn biasa) */
+/* target sentuh (di akhir berkas supaya menang urutan sumber) */
 @media (max-width: 640px) {
   .btn, .dl__b { min-height: 44px; }
   .dl__b { display: inline-flex; align-items: center; padding-inline: 14px; }
-  .head__nav a { padding-block: 4px; }
+  .head__nav a { padding-block: 9px; }
 }

@@ -1,88 +1,153 @@
-import WorkTable from "@/components/site/work-table";
+import Ticker from "@/components/edition/ticker";
+import { SetType, DrawRule, Rise, Count } from "@/components/edition/type";
 import { site, services, process, stack, numbers } from "@/lib/site";
 import { records } from "@/lib/records";
 
+/** Berita turunan dari records: judul, kicker (kategori), dek, meta. */
+const stories = records.slice(0, 6);
+
 export default function Home() {
+  const live = records.filter((r) => r.state === "live").length;
+  const today = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" });
+
   return (
     <>
-      {/* ---------- BUKA ---------- */}
-      <section className="open">
+      <Ticker />
+
+      {/* ================= LEAD STORY ================= */}
+      <section className="lead">
         <div className="wrap">
-          <h1 className="display open__t">
-            Software that gets used, <b>not just shipped.</b>
-          </h1>
+          <div className="lead__grid">
+            <div>
+              <p className="kicker">Lead · {today}</p>
+              <SetType
+                as="h1"
+                className="lead__h"
+                text="Software that gets used, not just shipped."
+                accentLast
+              />
+            </div>
 
-          <div className="open__rows">
-            <p className="lead">
-              I am {site.name}. I study Information Systems in Bandung and build business software, web apps, and
-              automation. The rule I work by: map the process first, then write the code.
-            </p>
-            <p>
-              The problem is rarely the code. It is the flow — who does what, and where the work gets stuck. So the
-              work here starts with a process map, not a feature list. Seven records are listed below, each with the
-              strength of the evidence behind it.
-            </p>
+            <div className="lead__cut">
+              <DrawRule tone="ink" />
+              <div style={{ height: 16 }} />
+              <p className="dek">
+                I study Information Systems in Bandung and build business software, web apps, and automation. The rule
+                I work by: map the process first, then write the code.
+              </p>
+              <p className="dek">
+                The problem is rarely the code — it is the flow: who does what, and where the work gets stuck.
+              </p>
+
+              <dl className="lead__facts">
+                <div>
+                  <dt>Based</dt>
+                  <dd>{site.place}</dd>
+                </div>
+                <div>
+                  <dt>Status</dt>
+                  <dd>{site.status}</dd>
+                </div>
+                <div>
+                  <dt>Records</dt>
+                  <dd>
+                    <Count value={records.length} /> listed, <Count value={live} /> in production
+                  </dd>
+                </div>
+              </dl>
+
+              <div className="lead__cta">
+                <a className="btn" href="/karya">
+                  See the work <i aria-hidden="true">→</i>
+                </a>
+                <a className="btn btn--line" href={`mailto:${site.email}`}>
+                  Send an email
+                </a>
+              </div>
+            </div>
           </div>
-
-          <p className="open__links">
-            <a href="/karya">See the work</a>
-            <a href="/layanan">Services</a>
-            <a href={site.cv} download>
-              CV (PDF)
-            </a>
-            <a href={`mailto:${site.email}`}>Email</a>
-          </p>
         </div>
       </section>
 
-      {/* ---------- 1 · KERJA ---------- */}
+      {/* ================= BERITA SEKUNDER ================= */}
       <section className="sec" id="work">
         <div className="wrap">
-          <h2 className="display sec__h">Work</h2>
-          <WorkTable />
-          <p className="sec__note">
-            <span className="mono">in production</span> means it runs and takes orders today.{" "}
-            <span className="mono">in progress</span> means it is unfinished, and saying otherwise would be a false
-            claim.
-          </p>
+          <div className="sec__bar">
+            <DrawRule tone="ink" />
+            <SetType as="h2" className="sec__h" text="Selected work" />
+          </div>
+
+          <div className="grid3">
+            {stories.map((r, i) => (
+              <article className="story" key={r.id}>
+                <DrawRule tone="rule" onEnter={false} />
+                <p className="kicker" style={{ marginTop: 12 }}>
+                  {r.state === "live" ? "Live" : r.state === "building" ? "In progress" : r.kind.split("·")[0].trim()}
+                </p>
+                <h3 className="story__h">
+                  <a href={r.href}>{r.title}</a>
+                </h3>
+                <p className="story__d">{r.summary}</p>
+                <p className="story__meta meta mono">
+                  <span>{r.year}</span>
+                  <span>·</span>
+                  <span className="st" data-s={r.state}>
+                    {r.state === "live" ? "in production" : r.state === "public" ? "source public" : r.state === "building" ? "in progress" : r.state}
+                  </span>
+                </p>
+              </article>
+            ))}
+          </div>
+
+          <Rise className="sec__note">
+            <p>
+              Six of {records.length} records. <b>in production</b> means it runs and takes orders today;{" "}
+              <b>in progress</b> means it is unfinished, and saying otherwise would be a false claim.
+            </p>
+            <p style={{ marginTop: 12 }}>
+              <a className="btn btn--line" href="/karya">
+                All {records.length} records <i aria-hidden="true">→</i>
+              </a>
+            </p>
+          </Rise>
         </div>
       </section>
 
-      {/* ---------- 2 · LAYANAN ---------- */}
+      {/* ================= LAYANAN ================= */}
       <section className="sec" id="services">
         <div className="wrap">
-          <h2 className="display sec__h">Services</h2>
-          <div className="svc">
+          <div className="sec__bar">
+            <DrawRule tone="ink" />
+            <SetType as="h2" className="sec__h" text="Services" />
+          </div>
+          <div className="grid3">
             {services.map((s) => (
-              <div className="svc__row" key={s.slug}>
-                <p className="svc__n mono">{s.no}</p>
-                <div>
-                  <h3 className="svc__t">
-                    <a href={`/layanan/${s.slug}`}>{s.name}</a>
-                  </h3>
-                  <p className="svc__tag">{s.tagline}</p>
-                  <ul className="svc__ul">
-                    {s.includes.map((it) => (
-                      <li key={it}>{it}</li>
-                    ))}
-                  </ul>
-                  <p className="svc__proof">
-                    <b>Evidence.</b> {s.proof}
-                  </p>
-                </div>
-              </div>
+              <article className="story" key={s.slug}>
+                <DrawRule tone="rule" onEnter={false} />
+                <p className="kicker" style={{ marginTop: 12 }}>
+                  {s.no}
+                </p>
+                <h3 className="story__h">
+                  <a href={`/layanan/${s.slug}`}>{s.name}</a>
+                </h3>
+                <p className="story__d">{s.tagline}</p>
+                <p className="story__meta meta">{s.from}</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ---------- 3 · PROSES (satu-satunya daftar bernomor, karena memang berurutan) ---------- */}
+      {/* ================= PROSES ================= */}
       <section className="sec" id="process">
         <div className="wrap">
-          <h2 className="display sec__h">How I work</h2>
+          <div className="sec__bar">
+            <DrawRule tone="ink" />
+            <SetType as="h2" className="sec__h" text="How the work runs, in order." />
+          </div>
           <ol className="steps">
             {process.map((p) => (
-              <li key={p.no}>
+              <li key={p.no} data-rise data-on-enter>
                 <span className="steps__n mono">{p.no}</span>
                 <span className="steps__t">{p.title}</span>
                 <span className="steps__d">{p.body}</span>
@@ -95,53 +160,88 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------- 4 · PERKAKAS + ANGKA ---------- */}
-      <section className="sec" id="tooling">
+      {/* ================= ANGKA ================= */}
+      <section className="sec" id="numbers">
         <div className="wrap">
-          <h2 className="display sec__h">Tooling and numbers</h2>
-          <div className="defs">
-            {stack.map((g) => (
-              <div className="defs__row" key={g.group}>
-                <p className="defs__t">
-                  {g.group}
-                  <span>what it was used for</span>
-                </p>
-                <p className="defs__v">
-                  {g.items.map((it) => `${it.name} — ${it.evidence}`).join(" · ")}
-                </p>
-              </div>
-            ))}
+          <div className="sec__bar">
+            <DrawRule tone="ink" />
+            <SetType as="h2" className="sec__h" text="Numbers, and what they count." />
+          </div>
+          <div className="nums">
             {numbers.map((n) => (
-              <div className="defs__row" key={n.label}>
-                <p className="defs__t">
-                  {n.value}
-                  <span>{n.note}</span>
+              <div className="num" key={n.label} data-rise data-on-enter>
+                <p className="num__v">
+                  {/^\d+$/.test(n.value) ? <Count value={Number(n.value)} /> : /(\d+)/.test(n.value) ? (
+                    <>
+                      <Count value={Number(n.value.replace(/\D/g, ""))} suffix={`×`} />
+                    </>
+                  ) : (
+                    n.value
+                  )}
                 </p>
-                <p className="defs__v">{n.label}</p>
+                <p className="num__l">{n.label}</p>
+                <p className="num__n">{n.note}</p>
               </div>
             ))}
           </div>
-          <p className="sec__note">
-            Tools are listed with the work they were used on. Nothing appears here that is not backed by a record above.
-          </p>
         </div>
       </section>
 
-      {/* ---------- 5 · AJAKAN ---------- */}
+      {/* ================= PERKAKAS ================= */}
+      <section className="sec" id="tooling">
+        <div className="wrap">
+          <div className="sec__bar">
+            <DrawRule tone="ink" />
+            <SetType as="h2" className="sec__h" text="Tooling, and the work it was used on." />
+          </div>
+          <table className="ledger">
+            <caption>Every tool listed with the record that used it.</caption>
+            <thead>
+              <tr>
+                <th scope="col">Group</th>
+                <th scope="col">Tools and evidence</th>
+              </tr>
+            </thead>
+            <tbody>
+              {stack.map((g) => (
+                <tr key={g.group}>
+                  <td className="ledger__t" style={{ width: "22%" }}>
+                    {g.group}
+                  </td>
+                  <td className="ledger__k">
+                    {g.items.map((it, i) => (
+                      <span key={it.name}>
+                        {i > 0 ? " · " : ""}
+                        <b>{it.name}</b> — {it.evidence}
+                      </span>
+                    ))}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* ================= AJAKAN ================= */}
       <section className="sec">
         <div className="wrap">
-          <h2 className="display sec__h">Tell me how the work runs today.</h2>
-          <p className="lead" style={{ maxWidth: "60ch" }}>
+          <div className="sec__bar">
+            <DrawRule tone="accent" />
+            <SetType as="h2" className="sec__h" text="Tell me how the work runs today." />
+          </div>
+          <p className="dek" style={{ maxWidth: "62ch" }}>
             If a new app turns out not to be the answer, I will say so. Not every problem needs software — and saying
             that early is cheaper than building the wrong thing.
           </p>
-          <p className="open__links">
-            <a href={`mailto:${site.email}`}>Send an email</a>
-            <a href="/kontak">Contact page</a>
-          </p>
-          <p className="sec__note mono" style={{ marginTop: 26 }}>
-            {records.length} records · {stack.reduce((n, g) => n + g.items.length, 0)} tools listed
-          </p>
+          <div className="lead__cta">
+            <a className="btn" href={`mailto:${site.email}`}>
+              Send an email <i aria-hidden="true">→</i>
+            </a>
+            <a className="btn btn--line" href="/kontak">
+              Contact page
+            </a>
+          </div>
         </div>
       </section>
     </>

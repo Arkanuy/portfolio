@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import WorkTable from "@/components/site/work-table";
-import { records } from "@/lib/records";
+import { SetType, DrawRule, Rise } from "@/components/edition/type";
+import { records, STATUS } from "@/lib/records";
 
 export const metadata: Metadata = {
   title: "Work",
@@ -8,49 +8,79 @@ export const metadata: Metadata = {
 };
 
 export default function WorkPage() {
+  const live = records.filter((r) => r.state === "live").length;
+
   return (
     <>
       <section className="page">
         <div className="wrap">
-          <h1 className="display page__t">Work</h1>
-          <p className="page__s lead">
-            {records.length} records, newest first. Each row states how far the work actually got — running in
-            production, source public, delivered on placement, a document, or still being built.
+          <p className="kicker">Index · {records.length} records</p>
+          <SetType as="h1" className="page__h" text="Every record, and how far it got." accentLast />
+          <p className="page__s dek">
+            Newest first. Status is the strongest thing that can be pointed at: a product taking real orders, a public
+            repository, a document, an award, or an honest note that it is unfinished.
           </p>
         </div>
       </section>
 
       <section className="sec">
         <div className="wrap">
-          <WorkTable />
+          <div className="sec__bar">
+            <DrawRule tone="ink" />
+          </div>
+          <table className="ledger">
+            <caption>
+              {records.length} records · {live} in production. Hover a row to follow it.
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">No</th>
+                <th scope="col">Year</th>
+                <th scope="col">Record</th>
+                <th scope="col">Kind</th>
+                <th scope="col">Status</th>
+                <th scope="col" style={{ textAlign: "right" }}>
+                  <span className="sr">Open</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {records.map((r) => (
+                <tr key={r.id}>
+                  <td className="ledger__no mono">{r.no}</td>
+                  <td className="ledger__yr mono">{r.year}</td>
+                  <td className="ledger__t">
+                    <a href={r.href}>{r.title}</a>
+                  </td>
+                  <td className="ledger__k">{r.kind}</td>
+                  <td className="st" data-s={r.state}>
+                    {STATUS[r.state].label}
+                  </td>
+                  <td className="ledger__go">
+                    <a href={r.href}>
+                      Case study <span aria-hidden="true">→</span>
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
 
       <section className="sec">
         <div className="wrap">
-          <div className="body">
-            <h2 className="display sec__h">On evidence</h2>
-            <p>
-              A portfolio is a claim about someone&rsquo;s work, so each record carries the strongest thing that can
-              actually be pointed at rather than a mood. Where nothing can be pointed at, the row says so.
-            </p>
+          <div className="sec__bar">
+            <DrawRule tone="ink" />
+            <SetType as="h2" className="sec__h" text="What the status words mean." />
+          </div>
+          <div className="art">
             <ul>
-              <li>
-                <b>in production</b> — the product runs and takes real orders. The source is private, so the artefact
-                is the proof.
-              </li>
-              <li>
-                <b>source public</b> — the code can be read line by line.
-              </li>
-              <li>
-                <b>awarded</b> — recorded by a third party, which makes it externally checkable.
-              </li>
-              <li>
-                <b>document</b> — the value is a requirements baseline written before any code.
-              </li>
-              <li>
-                <b>in progress</b> — unfinished, and deliberately labelled that way.
-              </li>
+              {Object.entries(STATUS).map(([k, v]) => (
+                <li key={k}>
+                  <b className="mono">{v.label}</b> — {v.note}
+                </li>
+              ))}
             </ul>
           </div>
         </div>

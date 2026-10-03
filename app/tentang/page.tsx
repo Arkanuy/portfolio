@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { SetType, DrawRule, Rise, Count } from "@/components/edition/type";
 import { site, process, stack, numbers, education, hobbies } from "@/lib/site";
+import { records } from "@/lib/records";
 
 export const metadata: Metadata = {
   title: "About",
@@ -11,107 +13,122 @@ export default function AboutPage() {
     <>
       <section className="page">
         <div className="wrap">
-          <h1 className="display page__t">Process first, code second.</h1>
-          <p className="page__s lead">{site.bio}</p>
+          <p className="kicker">About · Method</p>
+          <SetType as="h1" className="page__h" text="Process first, code second." accentLast />
         </div>
       </section>
 
       <section className="sec" style={{ paddingTop: 0 }}>
-        <div className="wrap body">
-          <p>{site.bioLong}</p>
-          <p>
-            I finished vocational school in Software Engineering and I am now studying Information Systems. That puts
-            me on both sides: writing the code, and tidying the business process behind it.
-          </p>
-        </div>
-      </section>
+        <div className="wrap split">
+          <div className="art">
+            <p className="art__drop">{site.bio}</p>
+            <p>{site.bioLong}</p>
+            <p>
+              I finished vocational school in Software Engineering and I am now studying Information Systems. That puts
+              me on both sides: writing the code, and tidying the business process behind it. The second one usually
+              decides whether software gets used at all.
+            </p>
 
-      <section className="sec">
-        <div className="wrap">
-          <h2 className="display sec__h">How I work</h2>
-          <p className="small" style={{ marginBottom: 16, maxWidth: "64ch" }}>
-            The order is the method. If the second step produced no document, the feature list was invented while
-            coding — and that is what makes people abandon software.
-          </p>
-          <ol className="steps">
-            {process.map((p) => (
-              <li key={p.no}>
-                <span className="steps__n mono">{p.no}</span>
-                <span className="steps__t">{p.title}</span>
-                <span className="steps__d">{p.body}</span>
-                <span className="steps__o mono">
-                  → {p.no === "01" ? "current-state map" : p.no === "02" ? "requirement list" : p.no === "03" ? "working build" : "handover notes"}
-                </span>
+            <h2 className="sec__h" style={{ marginTop: 34 }}>
+              <SetType as="h2" text="How I work" />
+            </h2>
+            <ol className="steps" style={{ marginTop: 14 }}>
+              {process.map((p) => (
+                <li key={p.no} data-rise data-on-enter>
+                  <span className="steps__n mono">{p.no}</span>
+                  <span className="steps__t">{p.title}</span>
+                  <span className="steps__d">{p.body}</span>
+                  <span className="steps__o mono">
+                    → {p.no === "01" ? "current-state map" : p.no === "02" ? "requirement list" : p.no === "03" ? "working build" : "handover notes"}
+                  </span>
+                </li>
+              ))}
+            </ol>
+
+            <h2 className="sec__h" style={{ marginTop: 34 }}>
+              <SetType as="h2" text="Facts" />
+            </h2>
+            <ul>
+              <li>
+                <b>Born</b> — {site.born}
               </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+              <li>
+                <b>Based in</b> — {site.place}
+              </li>
+              <li>
+                <b>Status</b> — {site.status}
+              </li>
+              {education.map((e: { period: string; title: string; org?: string }) => (
+                <li key={e.title}>
+                  <b>{e.period}</b> — {e.title}
+                  {e.org ? `, ${e.org}` : ""}
+                </li>
+              ))}
+              {numbers.map((n) => (
+                <li key={n.label}>
+                  <b>{n.value}</b> — {n.label}
+                  {n.note ? ` (${n.note})` : ""}
+                </li>
+              ))}
+            </ul>
 
-      <section className="sec">
-        <div className="wrap">
-          <h2 className="display sec__h">Tooling</h2>
-          <div className="defs">
-            {stack.map((g) => (
-              <div className="defs__row" key={g.group}>
-                <p className="defs__t">
-                  {g.group}
-                  <span>{g.items.length} tools</span>
-                </p>
-                <p className="defs__v">{g.items.map((it) => `${it.name} — ${it.evidence}`).join(" · ")}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            <h2 className="sec__h" style={{ marginTop: 34 }}>
+              <SetType as="h2" text="Tooling" />
+            </h2>
+            <p className="meta" style={{ marginBottom: 12 }}>
+              Each tool with the work it was used on.
+            </p>
+            <ul>
+              {stack.map((g) => (
+                <li key={g.group}>
+                  <b>{g.group}</b> — {g.items.map((it) => `${it.name} (${it.evidence})`).join("; ")}
+                </li>
+              ))}
+            </ul>
 
-      <section className="sec">
-        <div className="wrap">
-          <h2 className="display sec__h">Facts</h2>
-          <div className="defs">
-            <div className="defs__row">
-              <p className="defs__t">Born</p>
-              <p className="defs__v">{site.born}</p>
-            </div>
-            <div className="defs__row">
-              <p className="defs__t">Based in</p>
-              <p className="defs__v">{site.place}</p>
-            </div>
-            <div className="defs__row">
-              <p className="defs__t">Status</p>
-              <p className="defs__v">{site.status}</p>
-            </div>
-            {education.map((e: { period: string; title: string; org?: string }) => (
-              <div className="defs__row" key={e.title}>
-                <p className="defs__t">
-                  {e.period}
-                  <span>education</span>
-                </p>
-                <p className="defs__v">
-                  {e.title}
-                  {e.org ? ` — ${e.org}` : ""}
-                </p>
-              </div>
-            ))}
-            {hobbies.map((h: { name: string; note: string }) => (
-              <div className="defs__row" key={h.name}>
-                <p className="defs__t">
-                  {h.name}
-                  <span>outside class</span>
-                </p>
-                <p className="defs__v">{h.note}</p>
-              </div>
-            ))}
-            {numbers.map((n) => (
-              <div className="defs__row" key={n.label}>
-                <p className="defs__t">
-                  {n.value}
-                  <span>{n.note}</span>
-                </p>
-                <p className="defs__v">{n.label}</p>
-              </div>
-            ))}
+            <h2 className="sec__h" style={{ marginTop: 34 }}>
+              <SetType as="h2" text="Outside class" />
+            </h2>
+            <ul>
+              {hobbies.map((h: { name: string; note: string }) => (
+                <li key={h.name}>
+                  <b>{h.name}</b> — {h.note}
+                </li>
+              ))}
+            </ul>
           </div>
+
+          <aside className="sticky">
+            <figure className="portrait">
+              <img src="/github/arkan-avatar-680.webp" alt={`Portrait of ${site.name}`} width={340} height={340} fetchPriority="high" decoding="async" />
+              <figcaption className="portrait__cap mono">
+                <span>{site.name}</span>
+                <span>{site.handle}</span>
+              </figcaption>
+            </figure>
+            <div className="rail" style={{ marginTop: 22 }}>
+              <div className="rail__g">
+                <p className="rail__k">Records</p>
+                <p className="rail__v">
+                  <Count value={records.length} /> with evidence
+                </p>
+              </div>
+              <div className="rail__g">
+                <p className="rail__k">Tool groups</p>
+                <p className="rail__v">
+                  <Count value={stack.length} /> · <Count value={stack.reduce((n, g) => n + g.items.length, 0)} /> tools
+                </p>
+              </div>
+              <div className="rail__g">
+                <p className="rail__k">CV</p>
+                <p className="rail__v">
+                  <a href={site.cv} download>
+                    Download PDF
+                  </a>
+                </p>
+              </div>
+            </div>
+          </aside>
         </div>
       </section>
     </>

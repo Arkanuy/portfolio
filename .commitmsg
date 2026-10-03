@@ -1,0 +1,38 @@
+EDITION: news-paper concept where the typography is what moves
+
+The three previous attempts each failed on the opposite axis: one was
+deliberately frozen, one was glowing glass cards (rejected as "glossy / AI
+slop"), one was flat with no motion (rejected as "worse"). The brief this time
+was explicit: full animation, tidy, clean, should look like news.
+
+That combination set the constraint, and the constraint produced the concept:
+what moves is TYPE, not light. Orbs, glow and glass are out; the moving
+vocabulary is paper — words get typeset, rules get drawn, blocks get wiped in,
+numbers count up, a two-row ticker counter-scrolls.
+
+Measured: 48 elements animate on load/enter, 7 headline words with 7 distinct
+stagger delays, 15 of 17 rules draw from scaleX 0, ticker 42s vs 74s
+counter-directional, counters land exactly on their real values, and only 3
+elements loop forever (ticker + live dot).
+
+Structure is a newspaper: dateline masthead, lead story with a standing dek
+column and fact block, secondary stories in tight 1px-grid columns whose rules
+turn red on hover, a ledger table, sticky case-study rail, drop caps.
+Three type roles (Newsreader / IBM Plex Sans / IBM Plex Mono).
+
+All eight anti-slop gates still demand ZERO and are proven failable by
+injecting one instance of every tell into the running page.
+
+Three defects only measurement caught:
+1. Glued words with JS disabled - innerText read "Softwarethatgetsused,not
+   justshipped." because the space sat inside the clipped span. Spaces are now
+   text nodes outside the spans. The no-JS gate exists precisely because full
+   animation can leave a page empty when it goes wrong.
+2. Motion that could not be measured because it had already finished - the
+   first gate waited for networkidle plus 1.2s and then reported "no motion"
+   while the motion was real. The recorder now attaches before load and
+   samples every frame.
+3. Ticker contrast failed in BOTH themes (2.40:1 in light). No single accent
+   value is safe on --ink, so a --accent-on-ink token flips between themes.
+
+52 gates green locally and against the live origin: 39 edition + 13 perf.

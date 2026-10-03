@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { SetType, DrawRule } from "@/components/edition/type";
 import { site } from "@/lib/site";
 import { records } from "@/lib/records";
 
@@ -39,16 +40,17 @@ export default function ContactPage() {
     <>
       <section className="page">
         <div className="wrap">
-          <h1 className="display page__t">Contact</h1>
-          <p className="page__s lead">
+          <p className="kicker">Contact</p>
+          <SetType as="h1" className="page__h" text="Start with one message." accentLast />
+          <p className="page__s dek">
             Describe how the work runs today — who does what, and which part hurts most. I usually reply within one
             business day, and the first reply says whether software is even the right answer.
           </p>
         </div>
       </section>
 
-      <section className="sec" style={{ paddingTop: 0 }}>
-        <div className="wrap two">
+      <section className="sec">
+        <div className="wrap split">
           <form className="form" onSubmit={submit}>
             <div className="f">
               <label htmlFor="name">Name</label>
@@ -70,16 +72,16 @@ export default function ContactPage() {
               />
             </div>
             <button className="btn" type="submit">
-              Compose email →
+              Compose email <i aria-hidden="true">→</i>
             </button>
-            <p className="small">
+            <p className="meta">
               {sent
                 ? "Your mail app is open with the message filled in. Press send."
                 : "This form stores nothing on a server. It composes the email on your device."}
             </p>
           </form>
 
-          <aside>
+          <aside className="sticky">
             <div className="dl">
               {rows.map((r) => (
                 <div className="dl__row" key={r.k}>
@@ -112,10 +114,15 @@ export default function ContactPage() {
                 <span />
               </div>
             </div>
-            <p className="small" style={{ marginTop: 20 }}>
-              Not sure yet? Asking a question first is fine. I am happy to talk through a workflow without you
-              committing to any work.
-            </p>
+            <div className="rail" style={{ marginTop: 22 }}>
+              <div className="rail__g">
+                <p className="rail__k">Not sure yet?</p>
+                <p className="rail__v">
+                  Asking a question first is fine. I am happy to talk through a workflow without you committing to any
+                  work.
+                </p>
+              </div>
+            </div>
           </aside>
         </div>
       </section>

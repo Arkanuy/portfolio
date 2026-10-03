@@ -1,20 +1,15 @@
 import { site } from "@/lib/site";
 
-/**
- * FOOTER — penutup, bukan katalog.
- *
- * Pola "4 kolom tautan + baris ikon sosial + baris copyright kecil" adalah
- * salah satu tell paling gampang dikenali. Di sini footer cuma menutup:
- * identitas, satu baris tautan, satu baris keterangan.
- */
 export default function Footer() {
   return (
     <footer className="foot">
       <div className="wrap">
         <div className="foot__in">
           <p className="foot__id">
-            <b>{site.name}</b>
-            {site.place}
+            Arkan Mustofa
+            <span>
+              {site.role}
+            </span>
           </p>
           <nav className="foot__links" aria-label="Elsewhere">
             <a href={`mailto:${site.email}`}>Email</a>
@@ -30,8 +25,8 @@ export default function Footer() {
           </nav>
         </div>
         <p className="foot__note">
-          {site.status}. Everything here comes from the CV and public repositories — no invented metrics, no
-          placeholder screenshots.
+          {site.status}. Every entry comes from the CV and public repositories — no invented metrics, no placeholder
+          screenshots.
         </p>
       </div>
     </footer>
