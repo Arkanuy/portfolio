@@ -3,14 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * WordFlow — judul masuk per KATA.
+ * WordFlow — judul masuk PER KATA, tiap kata datang dari sudut sendiri.
  *
- * Dipertahankan dari versi sebelumnya karena satu alasan teknis yang sudah
- * terbukti: teks per HURUF dengan `display: inline-block` membuat browser
- * memotong baris di tengah kata dan spasi ikut hilang ("kata menempel").
- * Satu elemen per KATA aman. Kata bertanda `~` jadi kata aksen.
+ * Dipertahankan dari versi sebelumnya karena alasan teknis yang sudah
+ * terbukti: teks per HURUF dengan `display: inline-block` bikin browser
+ * memotong baris di tengah kata dan spasinya hilang ("kata menempel").
+ * Satu elemen per KATA aman.
  *
- * Ini satu-satunya gerak teks di situs; tidak ada efek kilau berjalan.
+ * Kata bertanda `~` jadi kata aksen (gradien).
  */
 export function WordFlow({ text, className = "" }: { text: string; className?: string }) {
   const ref = useRef<HTMLSpanElement | null>(null);
@@ -32,7 +32,7 @@ export function WordFlow({ text, className = "" }: { text: string; className?: s
           }
         });
       },
-      { threshold: 0.12, rootMargin: "0px 0px -5% 0px" },
+      { threshold: 0.14, rootMargin: "0px 0px -5% 0px" },
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -48,8 +48,11 @@ export function WordFlow({ text, className = "" }: { text: string; className?: s
         return (
           <span key={`${w}-${k}`}>
             {k > 0 ? " " : null}
-            <span className={`wf__w${accent ? " wf__w--a" : ""}`} style={{ ["--i" as string]: k }}>
-              {clean}
+            <span
+              className="wf__w"
+              style={{ ["--i" as string]: k, ["--r" as string]: k % 2 === 0 ? -1.2 : 1.2 }}
+            >
+              {accent ? <em style={{ fontStyle: "normal" }}>{clean}</em> : clean}
             </span>
           </span>
         );

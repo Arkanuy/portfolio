@@ -1,13 +1,12 @@
 import { site, services } from "@/lib/site";
-import { records, traceStats } from "@/lib/trace";
+import { records } from "@/lib/records";
 
-/** FOOTER — kolom catatan lembar. */
 export default function Footer() {
   return (
     <footer className="ft">
       <div className="wrap">
         <div className="ft__top">
-          <div>
+          <div data-drift data-drift-x="7" data-drift-y="5">
             <div className="ft__brand">
               <img
                 className="ft__avatar"
@@ -25,8 +24,8 @@ export default function Footer() {
             </div>
             <p className="ft__status">{site.status}</p>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <a className="btn btn--fill btn--sm" href={`mailto:${site.email}`}>
-                Send an email →
+              <a className="btn btn--go btn--sm" href={`mailto:${site.email}`}>
+                Send an email
               </a>
               <a className="btn btn--ghost btn--sm" href={site.cv} download>
                 CV (PDF)
@@ -35,28 +34,28 @@ export default function Footer() {
           </div>
 
           <div className="ft__col">
-            <p className="ft__h">Index</p>
-            <a href="/karya">Records ({records.length})</a>
-            <a href="/layanan">Work</a>
-            <a href="/tentang">Method</a>
+            <p className="ft__h">Pages</p>
+            <a href="/karya">Work ({records.length})</a>
+            <a href="/layanan">Services</a>
+            <a href="/tentang">About</a>
             <a href="/riwayat">History</a>
             <a href="/kontak">Contact</a>
           </div>
 
           <div className="ft__col">
-            <p className="ft__h">Work types</p>
+            <p className="ft__h">Services</p>
             {services.map((s) => (
               <a key={s.slug} href={`/layanan/${s.slug}`}>
-                {s.no} · {s.name}
+                {s.name}
               </a>
             ))}
           </div>
 
           <div className="ft__col">
-            <p className="ft__h">Records</p>
+            <p className="ft__h">Selected work</p>
             {records.slice(0, 5).map((r) => (
               <a key={r.id} href={r.href}>
-                {r.no} · {r.title}
+                {r.title}
               </a>
             ))}
           </div>
@@ -64,8 +63,7 @@ export default function Footer() {
 
         <div className="ft__bottom">
           <p>
-            © {new Date().getFullYear()} {site.name}, {site.place} · {traceStats.capabilities} capabilities indexed,{" "}
-            {traceStats.gaps} without a linked record
+            © {new Date().getFullYear()} {site.name}, {site.place}
           </p>
           <p className="ft__links">
             <a href={site.github.url} target="_blank" rel="noopener noreferrer">

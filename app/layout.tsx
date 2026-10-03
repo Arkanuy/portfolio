@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/trace/header";
-import Footer from "@/components/trace/footer";
-import Motion from "@/components/trace/motion";
+import Field from "@/components/drift/field";
+import { ScrollBar } from "@/components/drift/interact";
+import Header from "@/components/drift/header";
+import Footer from "@/components/drift/footer";
+import DriftEngine from "@/components/drift/engine";
 import { site } from "@/lib/site";
-
-const sans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
-const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://portfolio-arkan.site"),
@@ -29,43 +27,46 @@ export const metadata: Metadata = {
 
 export const viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#eeebe3" },
-    { media: "(prefers-color-scheme: dark)", color: "#14140f" },
+    { media: "(prefers-color-scheme: dark)", color: "#08090e" },
+    { media: "(prefers-color-scheme: light)", color: "#eeeaf3" },
   ],
 };
 
-/* Tema ditulis sebelum cat pertama supaya tidak ada kedipan. */
+/* Tema ditulis sebelum cat pertama supaya tidak ada kedipan.
+ * Bawaan situs ini GELAP: medan bercahaya memang hidup di malam hari. */
+const jsFlag = `document.documentElement.setAttribute("data-js","on");`;
+
 const themeInit = `(function(){try{
 var t=localStorage.getItem("theme");
-if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}
+if(t!=="light"&&t!=="dark"){t="dark";}
 document.documentElement.setAttribute("data-theme",t);
-}catch(e){document.documentElement.setAttribute("data-theme","light");}})();`;
+}catch(e){document.documentElement.setAttribute("data-theme","dark");}})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${sans.variable} ${mono.variable}`}>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
+        <script dangerouslySetInnerHTML={{ __html: jsFlag }} />
       </head>
       <body>
         <a className="skip" href="#isi">
           Skip to content
         </a>
-        <span className="prog" aria-hidden="true">
-          <span className="prog__bar" id="trace-prog" />
-        </span>
+        <Field />
+        <ScrollBar />
         <Header />
         <main id="isi">
           <div className="wrap">
             <p className="nojs">
-              JavaScript is off, so the source panel and index filters are inert. Every record, status, and link on
-              this page is still readable as static text — that is deliberate.
+              JavaScript is off, so the drift, the tilt and the filter panels are inert. Every project, service and
+              contact detail on this site is still readable as plain text — that is deliberate.
             </p>
           </div>
           {children}
         </main>
         <Footer />
-        <Motion />
+        <DriftEngine />
       </body>
     </html>
   );

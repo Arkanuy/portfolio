@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Sheet, SignOff } from "@/components/trace/sheet";
+import { Sec, CTA } from "@/components/drift/sec";
 import { track, school, offHours } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "History",
-  description: "Placements, awards, education, and the record of what changed at each step.",
+  description: "Placements, awards, education, and life outside class.",
 };
 
 export default function RiwayatPage() {
@@ -12,28 +12,31 @@ export default function RiwayatPage() {
     <>
       <section className="pageHero">
         <div className="wrap">
-          <div className="pageHero__meta mono">
-            <span>Sheet 04 / 05</span>
-            <span>Entries {track.length}</span>
-            <span>Newest first</span>
-          </div>
+          <p className="eyebrow" data-as>
+            History · {track.length} entries
+          </p>
           <h1 className="pageHero__t">
-            The record behind the <em>records</em>.
+            <span data-as data-dp="0.15" style={{ display: "block" }}>
+              Where the work
+            </span>
+            <span data-as data-dp="-0.12" style={{ display: "block" }}>
+              <em>happened.</em>
+            </span>
           </h1>
-          <p className="pageHero__s">
-            Each entry here is what makes a claim on the front page checkable: a placement where the work happened, an
-            award that a third party recorded, or a programme still running.
+          <p className="pageHero__s" data-as style={{ ["--as-d" as string]: "280ms" }}>
+            Newest first. Each entry is the context behind a project: a placement where the work ran, an award a third
+            party recorded, or a programme still in progress.
           </p>
         </div>
       </section>
 
-      <section className="sec sec--tight">
+      <section className="sec" style={{ paddingTop: 0 }}>
         <div className="wrap">
           <ol className="timeList">
-            {track.map((t) => (
-              <li className="timeItem" key={t.title + t.date} data-rv>
+            {track.map((t, i) => (
+              <li className="timeItem" key={t.title + t.date} data-as data-dp={i % 2 ? "-0.09" : "0.11"} style={{ ["--as-d" as string]: `${i * 90}ms` }}>
                 <div>
-                  <span className="timeItem__date">{t.date}</span>
+                  <p className="timeItem__date mono">{t.date}</p>
                 </div>
                 <div>
                   <h2 className="timeItem__t">{t.title}</h2>
@@ -59,31 +62,37 @@ export default function RiwayatPage() {
         </div>
       </section>
 
-      <Sheet k="Key 05.1 / Study" title="Programmes, and hours ~outside them.">
-        <div className="twoCol2">
-          <div className="card2" data-rv>
-            <p className="card2__k">Education</p>
-            {school.map((s) => (
-              <div key={s.title} className="rowItem">
-                <span className="rowItem__k">{s.period}</span>
-                <span className="rowItem__t">{s.title}</span>
-                <span className="rowItem__o">{s.org}</span>
-              </div>
-            ))}
+      <Sec eyebrow="Study" title="Programmes, and hours ~outside them.">
+        <div className="spots">
+          <div className="glass spot" data-as data-dp="0.1">
+            <p className="cap__k">Education</p>
+            <div style={{ marginTop: 18, display: "grid", gap: 16 }}>
+              {school.map((s) => (
+                <div key={s.title}>
+                  <p className="mono" style={{ fontSize: 12.5, color: "var(--cyan-ink)" }}>
+                    {s.period}
+                  </p>
+                  <p style={{ marginTop: 4, fontSize: 17, fontWeight: 650 }}>{s.title}</p>
+                  <p style={{ marginTop: 3, fontSize: 14, color: "var(--text-2)" }}>{s.org}</p>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="card2" data-rv>
-            <p className="card2__k">Outside class hours</p>
-            {offHours.map((h) => (
-              <div key={h.name} className="rowItem">
-                <span className="rowItem__t">{h.name}</span>
-                <span className="rowItem__o">{h.note}</span>
-              </div>
-            ))}
+          <div className="glass spot" data-as data-dp="-0.1" style={{ ["--as-d" as string]: "120ms" }}>
+            <p className="cap__k">Outside class hours</p>
+            <div style={{ marginTop: 18, display: "grid", gap: 16 }}>
+              {offHours.map((h) => (
+                <div key={h.name}>
+                  <p style={{ fontSize: 17, fontWeight: 650 }}>{h.name}</p>
+                  <p style={{ marginTop: 3, fontSize: 14, color: "var(--text-2)" }}>{h.note}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </Sheet>
+      </Sec>
 
-      <SignOff />
+      <CTA />
     </>
   );
 }

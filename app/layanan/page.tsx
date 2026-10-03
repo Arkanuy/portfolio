@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Sheet, SignOff } from "@/components/trace/sheet";
+import { Sec, CTA } from "@/components/drift/sec";
+import { Spot } from "@/components/drift/interact";
+import { WordFlow } from "@/components/drift/word-flow";
 import { services, site } from "@/lib/site";
-import { records } from "@/lib/trace";
 
 export const metadata: Metadata = {
-  title: "Work",
-  description: "Four kinds of work — business systems, web, analysis and documentation, automation — each traced to the records that prove it.",
+  title: "Services",
+  description: "Four kinds of work: business systems, web, analysis and documentation, and automation.",
 };
 
 export default function LayananPage() {
@@ -13,141 +14,136 @@ export default function LayananPage() {
     <>
       <section className="pageHero">
         <div className="wrap">
-          <div className="pageHero__meta mono">
-            <span>Sheet 02 / 05</span>
-            <span>Work types 4</span>
-            <span>Records {records.length}</span>
-          </div>
+          <p className="eyebrow" data-as>
+            Services · {services.length} kinds of work
+          </p>
           <h1 className="pageHero__t">
-            Four kinds of work, each one <em>traceable</em> to something I already built.
+            <span data-as data-dp="0.15" style={{ display: "block" }}>
+              What I
+            </span>
+            <span data-as data-dp="-0.12" style={{ display: "block" }}>
+              <em>actually</em> do.
+            </span>
           </h1>
-          <p className="pageHero__s">
-            This is not a sales list. Every row below names the record that proves it, and if you follow that link you
-            land on the case study, the status of its evidence, and what was actually delivered.
+          <p className="pageHero__s" data-as style={{ ["--as-d" as string]: "300ms" }}>
+            Every service below comes from work already on the history page — not a list of things I could theoretically
+            attempt. Pick whichever is closest to your problem.
           </p>
         </div>
       </section>
 
-      <section className="sec sec--tight">
-        <div className="wrap">
-          <div className="svcList">
-            {services.map((s) => {
-              const linked = records.filter((r) =>
-                s.slug === "business-systems"
-                  ? r.state === "live" || r.state === "record"
-                  : s.slug === "web"
-                    ? r.state === "shipped" || r.state === "public"
-                    : s.slug === "analysis"
-                      ? r.state === "doc"
-                      : r.stack.toLowerCase().includes("node") || r.title === "PixWatch" || r.title === "BuildPlan",
-              );
-              return (
-                <div className="svcRow" key={s.slug} data-rv>
-                  <div>
-                    <p className="svcRow__no">{s.no}</p>
-                  </div>
-                  <div>
-                    <h2 className="svcRow__name">{s.name}</h2>
-                    <p className="svcRow__tag">{s.tagline}</p>
-                    <p className="svcRow__for">
-                      <strong>Who it is for:</strong> {s.for}
-                    </p>
-                    <ul className="svcRow__list">
-                      {s.includes.map((it) => (
-                        <li key={it}>{it}</li>
-                      ))}
-                    </ul>
-                    <p className="svcRow__proof">
-                      <strong>Evidence:</strong> {s.proof}
-                    </p>
-                    <div className="capRow__src" style={{ marginTop: 12 }}>
-                      {linked.map((r) => (
-                        <a className="chip" key={r.id} href={r.href}>
-                          <span className="mono" style={{ color: "var(--mark-ink)" }}>
-                            rec
-                          </span>
-                          {r.no} · {r.title}
-                        </a>
-                      ))}
-                    </div>
-                    <div style={{ display: "flex", gap: 9, flexWrap: "wrap", marginTop: 14 }}>
-                      <a className="btn btn--sm" href={`/layanan/${s.slug}`}>
-                        Detail
-                      </a>
-                      <a className="btn btn--sm btn--ghost" href="/kontak">
-                        Discuss this
-                      </a>
-                    </div>
-                  </div>
+      <Sec eyebrow="Services" title="Four, and what each ~includes.">
+        <div className="svcList">
+          {services.map((s, i) => (
+            <div className="svcRow" key={s.slug} data-as data-dp={i % 2 ? "-0.1" : "0.12"} style={{ ["--as-d" as string]: `${i * 90}ms` }}>
+              <span className="svcRow__no mono">{s.no}</span>
+              <div>
+                <h2 className="svcRow__name">{s.name}</h2>
+                <p className="svcRow__tag">{s.tagline}</p>
+                <p className="svcRow__for">
+                  <strong>Who it is for:</strong> {s.for}
+                </p>
+                <ul className="svcRow__list">
+                  {s.includes.map((it) => (
+                    <li key={it}>{it}</li>
+                  ))}
+                </ul>
+                <p className="svcRow__proof">
+                  <strong>Evidence:</strong> {s.proof}
+                </p>
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 18 }}>
+                  <a className="btn btn--go btn--sm" href={`/layanan/${s.slug}`}>
+                    Detail →
+                  </a>
+                  <a className="btn btn--ghost btn--sm" href="/kontak">
+                    Discuss this
+                  </a>
                 </div>
-              );
-            })}
-          </div>
+              </div>
+            </div>
+          ))}
         </div>
-      </section>
+      </Sec>
 
-      <Sheet
-        k="Key 03.1 / Refusal"
-        title="The two cases where I tell you ~not to build an app."
-        sub="A system that gets abandoned is more expensive than no system. Saying this before the work starts is part of the job."
+      <Sec
+        eyebrow="Honesty clause"
+        title="The two times I tell you ~not to build an app."
+        sub="Abandoned software costs more than software that was never started. Saying this before the work begins is part of the job."
       >
-        <div className="twoCol2">
-          <div className="noteCard" data-rv>
-            <h3 className="noteCard__t">When the problem is one step</h3>
-            <p className="noteCard__d">
-              Three people editing one file and pasting the wrong version is not a software problem. That is one
-              template and a naming rule. No application needed.
-            </p>
-          </div>
-          <div className="noteCard" data-rv>
-            <h3 className="noteCard__t">When nobody will use it</h3>
-            <p className="noteCard__d">
-              Software only helps if people are willing to leave the old way behind. If they are not, I would rather
-              say so up front than build something that quietly gets abandoned.
-            </p>
-          </div>
+        <div className="spots">
+          <Spot>
+            <div data-as>
+              <h3 className="spot__t">When the problem is one step</h3>
+              <p className="spot__d">
+                Three people editing one file and pasting the wrong version is not a software problem. That is one
+                template and a naming rule. No application needed.
+              </p>
+            </div>
+          </Spot>
+          <Spot tone="coral">
+            <div data-as style={{ ["--as-d" as string]: "110ms" }}>
+              <h3 className="spot__t">When nobody will use it</h3>
+              <p className="spot__d">
+                Software only helps if people are willing to leave the old way behind. If they are not, I would rather
+                say so up front than build something that quietly gets abandoned.
+              </p>
+            </div>
+          </Spot>
         </div>
-      </Sheet>
+      </Sec>
 
-      <section className="sec">
-        <div className="wrap aboutStrip" style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,300px)", gap: "clamp(20px,4vw,44px)", alignItems: "start" }}>
+      <Sec eyebrow="Why me" title="Both sides of the ~same problem.">
+        <div className="about">
           <div>
-            <p className="tag-line" style={{ marginBottom: 10 }}>
-              Why me
-            </p>
-            <p className="aboutHero__p" style={{ marginTop: 0 }}>
+            <p className="about__p" data-as>
               I finished vocational school in Software Engineering and I am now studying Information Systems. That puts
-              me on both sides: writing the code, and tidying the business process behind it. The second one is usually
-              what decides whether the software gets used at all — which is why this site shows you the process and the
-              evidence, not a wall of features.
+              me on both sides: writing the code, and tidying the business process behind it.
             </p>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 16 }}>
-              <a className="btn btn--sm" href="/tentang">
-                Method →
+            <p className="about__p" data-as style={{ ["--as-d" as string]: "120ms" }}>
+              The second one is usually what decides whether software gets used at all. It is also the part most people
+              skip — which is why the work here starts with a process map, not a feature list.
+            </p>
+            <div className="facts" style={{ maxWidth: 520 }}>
+              <div data-as style={{ ["--as-d" as string]: "200ms" }}>
+                <dt>Based in</dt>
+                <dd>{site.place}</dd>
+              </div>
+              <div data-as style={{ ["--as-d" as string]: "260ms" }}>
+                <dt>Status</dt>
+                <dd>{site.status}</dd>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 24 }} data-as>
+              <a className="btn btn--go btn--sm" href="/tentang">
+                More about me →
               </a>
-              <a className="btn btn--sm btn--ghost" href="/riwayat">
-                History
+              <a className="btn btn--ghost btn--sm" href={site.cv} download>
+                Download CV
               </a>
             </div>
           </div>
-          <figure className="aboutPhoto">
-                        <img
-              src="/github/arkan-avatar-680.webp"
-              alt={`Portrait of ${site.name}`}
-              width={340}
-              height={340}
-              fetchPriority="high"
-              decoding="async"
-            />
-            <figcaption>
-              <span>{site.name}</span>
-              <span>{site.handle}</span>
-            </figcaption>
-          </figure>
-        </div>
-      </section>
 
-      <SignOff />
+          <div style={{ position: "sticky", top: 110 }} data-as data-dp="0.1">
+            <div className="portrait__frame">
+              <img
+                className="portrait__img"
+                src="/github/arkan-avatar-680.webp"
+                alt={`Portrait of ${site.name}`}
+                width={340}
+                height={340}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div className="portrait__below">
+              <span className="chip chip--hot">{site.name}</span>
+              <span className="chip">{site.handle}</span>
+            </div>
+          </div>
+        </div>
+      </Sec>
+
+      <CTA />
     </>
   );
 }
