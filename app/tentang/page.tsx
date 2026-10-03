@@ -1,137 +1,119 @@
 import type { Metadata } from "next";
-import { Sec, CTA } from "@/components/drift/sec";
-import { Spot } from "@/components/drift/interact";
-import { WordFlow } from "@/components/drift/word-flow";
-import { site, process, stack, numbers } from "@/lib/site";
-import { traceStats } from "@/lib/records";
+import { site, process, stack, numbers, education, hobbies } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
   description: "Background, working method, and tooling of Arkan Mustofa.",
 };
 
-export default function TentangPage() {
+export default function AboutPage() {
   return (
     <>
-      <section className="pageHero">
+      <section className="page">
         <div className="wrap">
-          <p className="eyebrow" data-as>
-            About
-          </p>
-          <h1 className="pageHero__t">
-            <span data-as data-dp="0.16" style={{ display: "block" }}>
-              Process first,
-            </span>
-            <span data-as data-dp="-0.13" style={{ display: "block" }}>
-              <em>code</em> second.
-            </span>
-          </h1>
+          <h1 className="display page__t">Process first, code second.</h1>
+          <p className="page__s lead">{site.bio}</p>
         </div>
       </section>
 
       <section className="sec" style={{ paddingTop: 0 }}>
-        <div className="wrap">
-          <div className="about">
-            <div>
-              <p className="about__p" data-as>
-                {site.bio}
-              </p>
-              <p className="about__p" data-as style={{ ["--as-d" as string]: "120ms" }}>
-                {site.bioLong}
-              </p>
-              <div className="facts">
-                <div data-as style={{ ["--as-d" as string]: "180ms" }}>
-                  <dt>Born</dt>
-                  <dd>{site.born}</dd>
-                </div>
-                <div data-as style={{ ["--as-d" as string]: "230ms" }}>
-                  <dt>Based in</dt>
-                  <dd>{site.place}</dd>
-                </div>
-                <div data-as style={{ ["--as-d" as string]: "280ms" }}>
-                  <dt>Status</dt>
-                  <dd>{site.status}</dd>
-                </div>
-                <div data-as style={{ ["--as-d" as string]: "330ms" }}>
-                  <dt>Tooling</dt>
-                  <dd>
-                    {traceStats.capabilities} listed, {traceStats.gaps} without a work record yet
-                  </dd>
-                </div>
-              </div>
-            </div>
+        <div className="wrap body">
+          <p>{site.bioLong}</p>
+          <p>
+            I finished vocational school in Software Engineering and I am now studying Information Systems. That puts
+            me on both sides: writing the code, and tidying the business process behind it.
+          </p>
+        </div>
+      </section>
 
-            <div style={{ position: "sticky", top: 110 }} data-as data-dp="0.12">
-              <div className="portrait__frame">
-                <img
-                  className="portrait__img"
-                  src="/github/arkan-avatar-680.webp"
-                  alt={`Portrait of ${site.name}`}
-                  width={340}
-                  height={340}
-                  fetchPriority="high"
-                  decoding="async"
-                />
+      <section className="sec">
+        <div className="wrap">
+          <h2 className="display sec__h">How I work</h2>
+          <p className="small" style={{ marginBottom: 16, maxWidth: "64ch" }}>
+            The order is the method. If the second step produced no document, the feature list was invented while
+            coding — and that is what makes people abandon software.
+          </p>
+          <ol className="steps">
+            {process.map((p) => (
+              <li key={p.no}>
+                <span className="steps__n mono">{p.no}</span>
+                <span className="steps__t">{p.title}</span>
+                <span className="steps__d">{p.body}</span>
+                <span className="steps__o mono">
+                  → {p.no === "01" ? "current-state map" : p.no === "02" ? "requirement list" : p.no === "03" ? "working build" : "handover notes"}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="sec">
+        <div className="wrap">
+          <h2 className="display sec__h">Tooling</h2>
+          <div className="defs">
+            {stack.map((g) => (
+              <div className="defs__row" key={g.group}>
+                <p className="defs__t">
+                  {g.group}
+                  <span>{g.items.length} tools</span>
+                </p>
+                <p className="defs__v">{g.items.map((it) => `${it.name} — ${it.evidence}`).join(" · ")}</p>
               </div>
-              <div className="portrait__below">
-                <span className="chip chip--hot">{site.name}</span>
-                <span className="chip">{site.handle}</span>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      <Sec
-        eyebrow="Method"
-        title="Four steps, and what each ~leaves behind."
-        sub="The point of the order is that you can read the output of every step. If step two produced no document, the feature list was invented while coding."
-      >
-        <div className="steps">
-          {process.map((p, i) => (
-            <div className="step" key={p.no} data-as data-dp={i % 2 ? "0.11" : "-0.13"} style={{ ["--as-y" as string]: "46px", ["--as-d" as string]: `${i * 110}ms` }}>
-              <span className="step__n mono">{p.no}</span>
-              <h3 className="step__t">{p.title}</h3>
-              <p className="step__d">{p.body}</p>
-              <p className="step__out mono">
-                → {p.no === "01" ? "current-state map" : p.no === "02" ? "requirement list" : p.no === "03" ? "working build" : "handover notes"}
-              </p>
+      <section className="sec">
+        <div className="wrap">
+          <h2 className="display sec__h">Facts</h2>
+          <div className="defs">
+            <div className="defs__row">
+              <p className="defs__t">Born</p>
+              <p className="defs__v">{site.born}</p>
             </div>
-          ))}
-        </div>
-      </Sec>
-
-      <Sec eyebrow="Tooling" title="What I use, and what I can ~prove." sub="Same list as the front page, split by group. Dots mark which tools link to real work.">
-        <div className="caps">
-          {stack.map((g, gi) => (
-            <div className="cap" key={g.group} data-as data-dp={gi % 2 ? "-0.1" : "0.1"} style={{ ["--as-d" as string]: `${gi * 90}ms` }}>
-              <p className="cap__k">{g.group}</p>
-              <div className="cap__list">
-                {g.items.map((it) => (
-                  <span className="bead" key={it.name} data-src="true" title={it.evidence}>
-                    <i />
-                    {it.name}
-                  </span>
-                ))}
+            <div className="defs__row">
+              <p className="defs__t">Based in</p>
+              <p className="defs__v">{site.place}</p>
+            </div>
+            <div className="defs__row">
+              <p className="defs__t">Status</p>
+              <p className="defs__v">{site.status}</p>
+            </div>
+            {education.map((e: { period: string; title: string; org?: string }) => (
+              <div className="defs__row" key={e.title}>
+                <p className="defs__t">
+                  {e.period}
+                  <span>education</span>
+                </p>
+                <p className="defs__v">
+                  {e.title}
+                  {e.org ? ` — ${e.org}` : ""}
+                </p>
               </div>
-            </div>
-          ))}
+            ))}
+            {hobbies.map((h: { name: string; note: string }) => (
+              <div className="defs__row" key={h.name}>
+                <p className="defs__t">
+                  {h.name}
+                  <span>outside class</span>
+                </p>
+                <p className="defs__v">{h.note}</p>
+              </div>
+            ))}
+            {numbers.map((n) => (
+              <div className="defs__row" key={n.label}>
+                <p className="defs__t">
+                  {n.value}
+                  <span>{n.note}</span>
+                </p>
+                <p className="defs__v">{n.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </Sec>
-
-      <Sec eyebrow="Numbers" title="Counted, not ~claimed.">
-        <div className="stats">
-          {numbers.map((n, i) => (
-            <div className="stat" key={n.label} data-as data-dp={i % 2 ? "0.1" : "-0.1"} style={{ ["--as-d" as string]: `${i * 90}ms` }}>
-              <p className="stat__v">{n.value}</p>
-              <p className="stat__l">{n.label}</p>
-              <p className="stat__n">{n.note}</p>
-            </div>
-          ))}
-        </div>
-      </Sec>
-
-      <CTA />
+      </section>
     </>
   );
 }

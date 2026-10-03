@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Sec, CTA } from "@/components/drift/sec";
 import { track, school, offHours } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -7,24 +6,14 @@ export const metadata: Metadata = {
   description: "Placements, awards, education, and life outside class.",
 };
 
-export default function RiwayatPage() {
+export default function HistoryPage() {
   return (
     <>
-      <section className="pageHero">
+      <section className="page">
         <div className="wrap">
-          <p className="eyebrow" data-as>
-            History · {track.length} entries
-          </p>
-          <h1 className="pageHero__t">
-            <span data-as data-dp="0.15" style={{ display: "block" }}>
-              Where the work
-            </span>
-            <span data-as data-dp="-0.12" style={{ display: "block" }}>
-              <em>happened.</em>
-            </span>
-          </h1>
-          <p className="pageHero__s" data-as style={{ ["--as-d" as string]: "280ms" }}>
-            Newest first. Each entry is the context behind a project: a placement where the work ran, an award a third
+          <h1 className="display page__t">History</h1>
+          <p className="page__s lead">
+            Newest first. Each entry is the context behind a record: a placement where the work ran, an award a third
             party recorded, or a programme still in progress.
           </p>
         </div>
@@ -32,29 +21,22 @@ export default function RiwayatPage() {
 
       <section className="sec" style={{ paddingTop: 0 }}>
         <div className="wrap">
-          <ol className="timeList">
-            {track.map((t, i) => (
-              <li className="timeItem" key={t.title + t.date} data-as data-dp={i % 2 ? "-0.09" : "0.11"} style={{ ["--as-d" as string]: `${i * 90}ms` }}>
+          <ol className="tl">
+            {track.map((t) => (
+              <li className="tl__row" key={t.title + t.date}>
+                <p className="tl__d mono">{t.date}</p>
                 <div>
-                  <p className="timeItem__date mono">{t.date}</p>
-                </div>
-                <div>
-                  <h2 className="timeItem__t">{t.title}</h2>
-                  <p className="timeItem__org">{t.org}</p>
-                  <p className="timeItem__d">{t.desc}</p>
-                  <ul className="timeItem__list">
+                  <h2 className="tl__t">{t.title}</h2>
+                  <p className="tl__o">{t.org}</p>
+                  <p className="tl__p">{t.desc}</p>
+                  <ul className="tl__ul">
                     {t.points.map((p) => (
                       <li key={p}>{p}</li>
                     ))}
                   </ul>
-                  <div className="timeItem__tags">
-                    {t.badge && <span className="tag tag--hot">{t.badge}</span>}
-                    {t.tags.map((x) => (
-                      <span key={x} className="tag">
-                        {x}
-                      </span>
-                    ))}
-                  </div>
+                  <p className="small mono" style={{ marginTop: 10 }}>
+                    {[t.badge, ...t.tags].filter(Boolean).join(" / ")}
+                  </p>
                 </div>
               </li>
             ))}
@@ -62,37 +44,31 @@ export default function RiwayatPage() {
         </div>
       </section>
 
-      <Sec eyebrow="Study" title="Programmes, and hours ~outside them.">
-        <div className="spots">
-          <div className="glass spot" data-as data-dp="0.1">
-            <p className="cap__k">Education</p>
-            <div style={{ marginTop: 18, display: "grid", gap: 16 }}>
-              {school.map((s) => (
-                <div key={s.title}>
-                  <p className="mono" style={{ fontSize: 12.5, color: "var(--cyan-ink)" }}>
-                    {s.period}
-                  </p>
-                  <p style={{ marginTop: 4, fontSize: 17, fontWeight: 650 }}>{s.title}</p>
-                  <p style={{ marginTop: 3, fontSize: 14, color: "var(--text-2)" }}>{s.org}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="glass spot" data-as data-dp="-0.1" style={{ ["--as-d" as string]: "120ms" }}>
-            <p className="cap__k">Outside class hours</p>
-            <div style={{ marginTop: 18, display: "grid", gap: 16 }}>
-              {offHours.map((h) => (
-                <div key={h.name}>
-                  <p style={{ fontSize: 17, fontWeight: 650 }}>{h.name}</p>
-                  <p style={{ marginTop: 3, fontSize: 14, color: "var(--text-2)" }}>{h.note}</p>
-                </div>
-              ))}
-            </div>
+      <section className="sec">
+        <div className="wrap">
+          <h2 className="display sec__h">Study</h2>
+          <div className="defs">
+            {school.map((s) => (
+              <div className="defs__row" key={s.title}>
+                <p className="defs__t mono">{s.period}</p>
+                <p className="defs__v">
+                  {s.title}
+                  {s.org ? ` — ${s.org}` : ""}
+                </p>
+              </div>
+            ))}
+            {offHours.map((h) => (
+              <div className="defs__row" key={h.name}>
+                <p className="defs__t">
+                  {h.name}
+                  <span>outside class</span>
+                </p>
+                <p className="defs__v">{h.note}</p>
+              </div>
+            ))}
           </div>
         </div>
-      </Sec>
-
-      <CTA />
+      </section>
     </>
   );
 }

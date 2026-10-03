@@ -98,7 +98,17 @@ const caseToRecord = (c: Case): WorkRecord => ({
   imageNote: c.imageNote,
 });
 
-/** Satu baris ringkas untuk setiap status — dipakai di kartu catatan. */
+/** Label + catatan per status. Dipakai tabel kerja dan halaman kasus. */
+export const STATUS: Record<EvidenceState, { label: string; note: string }> = {
+  live: { label: "in production", note: "Running now, taking real orders. Source is private, so the product is the proof." },
+  public: { label: "source public", note: "The code can be read line by line; nothing needs to be taken on trust." },
+  record: { label: "awarded", note: "Recorded by a third party in a competition, so it is externally checkable." },
+  shipped: { label: "delivered", note: "Handed over during a placement and used afterwards." },
+  doc: { label: "document", note: "A requirements baseline written before any code, not an application." },
+  building: { label: "in progress", note: "Not finished, and labelled that way. Calling it shipped would be a false claim." },
+  declared: { label: "unproven", note: "Listed without a work record behind it." },
+};
+
 export const STATUS_LINE: Record<EvidenceState, string> = {
   live: "In production with daily customers.",
   record: "Recorded on the CV: award or placement.",

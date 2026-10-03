@@ -88,9 +88,25 @@ const check = (n, pass, extra = {}) => {
    * dalam GZIP — itu yang lewat kabel. Raw dilaporkan juga supaya angka besar
    * tidak disembunyikan. (Server statis pengujian tidak meng-gzip sendiri;
    * server produksi Cloudflare memakai brotli, yang lebih kecil lagi.) */
+  /* Ukuran diambil dari berkas lokal kalau ada; kalau tidak (mis. pengujian
+   * dijalankan terhadap origin LIVE, yang hash asetnya beda karena dibangun
+   * terpisah di Cloudflare), ambil lewat HTTP. Tanpa fallback ini, gate CSS
+   * melaporkan "0 KB" dan LULUS tanpa mengukur apa pun — persis jenis gate
+   * palsu yang harus dihindari. */
+  const remoteCache = new Map();
   const diskSize = (u) => {
     const f = path.join(__dirname, "..", "out", u.replace(/^\//, ""));
-    return fs.existsSync(f) ? fs.readFileSync(f) : null;
+    if (fs.existsSync(f)) return fs.readFileSync(f);
+    if (remoteCache.has(u)) return remoteCache.get(u);
+    let buf = null;
+    try {
+      const { execFileSync } = require("child_process");
+      buf = execFileSync("curl", ["-s", "--max-time", "25", BASE + u], { maxBuffer: 64 * 1024 * 1024 });
+    } catch {
+      buf = null;
+    }
+    remoteCache.set(u, buf);
+    return buf;
   };
   const sumBy = (kind, fn) => {
     let total = 0;
@@ -121,13 +137,21 @@ const check = (n, pass, extra = {}) => {
   const deps = Object.keys(pkg.dependencies || {});
   const offenders = deps.filter((d) => !["next", "react", "react-dom"].includes(d));
   check("no third-party animation/UI library is bundled", offenders.length === 0, { dependencies: deps });
+  check("JS was actually measured (not zero-byte)", jsGz.n > 0 && jsRaw.total > 0, { jsFiles: jsGz.n });
   check("JS weight within budget (raw < 520 KB / gzip < 200 KB)", kb(jsRaw.total) < 520 && kb(jsGz.total) < 200, {
     jsRawKB: kb(jsRaw.total),
     jsGzipKB: kb(jsGz.total),
     note: "React 19 + Next 16 app-router runtime floor; page code is the remainder",
     files: jsGz.n,
   });
-  check("CSS is small (< 80 KB raw)", kb(cssRaw.total) < 80, { cssRawKB: kb(cssRaw.total), cssGzipKB: kb(cssGz.total) });
+  check("CSS was actually measured (not zero-byte)", cssGz.n > 0 && cssRaw.total > 0, {
+    cssFiles: cssGz.n,
+    cssRawKB: kb(cssRaw.total),
+  });
+  check("CSS is small (< 80 KB raw)", kb(cssRaw.total) > 0 && kb(cssRaw.total) < 80, {
+    cssRawKB: kb(cssRaw.total),
+    cssGzipKB: kb(cssGz.total),
+  });
   check("images stay light (< 200 KB)", kb(imgRaw.total) < 200, { imageKB: kb(imgRaw.total), files: imgRaw.n });
   check("first contentful paint < 1200ms", perf.fcp > 0 && perf.fcp < 1200, { fcp: perf.fcp });
   check("largest contentful paint < 2500ms", perf.lcp < 2500, { lcp: perf.lcp });

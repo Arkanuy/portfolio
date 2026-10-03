@@ -1,203 +1,149 @@
-import type { Metadata } from "next";
-import { Sec, CTA } from "@/components/drift/sec";
-import { Spot, Tilt, Ticker, ScrollBar } from "@/components/drift/interact";
-import { WordFlow } from "@/components/drift/word-flow";
-import { site, services, process, cases } from "@/lib/site";
+import WorkTable from "@/components/site/work-table";
+import { site, services, process, stack, numbers } from "@/lib/site";
 import { records } from "@/lib/records";
 
-export const metadata: Metadata = {
-  title: `${site.name} — ${site.role}`,
-  description: site.bio,
-};
-
 export default function Home() {
-  const showcase = records.slice(0, 5);
-
   return (
     <>
-      <ScrollBar />
-
-      {/* ==================== HERO ==================== */}
-      <section className="hero">
+      {/* ---------- BUKA ---------- */}
+      <section className="open">
         <div className="wrap">
-          <p className="hero__eyebrow" data-as data-drift data-drift-x="9" data-drift-y="11">
-            <span className="hero__dot" aria-hidden="true" />
-            {site.badge} — {site.place}
-          </p>
-
-          {/* Nama menumpuk di tiga baris; tiap baris datang dari arah sendiri.
-              Tiap baris juga drift dengan kecepatan berbeda (data-dp), jadi
-              saat digulir ketiganya berpisah — itu yang terasa seperti ruang. */}
-          <h1 className="hero__name">
-            <span data-as data-dp="0.5" data-dps="0">
-              ARKAN
-            </span>
-            <span data-as data-dp="-0.22">
-              MUSTOFA
-            </span>
+          <h1 className="display open__t">
+            Software that gets used, <b>not just shipped.</b>
           </h1>
 
-          <p className="hero__tagline" data-as data-dp="0.34" style={{ ["--as-d" as string]: "360ms" }}>
-            Software that gets used, not just shipped.
-          </p>
-
-          <div className="hero__grid">
-            <div>
-              <p className="hero__lede" data-as style={{ ["--as-d" as string]: "420ms" }}>
-                I study <b>Information Systems</b> in Bandung and build business software, web apps, and automation.
-                My rule is simple: map the process first, then write the code — because the problem is rarely the code.
-              </p>
-
-              <div className="hero__actions" data-as data-drift data-drift-x="7" data-drift-y="9" style={{ ["--as-d" as string]: "520ms" }}>
-                <a className="btn btn--go" href="/karya">
-                  See the work →
-                </a>
-                <a className="btn btn--ghost" href="/kontak">
-                  Start a project
-                </a>
-              </div>
-
-              {/* Tickernya punya dua baris, dua arah, dua kecepatan — terbaca
-                  sebagai kedalaman, bukan band datar. */}
-              <Ticker items={["Laravel", "Next.js", "TypeScript", "Node.js", "PHP", "Tailwind", "REST API", "Git", "Discord bots"]} />
-            </div>
-
-            <Tilt className="portrait" >
-              <div className="portrait__frame" data-as style={{ ["--as-y" as string]: "52px", ["--as-d" as string]: "260ms" }}>
-                <img
-                  className="portrait__img"
-                  src="/github/arkan-avatar-680.webp"
-                  alt={`Portrait of ${site.name}`}
-                  width={340}
-                  height={340}
-                  fetchPriority="high"
-                  decoding="async"
-                />
-                <span className="portrait__ring" aria-hidden="true" />
-              </div>
-              {/* Keterangan ADA DI BAWAH foto — tidak ada yang menutupi wajah. */}
-              <div className="portrait__below">
-                <span className="chip chip--hot">{site.name}</span>
-                <span className="chip">{site.handle}</span>
-              </div>
-            </Tilt>
+          <div className="open__rows">
+            <p className="lead">
+              I am {site.name}. I study Information Systems in Bandung and build business software, web apps, and
+              automation. The rule I work by: map the process first, then write the code.
+            </p>
+            <p>
+              The problem is rarely the code. It is the flow — who does what, and where the work gets stuck. So the
+              work here starts with a process map, not a feature list. Seven records are listed below, each with the
+              strength of the evidence behind it.
+            </p>
           </div>
+
+          <p className="open__links">
+            <a href="/karya">See the work</a>
+            <a href="/layanan">Services</a>
+            <a href={site.cv} download>
+              CV (PDF)
+            </a>
+            <a href={`mailto:${site.email}`}>Email</a>
+          </p>
         </div>
       </section>
 
-      {/* ==================== 01 · SERVICES ==================== */}
-      <Sec
-        eyebrow="Services"
-        title="Four things I ~actually do."
-        sub="No sales list. Every one of these comes from work that already exists in the case studies."
-      >
-        <div className="spots">
-          {services.map((s, i) => (
-            <Spot key={s.slug}>
-              <a href={`/layanan/${s.slug}`} data-as style={{ ["--as-d" as string]: `${i * 90}ms` }}>
-                <span className="spot__n mono">{s.no}</span>
-                <h3 className="spot__t">{s.name}</h3>
-                <p className="spot__d">{s.tagline}</p>
-                <p className="spot__d" style={{ color: "var(--cyan-ink)", marginTop: 14 }}>
-                  Read more →
-                </p>
-              </a>
-            </Spot>
-          ))}
+      {/* ---------- 1 · KERJA ---------- */}
+      <section className="sec" id="work">
+        <div className="wrap">
+          <h2 className="display sec__h">Work</h2>
+          <WorkTable />
+          <p className="sec__note">
+            <span className="mono">in production</span> means it runs and takes orders today.{" "}
+            <span className="mono">in progress</span> means it is unfinished, and saying otherwise would be a false
+            claim.
+          </p>
         </div>
-      </Sec>
+      </section>
 
-      {/* ==================== 02 · WORK ==================== */}
-      <Sec
-        eyebrow="Selected work"
-        title="Already ~running."
-        sub="Five of seven records. Each one has its own page with the problem, what I built, and the outcome."
-      >
-        <div className="reel">
-          {showcase.map((r, i) => (
-            <div className="row glass" key={r.id} data-as data-dp={i % 2 ? "-0.09" : "0.13"} style={{ ["--as-d" as string]: `${i * 70}ms` }}>
-              <div className="row__no mono">{r.no}</div>
-              <div className="row__body">
-                <h3 className="row__t">
-                  <a href={r.href}>{r.title}</a>
-                </h3>
-                <p className="row__meta">
-                  {r.kind} · {r.year}
-                  {r.where ? ` · ${r.where}` : ""}
-                </p>
-                <p className="row__sum">{r.summary}</p>
-                <div className="row__tag">
-                  {r.state === "live" && <span className="tag tag--hot">In production</span>}
-                  {r.state === "public" && <span className="tag tag--cool">Source public</span>}
-                  {r.state === "building" && <span className="tag">In progress</span>}
-                  {r.state === "record" && <span className="tag tag--hot">Awarded</span>}
-                  {r.state === "shipped" && <span className="tag">Delivered</span>}
-                  {r.state === "doc" && <span className="tag tag--cool">Document</span>}
+      {/* ---------- 2 · LAYANAN ---------- */}
+      <section className="sec" id="services">
+        <div className="wrap">
+          <h2 className="display sec__h">Services</h2>
+          <div className="svc">
+            {services.map((s) => (
+              <div className="svc__row" key={s.slug}>
+                <p className="svc__n mono">{s.no}</p>
+                <div>
+                  <h3 className="svc__t">
+                    <a href={`/layanan/${s.slug}`}>{s.name}</a>
+                  </h3>
+                  <p className="svc__tag">{s.tagline}</p>
+                  <ul className="svc__ul">
+                    {s.includes.map((it) => (
+                      <li key={it}>{it}</li>
+                    ))}
+                  </ul>
+                  <p className="svc__proof">
+                    <b>Evidence.</b> {s.proof}
+                  </p>
                 </div>
               </div>
-              <div className="row__shot">
-                <img src={r.image} alt={`${r.title} preview`} width={1200} height={751} loading={i < 2 ? "eager" : "lazy"} decoding="async" />
-              </div>
-              <div className="row__act">
-                <a className="btn btn--ghost btn--sm btn--wide" href={r.href}>
-                  Case study
-                </a>
-                {r.external && (
-                  <a className="btn btn--ghost btn--sm btn--wide" href={r.external.href} target="_blank" rel="noopener noreferrer">
-                    {r.external.label}
-                  </a>
-                )}
-                {!r.external && <span className="row__ev">Source not public</span>}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div style={{ marginTop: 26 }} data-as>
-          <a className="btn btn--ghost" href="/karya">
-            All work ({records.length})
-          </a>
-        </div>
-      </Sec>
-
-      {/* ==================== 03 · PROCESS ==================== */}
-      <Sec
-        eyebrow="How I work"
-        title="Four steps, ~in order."
-        sub="The order is the method. If step two has no document, the feature list was invented while coding — and that is what makes people abandon software."
-      >
-        <div className="steps">
-          {process.map((p, i) => (
-            <div className="step" key={p.no} data-as data-dp={i % 2 ? "0.1" : "-0.14"} style={{ ["--as-y" as string]: "46px", ["--as-d" as string]: `${i * 110}ms` }}>
-              <span className="step__n mono">{p.no}</span>
-              <h3 className="step__t">{p.title}</h3>
-              <p className="step__d">{p.body}</p>
-              <p className="step__out mono">
-                → {p.no === "01" ? "current-state map" : p.no === "02" ? "requirement list" : p.no === "03" ? "working build" : "handover notes"}
-              </p>
-            </div>
-          ))}
-        </div>
-      </Sec>
-
-      {/* ==================== 04 · QUOTE ==================== */}
-      <section className="sec">
-        <div className="wrap">
-          <div className="quote">
-            <p className="eyebrow" data-as>
-              The rule
-            </p>
-            <h2 className="quote__t">
-              <WordFlow text="The problem is rarely the ~code. It is the ~flow — who does what, and where the work gets stuck." />
-            </h2>
-            <p className="quote__s mono" data-as style={{ ["--as-d" as string]: "220ms" }}>
-              {site.name} · {site.place} · {cases.length} case studies
-            </p>
+            ))}
           </div>
         </div>
       </section>
 
-      <CTA />
+      {/* ---------- 3 · PROSES (satu-satunya daftar bernomor, karena memang berurutan) ---------- */}
+      <section className="sec" id="process">
+        <div className="wrap">
+          <h2 className="display sec__h">How I work</h2>
+          <ol className="steps">
+            {process.map((p) => (
+              <li key={p.no}>
+                <span className="steps__n mono">{p.no}</span>
+                <span className="steps__t">{p.title}</span>
+                <span className="steps__d">{p.body}</span>
+                <span className="steps__o mono">
+                  → {p.no === "01" ? "current-state map" : p.no === "02" ? "requirement list" : p.no === "03" ? "working build" : "handover notes"}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* ---------- 4 · PERKAKAS + ANGKA ---------- */}
+      <section className="sec" id="tooling">
+        <div className="wrap">
+          <h2 className="display sec__h">Tooling and numbers</h2>
+          <div className="defs">
+            {stack.map((g) => (
+              <div className="defs__row" key={g.group}>
+                <p className="defs__t">
+                  {g.group}
+                  <span>what it was used for</span>
+                </p>
+                <p className="defs__v">
+                  {g.items.map((it) => `${it.name} — ${it.evidence}`).join(" · ")}
+                </p>
+              </div>
+            ))}
+            {numbers.map((n) => (
+              <div className="defs__row" key={n.label}>
+                <p className="defs__t">
+                  {n.value}
+                  <span>{n.note}</span>
+                </p>
+                <p className="defs__v">{n.label}</p>
+              </div>
+            ))}
+          </div>
+          <p className="sec__note">
+            Tools are listed with the work they were used on. Nothing appears here that is not backed by a record above.
+          </p>
+        </div>
+      </section>
+
+      {/* ---------- 5 · AJAKAN ---------- */}
+      <section className="sec">
+        <div className="wrap">
+          <h2 className="display sec__h">Tell me how the work runs today.</h2>
+          <p className="lead" style={{ maxWidth: "60ch" }}>
+            If a new app turns out not to be the answer, I will say so. Not every problem needs software — and saying
+            that early is cheaper than building the wrong thing.
+          </p>
+          <p className="open__links">
+            <a href={`mailto:${site.email}`}>Send an email</a>
+            <a href="/kontak">Contact page</a>
+          </p>
+          <p className="sec__note mono" style={{ marginTop: 26 }}>
+            {records.length} records · {stack.reduce((n, g) => n + g.items.length, 0)} tools listed
+          </p>
+        </div>
+      </section>
     </>
   );
 }
