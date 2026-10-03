@@ -1235,3 +1235,58 @@ html[data-motion="off"] [data-x] { translate: none; background-position-y: 0; wi
 .shader-frame iframe {
   display: block;
 }
+
+/* =========================================================================
+   /kage — scene WebGL ThreeUI, dibungkus sebagai bagian dari portfolio ini
+   -------------------------------------------------------------------------
+   Header situs muncul di atas frame (jadi halaman ini jelas bagian dari
+   portfolio, bukan halaman asing), dan baris kredit di bawah menyebut
+   sumbernya. Dokumen di dalam frame TIDAK disentuh oleh aturan di bawah.
+   ========================================================================= */
+.kage {
+  background: #080808;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.kage__body {
+  flex: 1;
+  min-height: 0;
+}
+/* Header situs di atas latar gelap dokumen: pastikan tetap terbaca */
+.kage .hd {
+  position: relative;
+  background: #080808;
+  border-bottom: 1px solid rgba(223, 231, 224, 0.12);
+}
+.kage .hd__link { color: #aab4ad; }
+.kage .hd__link:hover { color: #dfe7e0; }
+.kage .hd__link[data-active="true"] { color: #dfe7e0; }
+.kage .hd__name { color: #dfe7e0; }
+.kage .hd__sub { color: rgba(170, 180, 173, 0.8); }
+.kage .hd__mark { background: #f95400; color: #fff; }
+
+.kage__foot {
+  border-top: 1px solid rgba(223, 231, 224, 0.12);
+  background: #05070a;
+  padding: 18px 0 22px;
+}
+.kage__foot p {
+  color: #8d968f;
+  font-size: 13px;
+  max-width: 78ch;
+  line-height: 1.65;
+}
+.kage__foot b { color: #dfe7e0; font-weight: 600; }
+.kage__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 12px;
+}
+.kage__links a {
+  color: #aab4ad;
+  border-bottom: 1px solid transparent;
+  transition: color 160ms var(--ease), border-color 160ms var(--ease);
+}
+.kage__links a:hover { color: #ff7a45; border-bottom-color: #ff7a45; }

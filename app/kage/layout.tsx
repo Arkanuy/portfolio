@@ -1,32 +1,35 @@
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Kage",
-  description:
-    "Kage — Where stillness reveals the unseen. A five-chapter night walk through a Kyoto mountain temple, rendered live in WebGL.",
-};
+import Header from "@/components/ui/header";
 
 /**
- * LAYOUT /kage — sengaja hampir kosong.
+ * LAYOUT /kage.
  *
- * Halaman ini menampilkan dokumen yang diautor ThreeUI di dalam iframe, jadi ia
- * tidak boleh mewarisi chrome situs maupun latar katalog. Yang tersisa hanya
- * latar dokumennya (#080808), supaya tidak ada kedipan putih sebelum iframe
- * selesai memuat.
+ * Dokumen Kage tetap utuh di dalam frame-nya, tapi HALAMAN yang membungkusnya
+ * jelas milik situs ini: header yang sama (termasuk tombol tema), dan baris
+ * kredit di bawah yang menyebut sumbernya serta jalan pulang.
+ *
+ * Itu bagian "disesuaikan dengan proyek kita" yang tidak menyentuh karya
+ * aslinya: yang disesuaikan adalah konteksnya, bukan lukisannya.
  */
 export default function KageLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div
-      style={{
-        position: "relative",
-        width: "100%",
-        minHeight: "100vh",
-        margin: 0,
-        padding: 0,
-        background: "#080808",
-      }}
-    >
-      {children}
+    <div className="kage">
+      <Header />
+      <main id="isi" className="kage__body">
+        {children}
+      </main>
+      <div className="kage__foot">
+        <div className="wrap">
+          <p>
+            Scene by <b>ThreeUI</b> — Kage, “Hidden Realms of Kyoto”. Dokumen dan asetnya dipakai apa adanya
+            (terverifikasi hash); yang disesuaikan hanya tipografi dan warna aksen.
+          </p>
+          <p className="kage__links">
+            <a href="/">← Back to the portfolio</a>
+            <a href="/karya">Work</a>
+            <a href="/kontak">Contact</a>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

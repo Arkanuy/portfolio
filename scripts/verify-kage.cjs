@@ -102,6 +102,7 @@ const sitePages = ["/", "/karya/", "/layanan/", "/tentang/", "/riwayat/", "/kont
           three: typeof window.THREE !== "undefined",
           font: getComputedStyle(document.body).fontFamily.slice(0, 30),
           bg: getComputedStyle(document.body).backgroundColor,
+          vermilion: getComputedStyle(document.documentElement).getPropertyValue("--vermilion").trim(),
           scrollH: document.documentElement.scrollHeight,
         };
       });
@@ -112,9 +113,29 @@ const sitePages = ["/", "/karya/", "/layanan/", "/tentang/", "/riwayat/", "/kont
       check("runtime three.js termuat", s.three === true, { three: s.three });
       check("5 bab asli ada (hero/gate/pathways/lessons/eternity)", s.sections.length === 5, { sections: s.sections });
       check("navigasi asli dengan judul Jepang", s.navItems.length >= 4 && s.navItems.some((x) => /伽藍|庭園|神事|残光/.test(x)), { nav: s.navItems });
-      check("tipografi kanonik: Onest, latar #05070a", /Onest/.test(s.font) && s.bg === "rgb(5, 7, 10)", { font: s.font, bg: s.bg });
+      /* Tipografi DISESUAIKAN ke proyek: Geist (sekeluarga Inter) + aksen
+         oranye #f95400, bukan Onest + vermilion #e0231c bawaan Kage. Ini bukti
+         bahwa halaman ini sudah disesuaikan, bukan salinan mentah. */
+      check(
+        "tipografi disesuaikan ke proyek (Geist, bukan Onest bawaan)",
+        /Geist/i.test(s.font) && !/^Onest/.test(s.font.trim()),
+        { font: s.font },
+      );
+      check("aksen situs dipakai, bukan vermilion bawaan", s.vermilion === "#f95400", { vermilion: s.vermilion });
       check("dokumen bisa digulir", s.scrollH > 3000, { scrollH: s.scrollH });
     }
+
+    /* Shell-nya milik proyek ini: header situs di atas frame, kredit + jalan
+       pulang di bawah. Tanpa ini halaman terasa seperti halaman asing. */
+    const shell = await p.evaluate(() => ({
+      header: !!document.querySelector(".kage .hd"),
+      navCount: document.querySelectorAll(".kage .hd__link").length,
+      foot: !!document.querySelector(".kage__foot"),
+      back: !!document.querySelector('.kage__links a[href="/"]'),
+      credit: /ThreeUI/.test(document.querySelector(".kage__foot")?.textContent || ""),
+    }));
+    check("shell proyek: header situs di atas frame", shell.header && shell.navCount >= 5, { nav: shell.navCount });
+    check("shell proyek: kredit + jalan pulang di bawah", shell.foot && shell.back && shell.credit, shell);
 
     check("/kage tanpa error konsol", errs.length === 0, { errs: errs.slice(0, 3) });
     check("/kage tanpa permintaan gagal (aset kanonik ada)", failed.length === 0, { failed: failed.slice(0, 3) });
