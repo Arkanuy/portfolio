@@ -1,31 +1,24 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/ui/header";
-import Footer from "@/components/ui/footer";
-import Motion from "@/components/ui/motion";
-import ScrollProgress from "@/components/ui/scroll-progress";
-import { site } from "@/lib/site";
-import { ClickSpark } from "@/components/ui/anim";
 
+/**
+ * ROOT LAYOUT — sengaja hanya kerangka dokumen: <html>/<body>, variabel font,
+ * dan penulisan tema sebelum cat pertama. TIDAK ada header/footer di sini.
+ *
+ * Alasannya konkret: rute `/kage` menampilkan dokumen yang diautor ThreeUI.
+ * Ketika chrome situs ikut terpasang di sana, dokumen itu bertabrakan dengan
+ * CSS katalog dan iframe-nya kehilangan tinggi — terukur canvas utama jadi
+ * 1440x0 (tidak terlihat sama sekali). Chrome situs sekarang hidup di
+ * `app/(site)/layout.tsx`, jadi tiap halaman mendapat kerangka yang sesuai.
+ */
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://portfolio-arkan.site"),
-  title: {
-    default: `${site.name} — ${site.role}`,
-    template: `%s · ${site.name}`,
-  },
-  description: site.bio,
-  authors: [{ name: site.name }],
-  keywords: ["Arkan Mustofa", "Sistem Informasi", "web developer Bandung", "Laravel", "Next.js", "bot Discord", "BRD"],
-  openGraph: {
-    title: `${site.name} — ${site.role}`,
-    description: site.bio,
-    type: "website",
-    locale: "en_US",
-  },
+  title: "Portfolio Arkan Mustofa",
+  description: "Sistem informasi, aplikasi web, dan perangkat lunak bisnis.",
   robots: { index: true, follow: true },
 };
 
@@ -45,21 +38,11 @@ document.documentElement.setAttribute("data-theme",t);
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${sans.variable} ${mono.variable}`}>
+    <html lang="id" suppressHydrationWarning className={`${sans.variable} ${mono.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
       </head>
-      <body>
-        <a className="skip" href="#isi">
-          Skip to content
-        </a>
-        <ScrollProgress />
-        <Header />
-        <main id="isi">{children}</main>
-        <Footer />
-        <Motion />
-        <ClickSpark />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

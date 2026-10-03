@@ -1204,3 +1204,34 @@ html[data-motion="off"] [data-x] { translate: none; background-position-y: 0; wi
     linear-gradient(to right, rgba(255, 255, 255, 0.13) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.13) 1px, transparent 1px);
 }
+
+/* =========================================================================
+   RUTE /kage — dokumen yang diautor ThreeUI
+   -------------------------------------------------------------------------
+   `.shader-frame` WAJIB: itu pembungkus yang dipakai `usage` yang dikonfigurasi
+   ThreeUI. Tanpa aturan ini, `LandingPageFrame` (position: relative) tidak
+   mendapat tinggi dari mana pun, jadi iframe-nya berukuran 0 dan dokumennya
+   tidak terlihat — terukur canvas utama 1440x0 sebelum aturan ini ada.
+
+   Warna latar disamakan dengan dokumennya (#080808) supaya tidak ada kedipan
+   putih saat iframe memuat.
+   ========================================================================= */
+.shader-frame {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 100vh;
+  overflow: hidden;
+  background: #080808;
+}
+@supports (height: 100dvh) {
+  .shader-frame {
+    height: 100dvh;
+    min-height: 100dvh;
+  }
+}
+/* Dokumen yang diautor mengurus gulirnya sendiri di dalam iframe */
+.shader-frame .landing-page-frame,
+.shader-frame iframe {
+  display: block;
+}

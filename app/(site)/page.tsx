@@ -208,6 +208,30 @@ export default function Home() {
         </div>
       </Section>
 
+      {/* ================= KAGE =================
+          Halaman terpisah: dokumen yang diautor ThreeUI (WebGL, lima bab).
+          Ditempatkan di rutenya sendiri karena ia punya CSS dan runtime
+          sendiri, dan tidak boleh bercampur dengan katalog. */}
+      <section className="sec">
+        <div className="wrap">
+          <div className="glass" style={{ padding: "clamp(20px,3vw,36px)", display: "grid", gap: 14 }}>
+            <p className="eyebrow">Scene</p>
+            <h2 className="h2" style={{ maxWidth: "30ch" }}>
+              Kage — jalan malam lima bab melewati kuil gunung di Kyoto.
+            </h2>
+            <p className="lead" style={{ maxWidth: "62ch" }}>
+              Satu halaman WebGL yang dirender langsung di browser: cypress terbakar, cahaya lentera, dan bulan
+              vermilion. Dibuka di rutenya sendiri.
+            </p>
+            <div>
+              <a className="btn btn--dark" href="/kage">
+                Buka scene <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <CTABand />
     </>
   );
