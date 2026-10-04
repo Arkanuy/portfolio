@@ -1393,3 +1393,117 @@ body {
   border-radius: var(--r);
   background-color: var(--panel);
 }
+
+
+/* ============================================================================
+   HERO — SCENE 3D KAGE
+   ----------------------------------------------------------------------------
+   Beranda dibuka dengan scene WebGL Kage sebagai latar. Ini yang membuat
+   konsepnya benar-benar terasa: bukan sekadar palet dan huruf, tapi pengalaman
+   3D-nya.
+
+   Tiga hal yang membuat ini bekerja, dan masing-masing punya alasan konkret:
+
+   1. pointer-events: none pada pembungkus scene.
+      Dokumen Kage mengunci gulir di dalam dirinya. Kalau kursor berada di atas
+      scene dan roda gulir bekerja di sana, yang bergulir adalah DOKUMEN KAGE,
+      bukan portfolio — pengunjung terjebak di hero dan tidak bisa turun.
+      Dengan pointer-events: none, seluruh interaksi menembus ke halaman.
+
+   2. Scrim gelap di atas scene.
+      Scene-nya gelap dan bertekstur (batu, kabut, cahaya lentera). Teks putih
+      di atasnya tanpa scrim tidak akan terbaca stabil — kontrasnya berubah
+      mengikuti gambar yang bergerak. Scrim ini kebutuhan keterbacaan, bukan
+      hiasan, dan warnanya sama dengan hitam halaman sehingga menyatu.
+
+   3. Teks hero memakai token terang SETEMPAT, apa pun temanya.
+      Di tema terang teks situs berwarna gelap; di atas scene yang gelap itu
+      tidak terbaca. Karena itu hero ini diperlakukan sebagai "teks di atas
+      media" — token teksnya dikunci ke nilai terang hanya di dalam hero.
+   ============================================================================ */
+.hero--kage {
+  min-height: 100dvh;
+  display: flex;
+  align-items: flex-end;
+  padding-block: clamp(90px, 14vh, 160px) clamp(48px, 9vh, 104px);
+  /* token teks dikunci terang: hero ini selalu di atas media gelap */
+  --ink: #dfe7e0;
+  --body: #c3ccc5;
+  --muted: #a8b2ab;
+  --faint: #949e97;
+  --line: rgba(223, 231, 224, 0.20);
+  --line2: rgba(223, 231, 224, 0.30);
+  --panel: rgba(12, 17, 22, 0.72);
+  --bg3: #0c1116;
+  color: var(--ink);
+}
+.hero__scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.hero__scene .shader-frame,
+.hero__scene iframe {
+  height: 100%;
+  min-height: 100%;
+}
+/* scrim: gelap di bawah tempat teks, lebih ringan di atas */
+.hero--kage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to top, #05070a 5%, rgba(5, 7, 10, 0.80) 34%, rgba(5, 7, 10, 0.34) 66%, rgba(5, 7, 10, 0.58) 100%);
+}
+.hero__in--solo {
+  position: relative;
+  z-index: 1;
+  display: block;
+  max-width: 760px;
+}
+.hero__in--solo .hero__proof {
+  border-top-color: var(--line);
+}
+.hero--kage .hero__lede {
+  max-width: 56ch;
+}
+
+/* Foto: sekarang di seksi kutipan, bukan di hero */
+.quote__shot {
+  margin-top: 8px;
+  max-width: 300px;
+  display: grid;
+  gap: 12px;
+}
+.quote__shot .shotMeta__handle {
+  margin: 0;
+}
+
+
+/* ---------------------------------------------------------------------------
+   Penangkap gulir di atas scene.
+   Terukur: tanpa elemen ini, roda gulir di atas scene menghasilkan scrollY = 0
+   (terjebak). pointer-events: none pada .hero__scene TIDAK cukup — event roda
+   dan sentuhan tetap sampai ke iframe, dan dokumen Kage mengunci gulirnya
+   sendiri. Elemen ini transparan dan tidak mengubah tampilan apa pun; ia ada
+   hanya supaya roda gulir menggulir halaman portfolio.
+
+   z-index 0 dan berada SETELAH scene di dalam DOM, jadi ia menang atas scene,
+   sedangkan teks hero (z-index 1) tetap di atasnya dan tetap bisa diklik.
+   --------------------------------------------------------------------------- */
+.hero__sceneGuard {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  cursor: default;
+  /* pan-y: usapan tegak diizinkan diteruskan ke halaman ini. Tanpa ini
+     (touch-action: auto) browser bisa menahan gestur dan handler sentuh tidak
+     pernah dipanggil — terukur: touchstart 1, touchmove 0, halaman tidak
+     bergerak. pinch-zoom tetap diizinkan supaya halaman masih bisa di-zoom. */
+  touch-action: pan-y pinch-zoom;
+  overscroll-behavior: contain;
+}

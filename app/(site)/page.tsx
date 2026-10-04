@@ -4,6 +4,7 @@ import Counter from "@/components/ui/counter";
 import { BlurText, RotatingText, Spotlight, TiltCard, GlareCard, BorderBeam, ShimmerButton } from "@/components/ui/anim";
 import { ScrambleText, MovingCards } from "@/components/ui/anim-more";
 import WordFlow from "@/components/ui/word-flow";
+import KageHero from "@/components/ui/kage-hero";
 import { site, services, cases, numbers, process } from "@/lib/site";
 
 export default function Home() {
@@ -12,11 +13,20 @@ export default function Home() {
   return (
     <>
       {/* ================= HERO ================= */}
-      <section className="hero" id="beranda">
-        {/* pola latar bergerak: digeser lewat background-position, jadi selalu
-            terpotong oleh kotaknya sendiri dan tidak pernah merusak tata letak */}
-        <div className="hero__bg" data-bg="0.16" aria-hidden="true" />
-        <div className="wrap hero__in">
+      <section className="hero hero--kage" id="beranda">
+        {/* ============ SCENE 3D KAGE SEBAGAI LATAR HERO ============
+            Ini yang membuat konsep Kage benar-benar terasa: beranda dibuka
+            dengan dunia WebGL-nya, bukan dengan pola titik.
+
+            Dua hal yang penting di sini:
+            · pointer-events: none (di CSS) — tanpa itu, roda gulir di atas
+              scene akan menggulir DOKUMEN Kage, bukan portfolio, sehingga
+              pengunjung terjebak dan tidak bisa turun.
+            · aria-hidden — scene ini murni visual; yang membawa makna adalah
+              kalimat portfolio di atasnya, jadi pembaca layar tidak perlu
+              memuat lima bab Kage. */}
+        <KageHero />
+<div className="wrap hero__in hero__in--solo">
           <div className="hero__text">
             <Spotlight />
             <p className="pill">
@@ -57,33 +67,6 @@ export default function Home() {
             </ul>
           </div>
 
-          {/* --- FOTO ---
-              Bingkai punya overflow: hidden SENDIRI, dan gambar diperbesar 8%
-              lalu digeser di dalamnya. Kliping disengaja → tidak mungkin
-              terlihat sebagai bug, dan tidak ada elemen lain yang menutupinya. */}
-          <div className="shotFrame">
-            <TiltCard className="shotFrame__tilt" max={5}>
-              <div className="shotFrame__inner">
-                <img
-                  className="shotFrame__img"
-                  data-inner="0.055"
-                  src="/github/arkan-avatar-2x.png"
-                  alt={`Portrait of ${site.name}`}
-                  width={680}
-                  height={680}
-                  fetchPriority="high"
-                  decoding="async"
-                />
-              </div>
-              <BorderBeam duration={6} size={90} />
-            </TiltCard>
-
-            <div className="shotMeta">
-              <p className="shotMeta__name">{site.name}</p>
-              <p className="shotMeta__handle">{site.handle}</p>
-              <p className="shotMeta__note">Portrait from GitHub</p>
-            </div>
-          </div>
         </div>
 
         <div className="wrap">
@@ -205,32 +188,29 @@ export default function Home() {
           <p className="quote__src">
             {site.name} · {site.place}
           </p>
-        </div>
-      </Section>
 
-      {/* ================= KAGE =================
-          Scene WebGL dari ThreeUI, yang gaya visualnya dipakai seluruh situs
-          ini. Dokumennya hidup di rutenya sendiri karena ia punya CSS dan
-          runtime sendiri. */}
-      <section className="sec">
-        <div className="wrap">
-          <div className="glass" style={{ padding: "clamp(20px,3vw,36px)", display: "grid", gap: 14 }}>
-            <p className="eyebrow">Scene</p>
-            <h2 className="h2" style={{ maxWidth: "30ch" }}>
-              Kage — jalan malam lima bab melewati kuil gunung di Kyoto.
-            </h2>
-            <p className="lead" style={{ maxWidth: "62ch" }}>
-              Satu halaman WebGL yang dirender langsung di browser: cypress terbakar, cahaya lentera, dan bulan
-              vermilion.
-            </p>
-            <div>
-              <a className="btn btn--dark" href="/kage">
-                Buka scene <span aria-hidden="true">→</span>
-              </a>
-            </div>
+          {/* Foto pindah ke sini: di hero ia kalah oleh scene 3D, dan di sini
+              ia jadi tanda tangan penutup — foto + nama + asal. */}
+          <div className="quote__shot">
+            <TiltCard className="shotFrame__tilt" max={5}>
+              <div className="shotFrame__inner">
+                <img
+                  className="shotFrame__img"
+                  data-inner="0.055"
+                  src="/github/arkan-avatar-2x.png"
+                  alt={`Portrait of ${site.name}`}
+                  width={680}
+                  height={680}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <BorderBeam duration={6} size={90} />
+            </TiltCard>
+            <p className="shotMeta__handle">{site.handle}</p>
           </div>
         </div>
-      </section>
+      </Section>
 
       <CTABand />
     </>

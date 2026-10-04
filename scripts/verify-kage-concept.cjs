@@ -118,6 +118,64 @@ const read = () => ({
     check("beranda tidak memakai istilah bab/night yang saya karang", !copy.sceneEyebrow.some((e) => /Chapter|Night/i.test(e)), { eyebrow: copy.sceneEyebrow });
     check("beranda tanpa error konsol", errs.length === 0, { errs: errs.slice(0, 3) });
 
+    /* ---------- B2. SCENE 3D SEBAGAI HERO ---------- */
+    const hero = await p.evaluate(() => {
+      const sc = document.querySelector(".hero__scene");
+      const fr = sc ? sc.querySelector("iframe") : null;
+      const txt = document.querySelector(".hero__in--solo");
+      return {
+        adaScene: !!sc,
+        adaIframe: !!fr,
+        jumlahIframe: document.querySelectorAll("iframe").length,
+        pointerEvents: sc ? getComputedStyle(sc).pointerEvents : null,
+        sceneTinggi: sc ? Math.round(sc.getBoundingClientRect().height) : 0,
+        heroTinggi: Math.round(document.querySelector(".hero--kage").getBoundingClientRect().height),
+        teksZ: txt ? getComputedStyle(txt).zIndex : null,
+        sceneZ: sc ? getComputedStyle(sc).zIndex : null,
+        teksWarna: txt ? getComputedStyle(document.querySelector(".hero__h1")).color : null,
+        fotoDiHero: !!document.querySelector(".hero--kage .shotFrame"),
+        fotoDiKutipan: !!document.querySelector(".quote__shot"),
+        tinggiHalaman: document.documentElement.scrollHeight,
+      };
+    });
+
+    check("beranda dibuka dengan scene 3D Kage", hero.adaScene && hero.adaIframe, { tinggi: hero.sceneTinggi });
+    check("hanya SATU scene dimuat di beranda", hero.jumlahIframe === 1, { iframe: hero.jumlahIframe });
+    check("scene menutup penuh area hero", hero.sceneTinggi > 400 && hero.sceneTinggi >= hero.heroTinggi - 2, { scene: hero.sceneTinggi, hero: hero.heroTinggi });
+    check("teks hero berada DI ATAS scene", hero.teksZ !== null && hero.sceneZ !== null && Number(hero.teksZ) > Number(hero.sceneZ), { teks: hero.teksZ, scene: hero.sceneZ });
+    check("pointer-events: none pada scene (tidak menelan interaksi)", hero.pointerEvents === "none", { pointerEvents: hero.pointerEvents });
+    check("foto pindah dari hero ke kutipan", !hero.fotoDiHero && hero.fotoDiKutipan, { hero: hero.fotoDiHero, kutipan: hero.fotoDiKutipan });
+
+    /* Halaman tidak boleh membengkak: dokumen Kage di dalam iframe TIDAK ikut
+       menambah tinggi halaman ini (kalau ikut, beranda jadi ribuan piksel). */
+    check("tinggi beranda tetap wajar (dokumen Kage tidak membengkakkan halaman)", hero.tinggiHalaman < 7000, { tinggi: hero.tinggiHalaman });
+
+    /* UJI JEBAKAN GULIR — yang paling penting.
+       Dokumen Kage mengunci gulir di dalam dirinya. Kalau roda gulir di atas
+       scene masuk ke dokumen Kage, pengunjung tidak akan pernah bisa turun dari
+       hero. Diuji dengan roda gulir sungguhan di posisi kursor di atas scene. */
+    await p.mouse.move(700, 450);
+    await p.mouse.wheel(0, 1200);
+    await p.waitForTimeout(900);
+    const afterWheel = await p.evaluate(() => window.scrollY);
+    check("roda gulir di atas scene TETAP menggulir portfolio (tidak terjebak)", afterWheel > 100, { scrollY: afterWheel });
+
+    /* Dokumen Kage-nya sendiri harus benar-benar hidup di dalam hero. */
+    const heroFrame = p.frames().find((f) => /\/landing-pages\/kage(\b|\.html)/.test(f.url()));
+    check("scene di hero memuat dokumen kanonik Kage", !!heroFrame);
+    if (heroFrame) {
+      const hf = await heroFrame.evaluate(() => {
+        const big = Array.from(document.querySelectorAll("canvas")).find((c) => c.getBoundingClientRect().height > 200);
+        return {
+          sections: document.querySelectorAll("section").length,
+          canvas: big ? Math.round(big.getBoundingClientRect().width) + "x" + Math.round(big.getBoundingClientRect().height) : null,
+        };
+      });
+      check("scene di hero utuh: 5 bab, kanvas hidup", hf.sections === 5 && !!hf.canvas, hf);
+    }
+    await p.evaluate(() => window.scrollTo(0, 0));
+    await p.waitForTimeout(400);
+
     /* ---------- C. tema TERANG masih bisa dibaca ---------- */
     await p.evaluate(() => {
       document.documentElement.setAttribute("data-theme", "light");
@@ -231,6 +289,32 @@ const read = () => ({
         h1: (() => { const h = document.querySelector("h1"); return h ? getComputedStyle(h).fontSize : null; })(),
       }));
       check(`layar ${w}px: tanpa overflow, gelap, Onest`, r.overflowX === 0 && r.theme === "dark" && /Onest/.test(r.font), r);
+
+      /* Usap jari di atas scene harus menggulir portfolio, bukan dokumen Kage.
+         Di HP tidak ada roda gulir, jadi jalur sentuhan diuji terpisah. */
+      if (w === 390) {
+        /* Gestur SENTUH sungguhan lewat Input.dispatchTouchEvent.
+           Dua percobaan sebelumnya salah alat, bukan salah halaman:
+           mouse.down/move/up menghasilkan event mouse (seret mouse memang tidak
+           menggulir), dan Input.synthesizeScrollGesture tidak memicu handler
+           touchmove sama sekali di emulasi ini. Yang terbukti menggerakkan
+           halaman adalah dispatchTouchEvent bertahap. */
+        await p.evaluate(() => window.scrollTo(0, 0));
+        await p.waitForTimeout(400);
+        const before = await p.evaluate(() => window.scrollY);
+        const cdp = await ctx.newCDPSession(p);
+        const titik = (y) => [{ x: 195, y, radiusX: 12, radiusY: 12, force: 1, id: 1 }];
+        await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: titik(600) });
+        for (const y of [560, 510, 460, 410, 360, 310]) {
+          await cdp.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: titik(y) });
+          await p.waitForTimeout(40);
+        }
+        await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+        await cdp.detach();
+        await p.waitForTimeout(800);
+        const after = await p.evaluate(() => window.scrollY);
+        check("HP: usap di atas scene menggulir portfolio", after > before + 50, { before, after });
+      }
       await ctx.close();
     }
   }

@@ -1,0 +1,55 @@
+Put the Kage 3D scene in the hero - the concept, not just the palette
+
+Arkan: "MANA KONSEP KAGE NYA seperti 3d nya, ini mah original ke tampilan awal".
+He was right. The previous pass took only the surface - font, colour, corners -
+and the actual experience, the WebGL world, stayed quarantined on /kage. So the
+scene is now the hero of the homepage.
+
+How it is composed:
+
+  .hero--kage       full-height hero. The scene sits behind everything as an
+                    absolutely positioned layer; the portfolio's own headline
+                    and copy sit on top at z-index 1.
+  scrim             a dark gradient over the scene. Needed for legibility, not
+                    decoration: the scene is textured and moving, so white text
+                    on it has no stable contrast. Its colour is the same page
+                    black, so it disappears.
+  local tokens      the hero's text tokens are pinned to their light values,
+                    because this hero always sits on dark media. In the light
+                    theme the rest of the site is dark-on-white; the hero is
+                    not, and would otherwise be unreadable.
+  photo             moved out of the hero (it lost the fight with the scene)
+                    to the quote section, where it closes the page as photo +
+                    name + handle.
+  duplicate         the "Scene" block further down the homepage is gone. The
+                    scene is the hero now; pointing at it again would be a
+                    second hero for the same thing.
+
+The real bug, and it took three attempts to find:
+
+The scene swallowed the scroll. Measured: wheel over the hero left
+window.scrollY at 0 - a visitor could not leave the hero at all. The reason is
+that the Kage document scrolls ITSELF (five chapters, body overflow hidden auto),
+and wheel events reach it regardless of pointer-events.
+
+  attempt 1  pointer-events: none on the wrapper. Not enough - wheel events
+             still get delivered to the frame.
+  attempt 2  a transparent guard layer over the scene. Still not enough: the
+             measurement showed the wheel moving the INNER document.
+  attempt 3  a client component that catches wheel/touch on the guard and
+             redirects the delta to window.scrollBy. This is what works.
+
+Wheel proved out at scrollY 1200 after a wheel gesture, where it was 0 before.
+
+Then the touch path needed the same treatment, and the first two TOUCH TESTS I
+wrote were wrong instruments rather than wrong code: mouse.down/move/up emits
+mouse events (dragging a mouse does not scroll a page), and
+Input.synthesizeScrollGesture never fired touchmove under emulation. A staged
+Input.dispatchTouchEvent does move the page - and with it, the actual defect
+appeared: touch-action was auto, so Chrome held the gesture and the handler was
+never called (measured touchstart 1, touchmove 0). touch-action: pan-y
+pinch-zoom fixed it; the swipe now scrolls 290px and touchmove fires 6 times.
+Zoom is preserved.
+
+40 gates green, including the two scroll traps and one that keeps the Kage
+document from inflating the homepage height (6652px, not 13000).
