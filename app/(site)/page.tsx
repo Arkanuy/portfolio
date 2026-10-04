@@ -215,17 +215,18 @@ export default function Home() {
       <section className="sec">
         <div className="wrap">
           <div className="glass" style={{ padding: "clamp(20px,3vw,36px)", display: "grid", gap: 14 }}>
-            <p className="eyebrow">Scene</p>
+            <p className="eyebrow">Chapter · night</p>
             <h2 className="h2" style={{ maxWidth: "30ch" }}>
-              Kage — jalan malam lima bab melewati kuil gunung di Kyoto.
+              Kage — bab malam dari portfolio ini.
             </h2>
             <p className="lead" style={{ maxWidth: "62ch" }}>
-              Satu halaman WebGL yang dirender langsung di browser: cypress terbakar, cahaya lentera, dan bulan
-              vermilion. Dibuka di rutenya sendiri.
+              Satu scene WebGL lima bab melewati kuil gunung di Kyoto, dirender langsung di browser. Bukan halaman
+              terpisah: halaman ini ikut berubah gelap untuk bab itu, scene-nya berjalan penuh, lalu portfolio kembali
+              terang.
             </p>
             <div>
               <a className="btn btn--dark" href="/kage">
-                Buka scene <span aria-hidden="true">→</span>
+                Masuk ke bab malam <span aria-hidden="true">→</span>
               </a>
             </div>
           </div>

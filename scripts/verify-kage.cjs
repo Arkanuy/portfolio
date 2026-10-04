@@ -125,17 +125,88 @@ const sitePages = ["/", "/karya/", "/layanan/", "/tentang/", "/riwayat/", "/kont
       check("dokumen bisa digulir", s.scrollH > 3000, { scrollH: s.scrollH });
     }
 
-    /* Shell-nya milik proyek ini: header situs di atas frame, kredit + jalan
-       pulang di bawah. Tanpa ini halaman terasa seperti halaman asing. */
+    /* ===== BAGIAN INI YANG MEMBUKTIKAN SCENE-SUDAH-MENYATU =====
+       Ukurannya bukan "ada header/footer", tapi: apakah halaman ini memakai
+       IDENTITAS YANG SAMA dengan situs — isi yang sama, komponen yang sama,
+       palet gelap yang diturunkan dari token yang sama, dan scene yang tetap
+       utuh di dalamnya. */
+
+    /* 1. header & footer situs yang SAMA dipakai di sini */
     const shell = await p.evaluate(() => ({
-      header: !!document.querySelector(".kage .hd"),
-      navCount: document.querySelectorAll(".kage .hd__link").length,
-      foot: !!document.querySelector(".kage__foot"),
-      back: !!document.querySelector('.kage__links a[href="/"]'),
-      credit: /ThreeUI/.test(document.querySelector(".kage__foot")?.textContent || ""),
+      night: !!document.querySelector(".kageNight"),
+      /* Header & footer ada di luar pembungkus bab (saudara konten), jadi
+         diukur dari dokumen — justru itu intinya: keduanya harus ikut gelap. */
+      header: !!document.querySelector(".hd"),
+      navCount: document.querySelectorAll(".hd__link").length,
+      footer: !!document.querySelector(".ft"),
+      /* Dibaca sebagai luminansi, bukan string warna: Chrome mengembalikan
+         "color(srgb 0.019 0.027 0.039 / 0.88)" untuk warna transparan, bukan
+         "rgb(5, 7, 10)", sehingga perbandingan teks gagal padahal warnanya benar. */
+      headerBgLum: (() => {
+        const el = document.querySelector(".hd");
+        if (!el) return null;
+        const c = getComputedStyle(el).backgroundColor;
+        const n = (c.match(/[\d.]+/g) || []).slice(0, 3).map(Number);
+        const rgb = c.startsWith("color(") ? n.map((v) => v * 255) : n;
+        if (rgb.length < 3) return null;
+        const lin = rgb.map((v) => { const x = v / 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); });
+        return +(0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2]).toFixed(4);
+      })(),
+      headerInkLum: (() => {
+        const el = document.querySelector(".hd__name");
+        if (!el) return null;
+        const n = (getComputedStyle(el).color.match(/[\d.]+/g) || []).slice(0, 3).map(Number);
+        if (n.length < 3) return null;
+        const lin = n.map((v) => { const x = v / 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); });
+        return +(0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2]).toFixed(4);
+      })(),
+      /* token gelap benar-benar berlaku, bukan cuma kelasnya terpasang */
+      bg: getComputedStyle(document.querySelector(".kageNight")).backgroundColor,
+      ink: getComputedStyle(document.querySelector(".kageNight")).getPropertyValue("--ink").trim(),
+      accent: getComputedStyle(document.querySelector(".kageNight")).getPropertyValue("--accent-ink").trim(),
     }));
-    check("shell proyek: header situs di atas frame", shell.header && shell.navCount >= 5, { nav: shell.navCount });
-    check("shell proyek: kredit + jalan pulang di bawah", shell.foot && shell.back && shell.credit, shell);
+    check("malam menyala: header + footer situs yang sama dipakai", shell.night && shell.header && shell.footer && shell.navCount >= 5, { nav: shell.navCount });
+    /* Ini bukti "menyatu": header yang sama benar-benar berubah jadi gelap. */
+    /* Ini bukti inti "menyatu": header yang SAMA benar-benar berubah jadi gelap.
+       Ambang: latar gelap (luminansi < 0.02) dan teksnya terang (> 0.5). */
+    check(
+      "header situs ikut jadi malam (bukan terang di atas halaman gelap)",
+      shell.headerBgLum !== null && shell.headerBgLum < 0.02 && shell.headerInkLum > 0.5,
+      { bgLum: shell.headerBgLum, inkLum: shell.headerInkLum },
+    );
+    check("token gelap berlaku (bg #05070a, ink terang, aksen oranye)", shell.bg === "rgb(5, 7, 10)" && shell.ink === "#dfe7e0" && shell.accent === "#ff7a45", { bg: shell.bg, ink: shell.ink, accent: shell.accent });
+
+    /* 2. isi portfolio hadir di bab malam ini — dan itu memang isi yang sama */
+    const content = await p.evaluate(() => {
+      const cards = Array.from(document.querySelectorAll(".kageNight .cc__title")).map((e) => e.textContent.trim());
+      const links = Array.from(document.querySelectorAll(".kageNight .cc")).map((a) => a.getAttribute("href"));
+      return { cards, links, chapterHit: (document.body.innerText.match(/Chapter/g) || []).length };
+    });
+    check("isi portfolio ikut masuk bab malam (7 kartu karya yang sama)", content.cards.length === 7, { cards: content.cards });
+
+    const base = await ctx.newPage();
+    await base.goto(BASE + "/karya/", { waitUntil: "domcontentloaded", timeout: 30000 });
+    await base.waitForTimeout(400);
+    const workCards = await base.evaluate(() =>
+      Array.from(document.querySelectorAll(".cc__title")).map((e) => e.textContent.trim()),
+    );
+    check(
+      "judul karya di bab malam identik dengan halaman Work",
+      workCards.length === content.cards.length && workCards.every((t, i) => t === content.cards[i]),
+      { malam: content.cards.slice(0, 3), kerja: workCards.slice(0, 3) },
+    );
+    check("kartu karya menaut ke studi kasus yang sama", content.links.every((h) => /^\/karya\/[a-z-]+$/.test(h || "")), { n: content.links.length });
+
+    /* 3. portfolio TERANG lagi di halaman berikutnya — bukti malamnya
+          memang cuma satu bab, bukan rombakan seluruh situs */
+    const home = await ctx.newPage();
+    await home.goto(BASE + "/", { waitUntil: "domcontentloaded", timeout: 30000 });
+    await home.waitForTimeout(400);
+    const homeState = await home.evaluate(() => ({
+      hasNight: !!document.querySelector(".kageNight"),
+      bg: getComputedStyle(document.body).backgroundColor,
+    }));
+    check("beranda tetap terang (malam hanya satu bab)", !homeState.hasNight, homeState);
 
     check("/kage tanpa error konsol", errs.length === 0, { errs: errs.slice(0, 3) });
     check("/kage tanpa permintaan gagal (aset kanonik ada)", failed.length === 0, { failed: failed.slice(0, 3) });
