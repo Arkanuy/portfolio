@@ -37,23 +37,35 @@
   --gut: clamp(18px, 4vw, 40px);
 }
 
+/* ============================================================================
+   GELAP — palet Kage
+   ----------------------------------------------------------------------------
+   Nilainya diambil dari token yang sudah dipakai scene Kage
+   (public/landing-pages/kage.html): hitam halaman #05070a, hitam naik #0a0e12,
+   putih tulang #dfe7e0, dan vermilion #e0231c untuk sinyal.
+
+   Sebelumnya palet gelap di sini netral (#0b0c0e, aksen oranye). Itu sebabnya
+   situs dan scene terasa beda bahasa: dua palet, dua dunia. Sekarang satu.
+
+   Kontras diukur pada #05070a dan #0c1116: 4.8:1 – 16:1.
+   ============================================================================ */
 [data-theme="dark"] {
-  --bg: #0b0c0e;
-  --bg2: #111215;
-  --bg3: #17181c;
-  --panel: #141519;
-  --ink: #f4f4f6;
-  --body: #b9bac1;
-  --muted: #8e9098;
-  --faint: #777981;
-  --line: #26272c;
-  --line2: #34363c;
-  --accent: #ff6a2b;
-  --accent-ink: #ff8b56;
-  --accent-soft: #2a1409;
-  --on-accent: #140803;
-  --dark: #f4f4f6;
-  --on-dark: #0b0c0e;
+  --bg: #05070a;
+  --bg2: #080b0f;
+  --bg3: #0c1116;
+  --panel: #0c1116;
+  --ink: #dfe7e0;
+  --body: #a9b3ac;
+  --muted: #8d968f;
+  --faint: #78837c;
+  --line: rgba(223, 231, 224, 0.14);
+  --line2: rgba(223, 231, 224, 0.24);
+  --accent: #e0231c;
+  --accent-ink: #ff5a3c;
+  --accent-soft: rgba(224, 35, 28, 0.14);
+  --on-accent: #ffffff;
+  --dark: #dfe7e0;
+  --on-dark: #05070a;
   --ok: #4ade80;
   --shadow-s: 0 1px 2px rgb(0 0 0 / 0.5);
   --shadow-m: 0 1px 2px rgb(0 0 0 / 0.5), 0 14px 30px -16px rgb(0 0 0 / 0.7);
@@ -68,7 +80,7 @@ body {
   margin: 0;
   background-color: var(--bg);
   color: var(--ink);
-  font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Onest", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 16.5px;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
@@ -1402,4 +1414,119 @@ body:has(.kageNight) {
 .knight__credit b {
   color: var(--muted);
   font-weight: 600;
+}
+
+
+/* ============================================================================
+   BAHASA VISUAL KAGE — dipakai di SELURUH situs, bukan di satu halaman
+   ----------------------------------------------------------------------------
+   Arkan: "portfolio dengan konsep Kage". Jadi Kage bukan lagi bab terpisah
+   di /kage — bahasa visualnya dibawa ke seluruh portfolio.
+
+   Yang dibawa dari Kage, dan kenapa itu tetap aman untuk portfolio:
+
+   1. SUDUT TAJAM. Kage nyaris tanpa lengkung: bingkai, garis, dan tepi semuanya
+      lurus. Radius diturunkan ke 0–2px di tema gelap. Ini bagian paling
+      terasa dari "konsep Kage" dan paling murah ongkosnya.
+   2. GARIS RAMBUT. Kage memisahkan bab dengan garis 1px sangat tipis, bukan
+      dengan kotak atau warna. Dipakai di sini sebagai pemisah antar seksi.
+   3. NOMOR BAB. Navigasi Kage memakai penomoran + judul. Sini: tiap seksi
+      diberi nomor berurutan otomatis dari CSS counter — bukan angka yang
+      ditulis tangan di enam berkas berbeda, jadi tidak mungkin salah.
+   4. JUDUL YANG TENANG. Kage memberi judul jarak huruf negatif dan berat 400,
+      bukan 700. Situs ini memakai 700 untuk judul; untuk teks besar (>40px)
+      beratnya diturunkan supaya tidak berteriak.
+   5. RUANG LEGA. Kage menyisakan banyak ruang; seksi jadi lebih panjang.
+
+   Yang TIDAK dipakai, karena akan merusak hal lain:
+   · latar WebGL sebagai latar setiap halaman (berat, dan mengalahkan isi)
+   · ukuran judul poster di setiap seksi (hierarki jadi rata)
+   · warna vermilion #e0231c untuk teks kecil (terukur hanya 4.25:1 di atas
+     #05070a, di bawah ambang 4.5:1 — untuk teks dipakai ember Kage #ff5a3c
+     yang terukur 6.51:1; vermilion tetap untuk bidang besar dan penanda)
+   ============================================================================ */
+
+/* --- 1 · sudut tajam --- */
+[data-theme="dark"] {
+  --r-xs: 0px;
+  --r-sm: 2px;
+  --r: 2px;
+  --r-lg: 3px;
+}
+
+/* --- 2 · garis rambut sebagai pemisah bab --- */
+[data-theme="dark"] .sec {
+  border-top: 1px solid var(--line);
+}
+[data-theme="dark"] .sec--tint {
+  background: none;
+  border-top-color: var(--line2);
+}
+
+/* --- 3 · nomor bab otomatis --- */
+body {
+  counter-reset: chap;
+}
+[data-theme="dark"] .sec:has(> .wrap > .secHead) {
+  counter-increment: chap;
+}
+[data-theme="dark"] .sec:has(> .wrap > .secHead) > .wrap > .secHead {
+  position: relative;
+}
+[data-theme="dark"] .sec:has(> .wrap > .secHead) > .wrap > .secHead::after {
+  content: counter(chap, decimal-leading-zero);
+  position: absolute;
+  top: 2px;
+  right: 0;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: var(--faint);
+  pointer-events: none;
+}
+
+/* --- 4 · judul yang tenang --- */
+[data-theme="dark"] .hero__h1,
+[data-theme="dark"] .secHead__t,
+[data-theme="dark"] .pageHero__t {
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
+[data-theme="dark"] .cc__title {
+  font-weight: 400;
+  letter-spacing: -0.028em;
+}
+[data-theme="dark"] .eyebrow {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  font-size: 11.5px;
+}
+
+/* --- 5 · ruang lega --- */
+[data-theme="dark"] .sec {
+  padding-block: clamp(64px, 9vh, 118px);
+}
+[data-theme="dark"] .ccGrid {
+  gap: 20px;
+}
+
+/* --- Kartu karya: Kage tidak memakai bayangan, hanya garis --- */
+[data-theme="dark"] .cc {
+  box-shadow: none;
+  background-color: var(--panel);
+}
+[data-theme="dark"] .cc:hover {
+  border-color: var(--line2);
+  background-color: var(--bg3);
+}
+
+/* --- Bidang bertepi: di tema gelap garis rambut menang atas lengkung --- */
+[data-theme="dark"] .pill {
+  border-color: var(--line2);
+  background-color: transparent;
+  border-radius: 999px;
+}
+[data-theme="dark"] .btn {
+  border-radius: var(--r-sm);
 }

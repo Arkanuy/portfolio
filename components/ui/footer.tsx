@@ -28,7 +28,7 @@ export default function Footer() {
             <a href="/tentang">About</a>
             <a href="/riwayat">History</a>
             <a href="/kontak">Contact</a>
-            <a href="/kage">Kage — chapter · night</a>
+            <a href="/kage">Kage — scene</a>
           </div>
 
           <div className="ft__col">

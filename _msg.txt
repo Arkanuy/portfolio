@@ -1,0 +1,47 @@
+Bring the Kage visual language to the whole portfolio
+
+Arkan's correction, and he was right: he wanted a PORTFOLIO in the Kage
+concept, not a separate page about Kage. So the language is now the site's,
+not a chapter's.
+
+What the site took from Kage - four points chosen because they are what
+actually makes Kage feel like Kage, and because they survive contact with a
+portfolio:
+
+  Type     Inter -> Onest, the SAME font Kage uses, loaded from
+           /landing-pages/secret-pathways-assets/fonts.css as a link, not a
+           bundler import: the file embeds each WOFF2 as a data URI, so one
+           request carries the whole family and it caches with the iframe.
+  Palette  the dark theme now carries Kage's own tokens: 05070a page black,
+           0c1116 raised, dfe7e0 bone ink, e0231c vermilion as the signal.
+           Measured 4.8:1 to 16:1 against both surfaces.
+  Shape    the site was rounded everywhere, 6-18px. Kage is built from
+           straight edges, so dark-mode radii drop to 0-3px.
+  Rhythm   hairline rules between sections, automatic chapter numbers from a
+           CSS counter rather than hand-written numbers in six files, calmer
+           400 headings instead of 700, and more breathing room.
+
+Dark is now the default so the site opens in the language it is built in.
+Light stays fully readable behind the toggle.
+
+Deliberately NOT taken: the WebGL scene as a background for every page, and
+poster-scale headings everywhere - both would fight the content. Vermilion is
+kept for fields and markers; small text uses Kage's own ember ff5a3c, which
+measures 6.51:1, because the vermilion measures 4.25:1 and fails AA at text
+sizes.
+
+Two bugs found by measuring:
+
+1. My first theme init deferred to prefers-color-scheme. Playwright reports
+   light, so the whole site came back light, theme=light on every route, and
+   the concept was gone. A concept cannot be implemented as an option.
+2. Three faults in my own contrast gate: it parsed color(srgb ...) as 0-255;
+   the hex parser only accepted 6 digits, so #fff became null; and the ratio
+   divided ink by bg unconditionally, giving 1.08 and then 0.05 for dark text
+   on a light background. All three were the gate, not the palette - the real
+   light-theme contrast is 19:1.
+
+26 gates green: dark by default, Onest everywhere, sharp corners, hairline
+chapters with live numbering, vermilion accent, contrast, all 17 routes, every
+page dark, the Kage scene still intact inside it, and no overflow at
+320/390/768/1440.

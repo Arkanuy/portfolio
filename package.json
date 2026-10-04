@@ -15,8 +15,8 @@
     "verify:rapi": "node scripts/verify-rapi.cjs",
     "verify:overflow": "node scripts/verify-overflow.cjs",
     "verify:final": "node scripts/verify-final.cjs",
-    "verify:kage": "node scripts/verify-kage.cjs",
-    "verify": "node scripts/verify-kage.cjs"
+    "verify:kage": "node scripts/verify-kage-concept.cjs",
+    "verify": "node scripts/verify-kage-concept.cjs"
   },
   "dependencies": {
     "@designcodeio/threeui": "^1.2.0",

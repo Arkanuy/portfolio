@@ -215,18 +215,17 @@ export default function Home() {
       <section className="sec">
         <div className="wrap">
           <div className="glass" style={{ padding: "clamp(20px,3vw,36px)", display: "grid", gap: 14 }}>
-            <p className="eyebrow">Chapter · night</p>
+            <p className="eyebrow">Scene · asal bahasanya</p>
             <h2 className="h2" style={{ maxWidth: "30ch" }}>
-              Kage — bab malam dari portfolio ini.
+              Bahasa visual situs ini datang dari scene ini.
             </h2>
             <p className="lead" style={{ maxWidth: "62ch" }}>
-              Satu scene WebGL lima bab melewati kuil gunung di Kyoto, dirender langsung di browser. Bukan halaman
-              terpisah: halaman ini ikut berubah gelap untuk bab itu, scene-nya berjalan penuh, lalu portfolio kembali
-              terang.
+              Kage — lima bab menyusuri kuil gunung di Kyoto, dirender langsung di browser. Hurufnya, warnanya,
+              garisnya, dan sudutnya dipakai di seluruh portfolio yang sedang Anda baca ini.
             </p>
             <div>
               <a className="btn btn--dark" href="/kage">
-                Masuk ke bab malam <span aria-hidden="true">→</span>
+                Lihat scene-nya <span aria-hidden="true">→</span>
               </a>
             </div>
           </div>
