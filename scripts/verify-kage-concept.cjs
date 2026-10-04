@@ -72,8 +72,12 @@ const read = () => ({
     p.on("pageerror", (e) => errs.push(String(e).slice(0, 140)));
     p.on("console", (m) => m.type() === "error" && errs.push("C:" + m.text().slice(0, 140)));
 
-    await p.goto(BASE + "/", { waitUntil: "networkidle", timeout: 45000 });
-    await p.waitForTimeout(1200);
+    await p.goto(BASE + "/", { waitUntil: "domcontentloaded", timeout: 45000 });
+    /* Tunggu scene-nya benar-benar terpasang. "networkidle" TIDAK dipakai:
+       scene WebGL-nya berjalan terus, jadi jaringan tidak pernah benar-benar
+       diam dan tunggu itu habis waktunya di origin live (terbukti timeout). */
+    await p.waitForSelector(".hero__scene iframe", { timeout: 40000 });
+    await p.waitForTimeout(4000);
     const h = await p.evaluate(read);
 
     check("gelap adalah tampilan baku (tanpa memilih apa pun)", h.theme === "dark", { theme: h.theme });
@@ -227,7 +231,7 @@ const read = () => ({
     /* semua halaman gelap & berfont Onest, bukan cuma beranda */
     const perPage = [];
     for (const u of ["/karya/", "/tentang/", "/layanan/", "/kontak/"]) {
-      await p.goto(BASE + u, { waitUntil: "networkidle", timeout: 30000 });
+      await p.goto(BASE + u, { waitUntil: "domcontentloaded", timeout: 30000 });
       await p.waitForTimeout(300);
       perPage.push(await p.evaluate((u2) => ({
         u: u2,
@@ -246,7 +250,7 @@ const read = () => ({
   {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
     const p = await ctx.newPage();
-    await p.goto(BASE + "/kage/", { waitUntil: "networkidle", timeout: 45000 });
+    await p.goto(BASE + "/kage/", { waitUntil: "domcontentloaded", timeout: 45000 });
     await p.waitForTimeout(11000);
     const fr = p.frames().find((f) => /\/landing-pages\/kage(\b|\.html)/.test(f.url()));
     check("/kage masih memuat dokumen kanonik", !!fr);
@@ -280,8 +284,20 @@ const read = () => ({
     for (const w of [320, 390, 768]) {
       const ctx = await browser.newContext({ viewport: { width: w, height: 844 }, isMobile: true, hasTouch: true });
       const p = await ctx.newPage();
-      await p.goto(BASE + "/", { waitUntil: "networkidle", timeout: 45000 });
-      await p.waitForTimeout(600);
+      /* Tahan-ulang: di origin live, sesekali satu navigasi lambat (cold start)
+         dan ini bukan cacat halaman. Satu ulangan lebih jujur daripada
+         menaikkan timeout sampai tak terbatas. */
+      for (let coba = 1; coba <= 2; coba++) {
+        try {
+          await p.goto(BASE + "/", { waitUntil: "commit", timeout: 30000 });
+          await p.waitForSelector(".hero__scene iframe", { timeout: 30000 });
+          break;
+        } catch (e) {
+          if (coba === 2) throw e;
+          await p.waitForTimeout(3000);
+        }
+      }
+      await p.waitForTimeout(1500);
       const r = await p.evaluate(() => ({
         overflowX: document.documentElement.scrollWidth - document.documentElement.clientWidth,
         font: getComputedStyle(document.body).fontFamily.split(",")[0].replace(/["']/g, ""),
