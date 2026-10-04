@@ -14,12 +14,9 @@
     "verify:rebuild": "node scripts/verify-rebuild.cjs",
     "verify:rapi": "node scripts/verify-rapi.cjs",
     "verify:overflow": "node scripts/verify-overflow.cjs",
-    "verify:final": "node scripts/verify-final.cjs",
-    "verify:kage": "node scripts/verify-kage-concept.cjs",
-    "verify": "node scripts/verify-kage-concept.cjs"
+    "verify:final": "node scripts/verify-final.cjs"
   },
   "dependencies": {
-    "@designcodeio/threeui": "^1.2.0",
     "next": "16.3.6",
     "react": "19.2.0",
     "react-dom": "19.2.0"
