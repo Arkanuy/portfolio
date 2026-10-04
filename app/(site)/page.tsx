@@ -209,23 +209,23 @@ export default function Home() {
       </Section>
 
       {/* ================= KAGE =================
-          Halaman terpisah: dokumen yang diautor ThreeUI (WebGL, lima bab).
-          Ditempatkan di rutenya sendiri karena ia punya CSS dan runtime
-          sendiri, dan tidak boleh bercampur dengan katalog. */}
+          Scene WebGL dari ThreeUI, yang gaya visualnya dipakai seluruh situs
+          ini. Dokumennya hidup di rutenya sendiri karena ia punya CSS dan
+          runtime sendiri. */}
       <section className="sec">
         <div className="wrap">
           <div className="glass" style={{ padding: "clamp(20px,3vw,36px)", display: "grid", gap: 14 }}>
-            <p className="eyebrow">Scene · asal bahasanya</p>
+            <p className="eyebrow">Scene</p>
             <h2 className="h2" style={{ maxWidth: "30ch" }}>
-              Bahasa visual situs ini datang dari scene ini.
+              Kage — jalan malam lima bab melewati kuil gunung di Kyoto.
             </h2>
             <p className="lead" style={{ maxWidth: "62ch" }}>
-              Kage — lima bab menyusuri kuil gunung di Kyoto, dirender langsung di browser. Hurufnya, warnanya,
-              garisnya, dan sudutnya dipakai di seluruh portfolio yang sedang Anda baca ini.
+              Satu halaman WebGL yang dirender langsung di browser: cypress terbakar, cahaya lentera, dan bulan
+              vermilion.
             </p>
             <div>
               <a className="btn btn--dark" href="/kage">
-                Lihat scene-nya <span aria-hidden="true">→</span>
+                Buka scene <span aria-hidden="true">→</span>
               </a>
             </div>
           </div>

@@ -20,7 +20,7 @@ const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", displ
 export const metadata: Metadata = {
   metadataBase: new URL("https://portfolio-arkan.site"),
   title: "Portfolio Arkan Mustofa",
-  description: "Sistem informasi, aplikasi web, dan perangkat lunak bisnis — dibaca dalam gelap, seperti scene Kage.",
+  description: "Sistem informasi, aplikasi web, dan perangkat lunak bisnis.",
   robots: { index: true, follow: true },
 };
 

@@ -1250,174 +1250,6 @@ html[data-motion="off"] [data-x] { translate: none; background-position-y: 0; wi
 
 
 /* ============================================================================
-   /kage — BAB MALAM
-   ----------------------------------------------------------------------------
-   Kenapa begini, bukan halaman hitam terpisah:
-
-   Situs ini terang (--bg putih, aksen #f95400). Scene Kage itu hitam pekat.
-   Kalau scene-nya ditaruh di halaman sendiri yang bergaya lain, hasilnya
-   terasa ditempel — itu yang dikeluhkan. Jadi di sini scene-nya TIDAK dipisah:
-   ia dijadikan bab malam dari portfolio yang sama.
-
-   Cara menyatukannya: seluruh halaman me-remap token yang sudah dipakai situs
-   (--bg, --ink, --line, --accent, ...), jadi header, kartu karya, dan footer
-   yang SAMA otomatis ikut jadi malam — tanpa satu pun komponen disalin atau
-   digandakan. Begitu bab Kage selesai, token dikembalikan ke terang dan
-   portfolio berlanjut seperti biasa: siang → malam → siang lagi.
-
-   Semua nilai dipilih agar lulus kontras di atas #05070a dan #0c1116
-   (terukur 4.82:1 – 15.99:1).
-   ============================================================================ */
-/* Token malam dipasang di DUA tempat dengan satu blok aturan:
-     · .kageNight     → pembungkus konten bab malam
-     · body:has(...)  → supaya HEADER dan FOOTER ikut gelap juga
-   Header dan footer itu saudara dari konten, bukan keturunannya, jadi tanpa
-   :has() keduanya tetap terang dan halamannya kembali terasa ditempel.
-   Kalau peramban tidak mendukung :has(), yang terjadi hanya header tetap
-   terang — halamannya tidak rusak, hanya kurang menyatu. */
-.kageNight,
-body:has(.kageNight) {
-  --bg: #05070a;
-  --bg2: #080b0f;
-  --bg3: #0c1116;
-  --panel: #0c1116;
-  --ink: #dfe7e0;
-  --body: #a9b3ac;
-  --muted: #8d968f;
-  --faint: #78837c;
-  --line: rgba(223, 231, 224, 0.14);
-  --line2: rgba(223, 231, 224, 0.22);
-  --accent: #f95400;
-  --accent-ink: #ff7a45;
-  --accent-soft: rgba(249, 84, 0, 0.12);
-  --on-accent: #ffffff;
-  --dark: #05070a;
-  --on-dark: #dfe7e0;
-
-  min-height: 100vh;
-}
-.kageNight {
-  background: var(--bg);
-  color: var(--ink);
-  display: flex;
-  flex-direction: column;
-}
-/* Area gulir di luar halaman (overscroll) jangan tetap putih */
-body:has(.kageNight) {
-  background: var(--bg);
-  color: var(--ink);
-}
-.kageNight__body {
-  flex: 1;
-  min-height: 0;
-}
-
-/* Kartu karya malam: gambar tetap terang di tengah gelap, jadi bingkainya
-   diberi garis tipis supaya tidak mengambang tanpa batas. */
-.kageNight .cc {
-  box-shadow: none;
-  border-color: var(--line);
-  background-color: var(--panel);
-}
-.kageNight .cc:hover {
-  border-color: var(--line2);
-  background-color: var(--bg3);
-}
-.kageNight .cc__media {
-  border-bottom-color: var(--line);
-}
-
-/* --- bab 01 & 07: halaman portfolio, dibaca dalam gelap --- */
-.knight {
-  padding: clamp(48px, 9vh, 96px) 0 clamp(36px, 6vh, 64px);
-}
-.knight__h {
-  font-size: clamp(38px, 7.4vw, 92px);
-  line-height: 0.98;
-  letter-spacing: -0.04em;
-  font-weight: 700;
-  max-width: 18ch;
-}
-.knight__h em {
-  font-style: normal;
-  color: var(--accent-ink);
-}
-.knight__lead {
-  margin-top: 20px;
-  font-size: clamp(16px, 1.35vw, 19px);
-  line-height: 1.62;
-  color: var(--body);
-  max-width: 62ch;
-}
-.knight__meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 18px;
-  margin-top: 26px;
-  padding-top: 20px;
-  border-top: 1px solid var(--line);
-  font-size: 13.5px;
-  color: var(--muted);
-}
-.knight__meta span::before {
-  content: "";
-  display: inline-block;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--accent);
-  margin-right: 9px;
-  vertical-align: 1.5px;
-}
-.knight__meta span:first-child::before {
-  display: none;
-}
-
-/* --- penanda bab Kage: tempat scene mulai --- */
-.knight__chap {
-  padding: clamp(40px, 7vh, 80px) 0 clamp(18px, 3vh, 30px);
-  border-top: 1px solid var(--line);
-}
-.knight__h2 {
-  font-size: clamp(26px, 3.6vw, 44px);
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  font-weight: 700;
-  max-width: 24ch;
-}
-.knight__h2 em {
-  font-style: normal;
-  color: var(--accent-ink);
-}
-.knight__note {
-  margin-top: 14px;
-  font-size: 15px;
-  line-height: 1.62;
-  color: var(--body);
-  max-width: 62ch;
-}
-
-/* --- 07: celah terang di ujung malam, sebelum portfolio kembali normal --- */
-.knight__dawn {
-  border-top: 1px solid var(--line);
-  padding-top: clamp(40px, 7vh, 76px);
-}
-.knight__credit {
-  margin-top: 26px;
-  padding-top: 18px;
-  border-top: 1px solid var(--line);
-  font-size: 12.5px;
-  line-height: 1.6;
-  color: var(--faint);
-  max-width: 78ch;
-}
-.knight__credit b {
-  color: var(--muted);
-  font-weight: 600;
-}
-
-
-/* ============================================================================
    BAHASA VISUAL KAGE — dipakai di SELURUH situs, bukan di satu halaman
    ----------------------------------------------------------------------------
    Arkan: "portfolio dengan konsep Kage". Jadi Kage bukan lagi bab terpisah
@@ -1529,4 +1361,35 @@ body {
 }
 [data-theme="dark"] .btn {
   border-radius: var(--r-sm);
+}
+
+
+/* ---------------------------------------------------------------------------
+   /kage — halaman scene.
+   Sengaja tanpa gaya khusus: scene-nya sudah punya bahasa visualnya sendiri,
+   dan sejak bahasa itu dipakai seluruh situs, halaman ini otomatis sewarna.
+   Yang ditambahkan hanya jarak dan baris kredit.
+   --------------------------------------------------------------------------- */
+.kagePage__credit {
+  margin-block: 20px clamp(40px, 6vh, 72px);
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--faint);
+  max-width: 78ch;
+}
+
+
+/* ---------------------------------------------------------------------------
+   .glass — panel bertepi.
+   Kelas ini dipakai di beranda (blok scene) tetapi TIDAK PERNAH didefinisikan,
+   jadi panelnya selama ini tampil polos tanpa tepi. Sekarang didefinisikan
+   mengikuti bahasa Kage: garis rambut 1px, sudut tajam, tanpa blur dan tanpa
+   bayangan — Kage memisahkan bidang dengan garis, bukan dengan efek.
+   --------------------------------------------------------------------------- */
+.glass {
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background-color: var(--panel);
 }

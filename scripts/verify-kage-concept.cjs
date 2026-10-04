@@ -106,6 +106,16 @@ const read = () => ({
     check("seksi bernomor otomatis dari CSS counter", h.chapterNums.length >= 3, { nomor: h.chapterNums.slice(0, 7) });
     check("judul besar diturunkan ke berat 400 (tenang, ala Kage)", h.h1Weight === "400", { weight: h.h1Weight });
     check("beranda tanpa overflow horizontal", h.overflowX === 0, { overflowX: h.overflowX });
+
+    /* Kata-kata portfolio tetap milik portfolio: judul, tagline, dan ajakan
+       tidak diganti dengan istilah Kage. */
+    const copy = await p.evaluate(() => {
+      const hero = document.querySelector("h1")?.textContent || "";
+      const sceneEyebrow = Array.from(document.querySelectorAll(".eyebrow")).map((e) => e.textContent.trim());
+      return { hero: hero.replace(/\s+/g, " ").trim(), sceneEyebrow, hasKage: document.body.innerText.includes("Kage") };
+    });
+    check("judul beranda tetap kalimat portfolio sendiri", /Software that gets used/.test(copy.hero), { hero: copy.hero.slice(0, 40) });
+    check("beranda tidak memakai istilah bab/night yang saya karang", !copy.sceneEyebrow.some((e) => /Chapter|Night/i.test(e)), { eyebrow: copy.sceneEyebrow });
     check("beranda tanpa error konsol", errs.length === 0, { errs: errs.slice(0, 3) });
 
     /* ---------- C. tema TERANG masih bisa dibaca ---------- */
@@ -196,8 +206,14 @@ const read = () => ({
     const outer = await p.evaluate(() => ({
       theme: document.documentElement.getAttribute("data-theme"),
       font: getComputedStyle(document.body).fontFamily.split(",")[0].replace(/["']/g, ""),
+      /* Istilah karangan sendiri yang sempat dipakai ("Chapter · night",
+         "night chapter", "back to the light"). Yang diminta Arkan GAYA dan
+         KONSEP Kage, bukan bahasanya — jadi kata-kata ini harus tidak ada. */
+      invented: ["Chapter · night", "night chapter", "night walk", "Back to the light", "read in the dark"]
+        .filter((t) => document.body.innerText.includes(t)),
     }));
-    check("/kage kini memakai bahasa situs yang sama (gelap + Onest)", outer.theme === "dark" && /Onest/.test(outer.font), outer);
+    check("/kage kini memakai bahasa situs yang sama (gelap + Onest)", outer.theme === "dark" && /Onest/.test(outer.font), { theme: outer.theme, font: outer.font });
+    check("/kage tanpa istilah Kage karangan (yang diminta gaya, bukan bahasa)", outer.invented.length === 0, { ditemukan: outer.invented });
     await ctx.close();
   }
 
