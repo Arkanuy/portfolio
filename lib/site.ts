@@ -255,6 +255,29 @@ export const cases: Case[] = [
     imageNote: "Design plate, not an application screenshot.",
     link: null,
   },
+  {
+    no: "08",
+    slug: "axtra",
+    title: "AXTRA",
+    kind: "Studio site · brand",
+    year: "2026",
+    stack: "Next.js 16 · TypeScript · Tailwind v4 · static export",
+    where: "axtra.tech",
+    summary:
+      "The studio home for the products above: one site that gives three independent products a shared brand and a real front door.",
+    problem:
+      "Three products were running in production with three separate identities and no single place that explained who builds them. A studio needs one address, not three disconnected links.",
+    did: [
+      "Built the site as a static export, served behind a Cloudflare tunnel on the same box as the products.",
+      "Wrote the type system around a display serif against a quiet grotesk, with a single copper accent.",
+      "Presented each product with its real interface, captured from the live sites rather than mocked up.",
+      "Ran the accessibility and layout pass at six widths with automated checks, not by eye.",
+    ],
+    result: "Live at axtra.tech. Every product links out from one place.",
+    image: "/projects/axtra.png",
+    imageNote: "Screenshot taken from the live site.",
+    link: { href: "https://axtra.tech", label: "axtra.tech" },
+  },
 ];
 
 export const caseBySlug = (slug: string) => cases.find((c) => c.slug === slug);
