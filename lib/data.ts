@@ -182,7 +182,8 @@ export const github = {
   repos: 20,
 } as const;
 
-export const cvFile = "/arkan-mustofa-cv.pdf";
+// CV removed from the public site at the owner's request (2026-11-03).
+// The file is deleted from public/ so this path must not be reintroduced.
 
 /**
  * Foto profil: avatar dari akun GitHub Arkanuy (uid 111991385).

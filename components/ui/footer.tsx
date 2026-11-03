@@ -60,9 +60,6 @@ export default function Footer() {
             <a href={site.instagram} target="_blank" rel="noopener noreferrer">
               Instagram
             </a>
-            <a href={site.cv} download>
-              CV
-            </a>
           </p>
         </div>
       </div>

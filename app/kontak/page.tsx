@@ -123,13 +123,6 @@ export default function KontakPage() {
                 </button>
               </div>
             ))}
-            <div className="contactRow">
-              <span className="contactRow__k">CV</span>
-              <span className="contactRow__v">PDF document</span>
-              <a className="contactRow__b" href={site.cv} download>
-                Download
-              </a>
-            </div>
           </div>
 
           <div className="contactNote">

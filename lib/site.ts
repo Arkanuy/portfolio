@@ -1,4 +1,4 @@
-import { profile, stats, skillGroups, experiences, education, hobbies, contact, github, cvFile, marquee } from "@/lib/data";
+import { profile, stats, skillGroups, experiences, education, hobbies, contact, github, marquee } from "@/lib/data";
 
 export const site = {
   name: profile.name,
@@ -17,7 +17,6 @@ export const site = {
     "At vocational school I learned to build apps. While working on real projects, I found that the problem is rarely the code — it is the process: who does what, and where the work gets stuck. So I map the workflow first, then write code.",
   portrait: github.avatar,
   github,
-  cv: cvFile,
 };
 
 export const skills = marquee;
